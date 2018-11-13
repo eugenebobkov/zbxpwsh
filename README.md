@@ -1,2 +1,9 @@
-# zbxpwsh
-Powershell scripts for central agent based monitoring (Oracle, MSSQL and PosgreSQL) and templates for Zabbix
+Zabbix modules for database monitoring (PowerShell)
+
+templates:
+MS SQL Server (zbxmssql.ps1)
+Oracle Database (zbxoracle.ps1)
+PostgreSQL (zbxpgsql.ps1)
+
+WIP
+                                                                         
