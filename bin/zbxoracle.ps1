@@ -1,6 +1,14 @@
 #!/bin/pwsh
 
 <#
+    Created: xx/10/2018
+
+    Parameters to modify in zabbix agent configuration file:
+    # it will allow \ symbol to be used as part of InstanceName variable
+    UnsafeUserParameters=1 
+    
+    UserParameter provided as part of oracle.conf file which has to be places in zabbix_agentd.d directory
+
     Create oracle user with the following privilegies
  
     SQL> create user c##zabbix identified by '<password>';
@@ -16,8 +24,7 @@ Param (
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',    # User name
     [Parameter(Mandatory=$true, Position=5)][string]$Password = '',    # Password
     [Parameter(Mandatory=$true, Position=6)][string]$Service = '',     # Service name
-    [Parameter(Mandatory=$false, Position=7)][string]$Tablespace = '', # Tablespace name, for tablespace related checks
-    [Parameter(Mandatory=$false, Position=8)][string]$Container_Id = 0 # Container ID
+    [Parameter(Mandatory=$false, Position=7)][string]$Container_Id = 0 # Container ID
     )
 
 <#
@@ -33,88 +40,116 @@ function run_sql() {
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
     
-    # DEBUG: Error in SQL execution will not terminate whole script and error output will be suppressed
-    # $ErrorActionPreference = 'silentlycontinue'
+    # Add Oracle ODP.NET extention
+    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\managed\common\Oracle.ManagedDataAccess.dll
 
-    <#
-        Sqlplus
-    #> 
+    $dataSource = "(DESCRIPTION =
+                       (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
+                       (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = $Service))
+                   )"
 
-    Set-Item -Path env:LD_LIBRARY_PATH -value "/usr/lib/oracle/18.3/client64/lib" | out-null
-    #Process {
-    #   try {
-             $sql = 'set head off feedback off verify off echo off linesize 220 wrap on pagesize 0 trimspool on numwidth 50;
-                     whenever sqlerror exit 255;
-                     whenever oserror exit 255;
-                    '
-             $sql += $Query + ';'
-             $output += '' 
-             $sql | /usr/lib/oracle/18.3/client64/bin/sqlplus -s $Username/$Password@"$Hostname":$Port/"$Service" | Set-Variable output
-             $rc = $LASTEXITCODE
-    #    } 
-    #    catch {
-    #        $output = $null
-    #    }     
-    #}
-    if ($rc -eq 0) {       
-        return $output
-    } 
-    else {
-      write-host $Query
-      write-host $_ $output
-        return "ERROR: CONNECTION REFUSED"
+    # Create connection string
+    $oracleConnectionString = "User Id=$Username;Password=$Password;Data Source=$dataSource"
+
+    # Create the connection object
+    $oracleConnection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$oracleConnectionString")
+    
+    # How long scripts attempts to connect to instance
+    # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
+    $OracleConnection.ConnectionTimeout = $ConnectTimeout
+    
+    # try to open connection
+    try {
+        [void]$oracleConnection.open()
+        } 
+    catch {
+        write-Host $_
+        return 'ERROR: CONNECTION REFUSED'
     }
+
+    # Create command to run using connection
+    $oracleCommand = New-Object Oracle.ManagedDataAccess.Client.OracleCommand
+    $oracleCommand.Connection = $oracleConnection
+    $oracleCommand.CommandText = $Query
+    $oracleCommand.CommandTimeout = $CommandTimeout
+
+    $oracleAdapter = New-Object Oracle.ManagedDataAccess.Client.OracleDataAdapter($oracleCommand)
+    $dataTable = New-Object System.Data.DataTable
+
+    try {
+        [void]$oracleAdapter.Fill($dataTable)
+        $result = $dataTable
+    }
+    catch {
+        # TODO: better handling and logging for invalid statements
+        # DEBUG: To print error
+        Write-Host "$_"
+        $result = 'ERROR: QUERY TIMED OUT'
+    } 
+    finally {
+        $oracleConnection.Close()
+    }
+
+    # Comma in front is essential as without it return provides object's value, not object itselt
+    return ,$result
 } 
 
 <#
 Function to check instance status, OPEN stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'select status from v$instance')
+    
+    $result = (run_sql -Query 'SELECT status FROM v$instance')
 
     # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
-    if ($result.Trim() -eq 'OPEN') {
+    if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'OPEN') {
         return 'OPEN'
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
 }
 
 function get_version() {
-    $result = (run_sql -Query 'show rel')
+    
+    $result = (run_sql -Query 'SELECT banner FROM v$version')
 
     # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
-    if ($result.Trim() -Match 'release \d{10}') {
-        return ($result.Trim() -Split ' ')[1] 
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        $result.Rows[0][0] 
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
+    }    
+    else {
+        return 'ERROR: UNKNOWN'
     }
 }
 
 function get_startup_time() {
-    $result = (run_sql -Query "select to_char(STARTUP_TIME,'DD/MM/YYYY HH24:MI:SS') from v`$instance")
+    
+    $result = (run_sql -Query "SELECT to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') FROM v`$instance")
 
     # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
-    
-    if ($result.Trim() -Match '^\d\d/\d\d/\d\d\d\d \d\d:\d\d:\d\d$') {
-        return $result.Trim()
+    if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -Match '^\d\d/\d\d/\d\d\d\d \d\d:\d\d:\d\d$') {
+        return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
+    } 
+    else {
+        return 'ERROR: UNKNOWN'
     }
 }
 
 function list_tablespaces() {
 
-    $result = @(run_sql -Query "select tablespace_name from dba_tablespaces where CONTENTS = 'PERMANENT'")
+    $result = (run_sql -Query "SELECT tablespace_name FROM dba_tablespaces WHERE contents = 'PERMANENT'")
 
-    #if ($tablespaces.GetType() -eq [System.String]) {
-    if ($result.Trim() -Match '^ERROR') {
+    if ($result.GetType() -eq [System.String]) {
         # Instance is not available
         return $null
     }
@@ -124,12 +159,10 @@ function list_tablespaces() {
 
     # generate JSON
     foreach ($row in $result) {
-        #$json += "`t`t{`"{#TABLEPACE_NAME}`": `"" + $row[0] + "`"}"
-        $json += "`t`t{`"{#TABLESPACE_NAME}`" : `"" + $row + "`"}"
-
+        $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
         $idx++
 
-        if ($idx -lt $result.Length) {
+        if ($idx -lt $result.Rows.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -144,25 +177,24 @@ function list_pdbs() {
 
     $result = (run_sql -Query 'select cdb from v$database')
 
-    #if ($tablespaces.GetType() -eq [System.String]) {
-    if ($result.Trim() -Match '^ERROR') {
+    if ($result.GetType() -eq [System.String]) {
         # Instance is not available or not container database
         return $null
-    } elseif ($result.Trim() -eq 'NO') {
+    } elseif ($result.Rows[0][0] -eq 'NO') {
         # return empty json
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $result = @(run_sql -Query ("select con_id ||':'||name from v`$pdbs where name != 'PDB`$SEED'"))
+    $result = (run_sql -Query ("select con_id, name from v`$pdbs where name != 'PDB`$SEED'"))
 
     $idx = 0
     $json = "{ `n`t`"data`": [`n"
     # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t{`"{#CON_ID}`" : " + $row.Trim().Split(':')[0] + ", `"{#PDB_NAME}`" : `"" + $row.Trim().Split(':')[1] + "`"}"
+        $json += "`t`t{`"{#CON_ID}`" : " + $row[0] + ", `"{#PDB_NAME}`" : `"" + $row[1] + "`"}"
         $idx++
 
-        if ($idx -lt $result.Length) {
+        if ($idx -lt $result.Rows.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -174,52 +206,56 @@ function list_pdbs() {
 }
 
 <#
-Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+Function to get instance status, OPEN stands for OK, any other results are equalent to FAIL
 #>
 function get_pdb_state() {
-    $result = (run_sql -Query ('select OPEN_MODE from v$pdbs where con_id=' + $Container_Id))
+
+    $result = (run_sql -Query ('SELECT open_mode FROM v$pdbs WHERE con_id=' + $Container_Id))
+
     # Check if expected object has been recieved
-    if ($result.Trim() -NotMatch 'ERROR:') {
-        return $result
+    
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
 }
 
+<#
+Function to provide list of tablespaces in pluggable databases
+#>
 function list_pdbs_tablespaces() {
+    # Check if database is container
+    $result = (run_sql -Query 'SELECT cdb FROM v$database')
 
-    $result = (run_sql -Query 'select cdb from v$database')
-
-    #if ($tablespaces.GetType() -eq [System.String]) {
-    if ($result.Trim() -Match '^ERROR') {
+    if ($result.GetType() -eq [System.String]) {
         # Instance is not available or not container database
         return $null
-    } elseif ($result.Trim() -eq 'NO') {
+    } elseif ($result.Rows[0][0] -eq 'NO') {
         # return empty json
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $result = @(run_sql -Query ("select c.con_id||':'|| p.name||':'||c.tablespace_name 
-                                  from cdb_tablespaces c, v`$pdbs p 
-                                 where c.contents = 'PERMANENT' and p.name != 'PDB`$SEED' and c.con_id = p.con_id"))
+    $result = @(run_sql -Query ("SELECT c.con_id, p.name, c.tablespace_name 
+                                   FROM cdb_tablespaces c, v`$pdbs p 
+                                  WHERE c.contents = 'PERMANENT' AND p.name != 'PDB`$SEED' AND c.con_id = p.con_id"))
 
-    #if ($tablespaces.GetType() -eq [System.String]) {
-    if ($result.Trim() -Match '^ERROR:') {
+    if ($result.GetType() -eq [System.String]) {
         # Instance is not available or not container database
         return $null
     }
 
     $idx = 0
-    $json = "{ `n`t`"data`": [`n"
     # generate JSON
+    $json = "{ `n`t`"data`": [`n"
+
     foreach ($row in $result) {
-        #$json += "`t`t{`"{#TABLEPACE_NAME}`": `"" + $row[0] + "`"}"
-        $json += "`t`t{`"{#CON_ID}`" : " + $row.Trim().Split(':')[0] + ", `"{#PDB_NAME}`" : `"" + $row.Trim().Split(':')[1] + "`", `"{#TABLESPACE_NAME}`" : `"" + $row.Trim().Split(':')[2] + "`"}"
+        $json += "`t`t{`"{#CON_ID}`" : " + $row[0] + ", `"{#PDB_NAME}`" : `"" + $row[1] + "`", `"{#TABLESPACE_NAME}`" : `"" + $row[2] + "`"}"
 
         $idx++
 
-        if ($idx -lt $result.Length) {
+        if ($idx -lt $result.Rous.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -230,25 +266,34 @@ function list_pdbs_tablespaces() {
     return $json
 }
 
+<#
+Function to provide used space for tablespaces (excluding tablespaces of pluggable databases)
+Checks/Triggers for individual tablespaces are done by dependant items
+#>
 function get_tbs_used_space() {
-    $result = @(run_sql -Query ("select d.TABLESPACE_NAME 
-                                      ||':'|| trunc(USED_PERCENT,2) 
-                                      ||':'|| USED_SPACE * (select BLOCK_SIZE from dba_tablespaces t where TABLESPACE_NAME = d.TABLESPACE_NAME)
-                                   from dba_tablespace_usage_metrics d
-                                      , dba_tablespaces t
-                                  where t.CONTENTS = 'PERMANENT'
-                                    and t.TABLESPACE_NAME = d.TABLESPACE_NAME"))
 
-    # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
+    $result = @(run_sql -Query ("SELECT d.TABLESPACE_NAME 
+                                      , trunc(USED_PERCENT,2) 
+                                      , USED_SPACE * (SELECT BLOCK_SIZE FROM dba_tablespaces t WHERE TABLESPACE_NAME = d.TABLESPACE_NAME)
+                                   FROM dba_tablespace_usage_metrics d
+                                      , dba_tablespaces t
+                                  WHERE t.CONTENTS = 'PERMANENT'
+                                    AND t.TABLESPACE_NAME = d.TABLESPACE_NAME"))
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+
     $idx = 1
+
+    # generate JSON to process by dependant items
     $json = "{`n"
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t`"" + $row.Trim().Split(':')[0] + "`":{`"pct`":`"" + $row.Trim().Split(':')[1] + "`",`"bytes`":`"" + $row.Trim().Split(':')[2] + "`"}"
+        $json += "`t`t`"" + $row[0] + "`":{`"pct`":`"" + $row[1] + "`",`"bytes`":`"" + $row[2] + "`"}"
 
-        if ($idx -lt $result.Rows.Count) {
+        if ($idx -lt $result.Rows.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -260,44 +305,49 @@ function get_tbs_used_space() {
     return $json
 }
 
+<#
+Function to provide used space for tablespaces of pluggable databases, excluding tablespaces in root container
+Checks/Triggers for individual tablespaces are done by dependant items
+#>
 function get_pdb_tbs_used_space() {
-    $result = @(run_sql -Query ("select p.NAME
-                                      ||':'|| d.TABLESPACE_NAME
-                                      ||':'|| trunc(USED_PERCENT,2)
-                                      ||':'|| USED_SPACE * (select BLOCK_SIZE 
-                                                              from cdb_tablespaces t 
-                                                             where TABLESPACE_NAME = d.TABLESPACE_NAME
-                                                               and CON_ID = d.CON_ID)
-                                   from cdb_tablespace_usage_metrics d
+    $result = @(run_sql -Query ("SELECT p.name
+                                      , d.tablespace_name
+                                      , trunc(used_percent,2)
+                                      , USED_SPACE * (SELECT BLOCK_SIZE 
+                                                        FROM cdb_tablespaces t 
+                                                       WHERE TABLESPACE_NAME = d.TABLESPACE_NAME
+                                                         AND CON_ID = d.CON_ID)
+                                   FROM cdb_tablespace_usage_metrics d
                                       , cdb_tablespaces t
                                       , v`$pdbs p
-                                  where t.CONTENTS = 'PERMANENT'
-                                    and t.TABLESPACE_NAME = d.TABLESPACE_NAME
-                                    and t.CON_ID = d.CON_ID
-                                    and p.CON_ID = d.CON_ID
-                                  order by p.NAME, d.TABLESPACE_NAME"))
+                                  WHERE t.CONTENTS = 'PERMANENT'
+                                    AND t.TABLESPACE_NAME = d.TABLESPACE_NAME
+                                    AND t.CON_ID = d.CON_ID
+                                    AND p.CON_ID = d.CON_ID
+                                  ORDER BY p.NAME, d.TABLESPACE_NAME"))
 
     $idx = 1
     $pdb = ''
     $first_pdb = $true
-    $json = "{`n"
 
     # generate JSON
+    $json = "{`n"
+
     foreach ($row in $result) {
-        if ($pdb -ne $row.Trim().Split(':')[0]){
+        if ($pdb -ne $row[0]){
             if ($first_pdb -ne $true) {
                 $json = "`t},`n"
             }
-            $json += "`t`"" + $row.Trim().Split(':')[0] + "`":{`n"
-           $json += "`t`t`"" + $row.Trim().Split(':')[1] + "`":{`"pct`":`"" + $row.Trim().Split(':')[2] + "`",`"bytes`":`"" + $row.Trim().Split(':')[3] + "`"}"
+            $json += "`t`"" + $row[0] + "`":{`n"
+           $json += "`t`t`"" + $row[1] + "`":{`"pct`":`"" + $row[2] + "`",`"bytes`":`"" + $row[3] + "`"}"
            $pdb = $row.Trim().Split(':')[0]
            $first_pdb = $false
         }
         else {
-          $json += ",`t`t`"" + $row.Trim().Split(':')[1] + "`":{`"pct`":`"" + $row.Trim().Split(':')[2] + "`",`"bytes`":`"" + $row.Trim().Split(':')[3] + "`"}" 
+          $json += ",`t`t`"" + $row[1] + "`":{`"pct`":`"" + $row[2] + "`",`"bytes`":`"" + $row[3] + "`"}" 
         }
 
-        if ($idx -lt $result.Rows.Count) {
+        if ($idx -lt $result.Rows.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -309,23 +359,31 @@ function get_pdb_tbs_used_space() {
     return $json
 }
 
+<#
+Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
+Checks/Triggers for individual tablespaces are done by dependant items
+#>
 function get_tbs_state(){
 
-    $result = (run_sql -Query ("select tablespace_name
-                                     ||':'|| STATUS
-                                  from dba_tablespaces
-                                 where contents = 'PERMANENT'"))
+    $result = (run_sql -Query ("SELECT tablespace_name
+                                     , status
+                                  FROM dba_tablespaces
+                                 WHERE contents = 'PERMANENT'"))
 
-    # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+
     $idx = 1
-    $json = "{`n"
 
     # generate JSON
-    foreach ($row in $result) {
-        $json += "`t`t`"" + $row.Trim().Split(':')[0] + "`":{`"state`":`"" + $row.Trim().Split(':')[1] + "`"}"
+    $json = "{`n"
 
-        if ($idx -lt $result.Rows.Count) {
+    foreach ($row in $result) {
+        $json += "`t`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
+
+        if ($idx -lt $result.Rows.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -335,40 +393,44 @@ function get_tbs_state(){
     $json += "}"
 
     return $json
-
 }
 
+<#
+Function to provide state for tablespaces of pluggable databases, excluding tablespaces in root container
+Checks/Triggers for individual tablespaces are done by dependant items
+#>
 function get_pdb_tbs_state(){
 
-    $result = (run_sql -Query ("select name
-                                     ||':'|| tablespace_name
-                                     ||':'|| status
-                                  from cdb_tablespaces t
+    $result = (run_sql -Query ("SELECT p.name
+                                     , t.tablespace_name
+                                     , t.status
+                                  FROM cdb_tablespaces t
                                      , v`$pdbs p
-                                 where t.contents = 'PERMANENT'
-                                   and t.con_id = p.con_id"))
+                                 WHERE t.contents = 'PERMANENT'
+                                   AND t.con_id = p.con_id"))
 
     $idx = 1
     $pdb = ''
     $first_pdb = $true
-    $json = "{`n"
 
     # generate JSON
+    $json = "{`n"
+
     foreach ($row in $result) {
-        if ($pdb -ne $row.Trim().Split(':')[0]){
+        if ($pdb -ne $row[0]){
             if ($first_pdb -ne $true) {
                 $json = "`t},`n"
             }
-            $json += "`t`"" + $row.Trim().Split(':')[0] + "`":{`n"
-           $json += "`t`t`"" + $row.Trim().Split(':')[1] + "`":{`"state`":`"" + $row.Trim().Split(':')[2] + "`"}"
-           $pdb = $row.Trim().Split(':')[0]
+            $json += "`t`"" + $row[0] + "`":{`n"
+           $json += "`t`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`"}"
+           $pdb = $row[0]
            $first_pdb = $false
         }
         else {
-          $json += "`t`t,`"" + $row.Trim().Split(':')[1] + "`":{`"state`":`"" + $row.Trim().Split(':')[2] + "`"}"
+          $json += "`t`t,`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`"}"
         }
 
-        if ($idx -lt $result.Rows.Count) {
+        if ($idx -lt $result.Rows.Count()) {
             $json += ','
         }
         $json += "`n"
@@ -378,51 +440,63 @@ function get_pdb_tbs_state(){
     $json += "`t}`n}"
 
     return $json
-
 }
 
-
+<#
+Function to provide amount of processes
+#>
 function get_current_processes() {
-    $result = (run_sql -Query ('select count(*) from v$process'))
+    $result = (run_sql -Query ('SELECT count(*) FROM v$process'))
 
     # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
-
-    if ($result.Trim() -Match '^[\d]') {
-        return $result.Trim()
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
     }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
 }
 
+<#
+Function to provide percentage of current processes to maximum available
+#>
 function get_utilization_processes_pct() {
-    $result = (run_sql -Query ("select round((count(p.pid) / max(v.value))*100)    `
-                                  from (select VALUE from v`$parameter where name = 'processes') v  `
+
+    $result = (run_sql -Query ("SELECT round((count(p.pid) / max(v.value))*100)    `
+                                  FROM (SELECT value FROM v`$parameter WHERE name = 'processes') v  `
                                      , v`$process p"))
 
     # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
-
-    if ($result.Trim() -Match '^[\d]') {
-        return $result.Trim()
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
     }
 }
 
+<#
+Function to provide used FRA space
+#>
 function get_fra_used_pct() {
-    $result = (run_sql -Query ('select trunc(sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE), 2) from v$flash_recovery_area_usage'))
+
+    $result = (run_sql -Query ('SELECT trunc(sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE), 2) FROM v$flash_recovery_area_usage'))
 
     # Check if expected object has been recieved
-    #if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
-
-    if ($result.Trim() -Match '^[\d]') {
-        return $result.Trim()
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
+    }    
+    else {
+        return 'ERROR: UNKNOWN'
     }
 }
 

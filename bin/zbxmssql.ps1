@@ -6,11 +6,10 @@
     Parameters to modify in zabbix agent configuration file:
     # it will allow \ symbol to be used as part of InstanceName variable
     UnsafeUserParameters=1 
-    # Defines how the script will executed  
-    UserParameter=zbxmssql[*],powershell -executionPolicy Bypass c:\zabbix\zbxmssql.ps1 $1 $2 $3 $4 $5 $6 $7
+    
+    UserParameter provided as part of mssql.conf file which has to be places in zabbix_agentd.d directory
 
     Create MSSQL user which will be used for monitoring
-    System where this script runs has to have SQL Server powershell module (for Invoke-SqlCmd)
 #>
 
 
@@ -55,15 +54,13 @@ function run_sql() {
     } else {
         $sqlConnectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $Password;"
     }
-   
-    #$sqlConnectionString >> /tmp/conn
-
-    # How long scripts attempts to connect to instance
-    # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
-    $sqlConnectionString += "Connect Timeout = $ConnectTimeout;"
 
     # Create the connection object
     $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $sqlConnectionString
+
+    # How long scripts attempts to connect to instance
+    # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
+    $sqlConnection.ConnectionTimeout = $ConnectTimeout
 
     # TODO: try to open connection here
     try {
@@ -108,7 +105,7 @@ function run_sql() {
 Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'select max(1) from sys.databases where 1=1')
+    $result = (run_sql -Query 'SELECT max(1) FROM sys.databases WHERE 1=1')
     
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
@@ -126,7 +123,7 @@ function get_agent_state() {
     #$result = (run_sql -Query "xp_servicecontrol 'querystate', 'SQLSERVERAGENT'")
     $result = (run_sql -Query "IF EXISTS (
                                     SELECT 1
-                                      FROM MASTER.dbo.sysprocesses
+                                      FROM master.dbo.sysprocesses
                                      WHERE program_name = N'SQLAgent - Generic Refresher'
                                )
                                    BEGIN
@@ -185,12 +182,10 @@ function get_startup_time() {
 
 <#
 This function provides list of database in JSON format
-if instance name is not provided - it will be done for all local instances
-if instance name was provided - for this instance only
-Assumption is that instance name provided in case of remote monitoring - eg Failover cluster resource
 #>
 function list_databases() {
-    $databases = (run_sql -Query "select name from sys.databases")
+
+    $databases = (run_sql -Query "SELECT name FROM sys.databases")
 
     if ($databases.GetType() -eq [System.String]) {
         # Instance is not available
@@ -275,18 +270,20 @@ function get_databases_state() {
 }
 
 <#
-Returns amount of sessions for selected database
+Returns amount of sessions for all databases
 #>
 function get_databases_connections() {
-   $result = (run_sql -Query ('select name, count(status)
-                                 from sys.databases sd
-                                      left join sysprocesses sp on sd.database_id = sp.dbid
-                                group by name'))
+
+   $result = (run_sql -Query ('SELECT name, count(status)
+                                 FROM sys.databases sd
+                                      LEFT JOIN master.dbo.sysprocesses sp ON sd.database_id = sp.dbid
+                                GROUP BY name'))
 
     $idx = 1
-    $json = "{`n"
 
     # generate JSON
+    $json = "{`n"
+
     foreach ($row in $result) {
         $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
 
