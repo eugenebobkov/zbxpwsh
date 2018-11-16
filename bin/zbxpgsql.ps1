@@ -8,6 +8,12 @@ Param (
     [Parameter(Mandatory=$false, Position=5)][string]$Database = ''   # Database name
     )
 
+<#
+    Checkpint interval
+      pg_stat_bgwriter
+      pg_stat_replication - function with security definer has to be created to view full information about replication
+#>
+
 function run_sql() {
     [CmdletBinding()]
     param (
@@ -83,7 +89,7 @@ function get_startup_time() {
 
 function list_databases() {
 
-    $databases = (run_sql -Query "select datname from pg_database where datistemplate = false").Trim()
+    $databases = @(run_sql -Query "select datname from pg_database where datistemplate = false").Trim()
 
     if ($result -Match '^ERROR:') {
         # Instance is not available
@@ -96,7 +102,6 @@ function list_databases() {
 
     # generate JSON
     foreach ($row in $databases) {
-    # The first row in the table is amount of rows and it will be skippes as it has type System.Int32
         $json += "`t`t{`"{#DATABASE}`": `"" + $row + "`"}"
 
         $idx++
@@ -137,6 +142,18 @@ function get_backends_count() {
 }
 
 function get_backends_utilization_pct() {
+    $result = (run_sql -Query "select trunc(count(pid)::float / current_setting('max_connections')::integer * 100) from pg_stat_activity").Trim()
+
+    # Check if expected object has been recieved
+    if ($result -NotMatch '^ERROR:') {
+        return $result
+    }
+    else {
+        return $null
+    }
+}
+
+function get_standby_instances() {
     $result = (run_sql -Query "select trunc(count(pid)::float / current_setting('max_connections')::integer * 100) from pg_stat_activity").Trim()
 
     # Check if expected object has been recieved

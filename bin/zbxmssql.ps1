@@ -190,7 +190,6 @@ if instance name was provided - for this instance only
 Assumption is that instance name provided in case of remote monitoring - eg Failover cluster resource
 #>
 function list_databases() {
-
     $databases = (run_sql -Query "select name from sys.databases")
 
     if ($databases.GetType() -eq [System.String]) {
@@ -203,7 +202,6 @@ function list_databases() {
 
     # generate JSON
     foreach ($row in $databases) {
-        # The first row in the table is amount of rows and it will be skippes as it has type System.Int32
         $json += "`t`t{`"{#DATABASE}`": `"" + $row[0] + "`"}"
        
         if ($idx -lt $databases.Rows.Count) {
@@ -221,7 +219,7 @@ function list_databases() {
 <#
 Returns status for selected database
 #>
-function get_database_state() {
+function get_databases_state() {
 <#
  0 - ONLINE
  1 - RESTORING
@@ -231,12 +229,10 @@ function get_database_state() {
  5 - EMERGENCY
  6 - OFFLINE
  7 - Database Does Not Exist on Server
+#>
 
- Trigger function str DOES NOT require quotes
+    $result = (run_sql -Query ('SELECT name, state FROM sys.databases'))
 
- #>
-
-    $result = (run_sql -Query ("SELECT state FROM sys.databases WHERE name = '" + $Database + "'"))
     ### TODO: AOAG check
     # if ($output -ne 'ONLINE') {
     #     # check sys.dm_hadr_database_replica_states for AOAG status for this database
@@ -257,53 +253,53 @@ function get_database_state() {
     # get-clustergroup
     ### sys.dm_os_cluster_nodes
 
-    # TODO: add check for versions below 2008 if required for some reason
-    if ($result.GetType() -eq [System.Data.DataTable]) {
-        switch ($result.Rows[0][0]) {
-            '0' {return 'ONLINE'; break}
-            '1' {return 'RESTORING'; break}
-            '2' {return 'RECOVERING'; break}
-            '3' {return 'RECOVERY PENDING'; break}
-            '4' {return 'SUSPECT'; break}
-            '5' {return 'EMERGENCY'; break}
-            '6' {return 'OFFLINE'; break}
-            '7' {return 'UNKNOWN'; break}
-            default {return 'UNKNOWN'; break}
+    $idx = 1
+    #$json = "{ `n`t`"data`": [`n"
+    $json = "{`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
         }
+        $json += "`n"
+        $idx++
     }
-    elseif ($result.GetType() -eq [System.String]) {
-        return $result
-    } 
+
+    #$json += "`t]`n}"
+    $json += "}"
+
+    return $json
 }
 
 <#
 Returns amount of sessions for selected database
 #>
-function get_database_connections() {
-   $result = (run_sql -Query ("DECLARE @AllConnections TABLE(
-                                SPID INT,
-                                Status VARCHAR(MAX),
-                                LOGIN VARCHAR(MAX),                        
-                                HostName VARCHAR(MAX), 
-                                BlkBy VARCHAR(MAX), 
-                                DBName VARCHAR(MAX), 
-                                Command VARCHAR(MAX), 
-                                CPUTime INT, 
-                                DiskIO INT, 
-                                LastBatch VARCHAR(MAX), 
-                                ProgramName VARCHAR(MAX), 
-                                SPID_1 INT, 
-                                REQUESTID INT 
-                             ) 
-                             INSERT INTO @AllConnections EXEC sp_who2 
-                             SELECT count(*) FROM @AllConnections WHERE DBName = '" + $Database + "'") 
-             )
+function get_databases_connections() {
+   $result = (run_sql -Query ('select name, count(status)
+                                 from sys.databases sd
+                                      left join sysprocesses sp on sd.database_id = sp.dbid
+                                group by name'))
 
-    if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
-    } elseif ($result.GetType() -eq [System.String]) {
-        return $result
+    $idx = 1
+    $json = "{`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
     }
+
+    $json += "}"
+
+    return $json
 }
 
 # execute required check

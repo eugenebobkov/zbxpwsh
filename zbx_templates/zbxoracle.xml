@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-13T05:31:24Z</date>
+    <date>2018-11-16T07:12:56Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -28,6 +28,12 @@ Instance name has to be updated in MACROS section</description>
                 </application>
                 <application>
                     <name>Configuration</name>
+                </application>
+                <application>
+                    <name>PDB</name>
+                </application>
+                <application>
+                    <name>PDB tablespace</name>
                 </application>
                 <application>
                     <name>Performance</name>
@@ -400,6 +406,550 @@ Instance name has to be updated in MACROS section</description>
             </items>
             <discovery_rules>
                 <discovery_rule>
+                    <name>PDBs</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[list_pdbs,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <delay>1h</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions>
+                            <condition>
+                                <macro>{#CON_ID}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#PDB_NAME}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>30d</lifetime>
+                    <description>List PDBs</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>PDB {#PDB_NAME} state</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}]</key>
+                            <delay>5m</delay>
+                            <history>90d</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                                <application>
+                                    <name>PDB</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}].str(READ WRITE)}=0</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>PDB {$PDB_NAME} is in invalid state ({ITEM.VALUE1})</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description>PDB is not in READ/WRITE mode</description>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>PDBs tablespaces</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[list_pdbs_tablespaces,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <delay>1h</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions>
+                            <condition>
+                                <macro>{#CON_ID}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#PDB_NAME}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>30d</lifetime>
+                    <description>List all tablespaces for all tablespaces</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Max space for  &quot;{#TABLESPACE_NAME}&quot; tablespace (bytes), PDB {#PDB_NAME}</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_tbs_max_space_bytes,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}]</key>
+                            <delay>1h</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>PDB tablespace</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>State of &quot;{#TABLESPACE_NAME}&quot; tablespace, PDB {#PDB_NAME}</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}]</key>
+                            <delay>15m</delay>
+                            <history>90d</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                                <application>
+                                    <name>PDB tablespace</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Used space for  &quot;{#TABLESPACE_NAME}&quot; tablespace (bytes), PDB {#PDB_NAME}</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_tbs_used_space_bytes,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}]</key>
+                            <delay>15m</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>PDB tablespace</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Used space for  &quot;{#TABLESPACE_NAME}&quot; tablespace (%), PDB {#PDB_NAME}</name>
+                            <type>0</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}]</key>
+                            <delay>15m</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units>%</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>PDB tablespace</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing/>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item/>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}].str(ONLINE)}=0</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; (PDB {#PDB_NAME}) has invalid state {ITEM.VALUE1}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}].last()}&gt;{$TBS_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}, PDB {#PDB_NAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME},-Container_Id {#CON_ID}].last()}&lt;={$TBS_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}, PDB {#PDB_NAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                </discovery_rule>
+                <discovery_rule>
                     <name>Tablespaces</name>
                     <type>0</type>
                     <snmp_community/>
@@ -444,7 +994,7 @@ Instance name has to be updated in MACROS section</description>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>zbxoracle[get_tbs_max_space_bytes,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME}]</key>
-                            <delay>15m</delay>
+                            <delay>1h</delay>
                             <history>7d</history>
                             <trends>90d</trends>
                             <status>0</status>
@@ -684,7 +1234,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME}].str(ONLINE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; of &quot;{$SERVICE}&quot; has status {ITEM.VALUE1}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE1}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -695,7 +1245,7 @@ Instance name has to be updated in MACROS section</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>{$SERVICE} is not available</name>
+                                    <name>Instance is not available</name>
                                     <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
                                     <recovery_expression/>
                                 </dependency>
@@ -706,7 +1256,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -717,7 +1267,7 @@ Instance name has to be updated in MACROS section</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>{$SERVICE} is not available</name>
+                                    <name>Instance is not available</name>
                                     <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
                                     <recovery_expression/>
                                 </dependency>
@@ -728,7 +1278,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE},-Tablespace {#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -739,7 +1289,7 @@ Instance name has to be updated in MACROS section</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>{$SERVICE} is not available</name>
+                                    <name>Instance is not available</name>
                                     <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
                                     <recovery_expression/>
                                 </dependency>
@@ -874,13 +1424,13 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>{$SERVICE} is not available</name>
+            <name>Instance is not available</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>4</priority>
-            <description>{$SERVICE} is not available</description>
+            <description>Instance is not available</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
