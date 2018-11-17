@@ -103,6 +103,7 @@ function get_database_state() {
     }
 }
 
+
 function get_version() {
     
     $result = (run_sql -Query "SELECT getvariable('SYSIBM.VERSION') FROM sysibm.sysdummy1")
@@ -117,6 +118,66 @@ function get_version() {
     else {
         return 'ERROR: UNKNOWN'
     }
+}
+
+function list_tablespaces() {
+
+    $result = (run_sql -Query "SELECT ru.tbsp_name 
+                                 FROM sysibmadm.tbsp_utilization  
+								WHERE tbsp_type='DMS'") 
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+
+    $idx = 0
+    $json = "{ `n`t`"data`": [`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count()) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "`t]`n}"
+
+    return $json
+}
+
+function get_tbs_used_space() {
+
+    $result = (run_sql -Query "SELECT ru.tbsp_name 
+                                 FROM sysibmadm.tbsp_utilization  
+								WHERE stbsp_type='DMS'") 
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+
+    $idx = 0
+    $json = "{ `n`t`"data`": [`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count()) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "`t]`n}"
+
+    return $json
 }
 
 # execute required check
