@@ -15,6 +15,7 @@
     SQL> grant select any dictionary to c##zabbix;
     SQL> alter user c##zabbix set container_data=all container=current;
 
+    Change user's profile settings to ulimited life_time
 #>
 
 Param (
@@ -27,7 +28,11 @@ Param (
     [Parameter(Mandatory=$false, Position=7)][string]$Container_Id = 0 # Container ID
     )
 
-<#
+$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+
+Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+
+<# Notes:
    OS statistics:
       v$ostat
 #>
@@ -41,15 +46,21 @@ function run_sql() {
     )
     
     # Add Oracle ODP.NET extention
+    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>
+    # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
     Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\managed\common\Oracle.ManagedDataAccess.dll
 
     $dataSource = "(DESCRIPTION =
                        (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
                        (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = $Service))
                    )"
+ 
+    If ($Password) {
+        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
+    }
 
     # Create connection string
-    $oracleConnectionString = "User Id=$Username;Password=$Password;Data Source=$dataSource"
+    $oracleConnectionString = "User Id=$Username; Password=$DBPassword; Data Source=$dataSource"
 
     # Create the connection object
     $oracleConnection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$oracleConnectionString")
@@ -113,6 +124,9 @@ function get_instance_state() {
     }
 }
 
+<#
+Function to get database version
+#>
 function get_version() {
     
     $result = (run_sql -Query 'SELECT banner FROM v$version')
@@ -129,6 +143,9 @@ function get_version() {
     }
 }
 
+<#
+Function to get instance startup timestamp
+#>
 function get_startup_time() {
     
     $result = (run_sql -Query "SELECT to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') FROM v`$instance")

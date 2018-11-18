@@ -153,8 +153,4 @@ return
 	}
 }
 
-<#
-Write-EncryptedString "testpassword" "passwordforpassword"
-
-Read-EncryptedString "spfyKUoot8Hc9ZsTONtlfLA699bWjzyft+JkY3l9OEpyXq/5dSU/HnJ5wMD0OAnQIGW8mgmTUMDCJegtmXrp14h7uv8=" "passwordforpassword"
-#>
+Export-ModuleMember -Function Read-EncryptedString

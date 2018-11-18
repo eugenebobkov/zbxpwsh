@@ -21,6 +21,10 @@ Param (
     [Parameter(Mandatory=$true, Position=6)][string]$Database = ''     # Database name
     )
 
+$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+
+Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+
 <#
    OS statistics:
       v$ostat
@@ -39,8 +43,12 @@ function run_sql() {
     $cstrbld.Database = $Database
     # TODO: Domain users
     $cstrbld.UserID = $Username
-    $cstrbld.Password = $Password
-    $cstrbld.Server = "$Hostname" + ":$Port"
+    If ($Password) {
+        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
+    }
+    $cstrbld.Password = $DBPassword
+    # Column symbol after variable name raises error
+    $cstrbld.Server = "$Hostname`:$Port"
 
     $cstrbld.Connect_Timeout = $ConnectTimeout
 

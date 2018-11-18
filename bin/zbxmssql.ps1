@@ -22,6 +22,14 @@ Param (
     [Parameter(Mandatory=$false, Position=6)][string]$Database = ''  # Database name, required for database related checks
     )
 
+$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+
+Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+
+<#
+
+#> Notes
+
 <#
 Internal function to run provided sql statement. If for some reason it cannot be executed - it returns SQL EXECUTION FAILED
 #>
@@ -32,19 +40,6 @@ function run_sql() {
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 5      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
-    
-    # DEBUG: Error in SQL execution will not terminate whole script and error output will be suppressed
-    # $ErrorActionPreference = 'silentlycontinue'
-
-    # This if block was created for situation when the script is used for local instances (not currently requireds)
-    if ($Instance -eq 'MSSQLSERVER') {
-        $serverInstance = '.\'
-    } elseif (! $Instance -match '.*\\.*') {
-        # $Instance doesn't contain \ symbol
-        $serverInstance = ('.\' + $Instance)
-    } else {
-        $serverInstance = $Instance
-    }
 
     # add Port to connection string
     $serverInstance += [string]",$Port"
@@ -52,7 +47,10 @@ function run_sql() {
     if ($Username -eq '') {
         $sqlConnectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
     } else {
-        $sqlConnectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $Password;"
+        If ($Password) {
+            $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
+        }
+        $sqlConnectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $DBPassword;"
     }
 
     # Create the connection object

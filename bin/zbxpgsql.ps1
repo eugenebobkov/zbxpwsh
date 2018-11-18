@@ -8,7 +8,11 @@ Param (
     [Parameter(Mandatory=$false, Position=5)][string]$Database = ''   # Database name
     )
 
-<#
+$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+
+Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+
+<# Notes:
     Checkpint interval
       pg_stat_bgwriter
       pg_stat_replication - function with security definer has to be created to view full information about replication
@@ -29,11 +33,19 @@ function run_sql() {
         Sqlplus
     #> 
 
+    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>
+    if ([Environment]::OSVersion.Platform -eq 'Win32NT') {
+        $psql = "d:\PostgreSQL\11\bin\psql.exe"
+    }
+    else {
+        $psql = "/usr/pgsql-10/bin/psql"
+    }  
+
     #Process {
     #   try {
              $output += '' 
              # password should be provided in .pgpass file or cetrificate configured
-             $Query | /usr/pgsql-10/bin/psql -t -U $Username -h $Hostname --no-password postgres | Where {$_ -ne ""} | Set-Variable output
+             $Query | &$psql -t -U $Username -h $Hostname --no-password postgres | Where {$_ -ne ""} | Set-Variable output
              $rc = $LASTEXITCODE
     #    } 
     #    catch {
@@ -52,7 +64,7 @@ function run_sql() {
 Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'select count(*) from pg_database').Trim()
+    $result = (run_sql -Query 'SELECT count(*) FROM pg_database').Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -64,7 +76,7 @@ function get_instance_state() {
 }
 
 function get_version() {
-    $result = (run_sql -Query 'select version()').Trim()
+    $result = (run_sql -Query 'SELECT version()').Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -75,8 +87,11 @@ function get_version() {
     }
 }
 
+<#
+Function to get instance startup timestamp
+#>
 function get_startup_time() {
-    $result = (run_sql -Query "select pg_postmaster_start_time()").Trim()
+    $result = (run_sql -Query "SELECT pg_postmaster_start_time()").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -89,24 +104,23 @@ function get_startup_time() {
 
 function list_databases() {
 
-    $databases = @(run_sql -Query "select datname from pg_database where datistemplate = false").Trim()
+    $result = @(run_sql -Query "SELECT datname FROM pg_database WHERE datistemplate = false").Trim()
 
     if ($result -Match '^ERROR:') {
         # Instance is not available
         return $null
     }
 
-
     $idx = 0
     $json = "{ `n`t`"data`": [`n"
 
     # generate JSON
-    foreach ($row in $databases) {
+    foreach ($row in $result) {
         $json += "`t`t{`"{#DATABASE}`": `"" + $row + "`"}"
 
         $idx++
 
-        if ($idx -lt $databases.Length) {
+        if ($idx -lt $result.Rows.Count) {
             $json += ','
         }
         $json += "`n"
@@ -117,12 +131,30 @@ function list_databases() {
     return $json
 }
 
-function get_database_size() {
-    $result = (run_sql -Query "select pg_database_size(datname) from pg_database where datname = '$Database'").Trim()
+function get_databases_size() {
+
+    $result = @(run_sql -Query "SELECT pg_database_size(datname) FROM pg_database WHERE datistemplate = false").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return $result
+
+        $idx = 0
+        $json = "{`n"
+
+        # generate JSON
+        foreach ($row in $result) {
+            $json += "`t`t{`"{#DATABASE}`": ( `"bytes`" :`"" + $row[0] + "`"}}"
+            $idx++
+
+            if ($idx -lt $result.Rows.Count) {
+                $json += ','
+            }
+            $json += "`n"
+        }
+
+        $json += "}"
+
+        return $json
     }
     else {
         return $null
@@ -130,7 +162,7 @@ function get_database_size() {
 }
 
 function get_backends_count() {
-    $result = (run_sql -Query "select count(pid) from pg_stat_activity").Trim()
+    $result = (run_sql -Query "SELECT count(pid) FROM pg_stat_activity").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -142,7 +174,7 @@ function get_backends_count() {
 }
 
 function get_backends_utilization_pct() {
-    $result = (run_sql -Query "select trunc(count(pid)::float / current_setting('max_connections')::integer * 100) from pg_stat_activity").Trim()
+    $result = (run_sql -Query "SELECT trunc(count(pid)::float / current_setting('max_connections')::integer * 100) FROM pg_stat_activity").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -154,7 +186,7 @@ function get_backends_utilization_pct() {
 }
 
 function get_standby_instances() {
-    $result = (run_sql -Query "select trunc(count(pid)::float / current_setting('max_connections')::integer * 100) from pg_stat_activity").Trim()
+    $result = (run_sql -Query "").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
