@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-19T08:52:38Z</date>
+    <date>2018-11-19T09:01:02Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -46,7 +46,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxmssql[get_agent_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>600</delay>
+                    <delay>10m</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -226,7 +226,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>60</delay>
+                    <delay>1m</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>

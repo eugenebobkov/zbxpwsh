@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-19T08:52:06Z</date>
+    <date>2018-11-19T08:59:16Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -288,7 +288,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>30s</delay>
+                    <delay>15m</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -527,7 +527,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>30s</delay>
+                    <delay>15m</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
