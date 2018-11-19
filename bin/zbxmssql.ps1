@@ -27,8 +27,8 @@ $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Defin
 Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
 
 <#
-
-#> Notes
+    Notes
+#> 
 
 <#
 Internal function to run provided sql statement. If for some reason it cannot be executed - it returns SQL EXECUTION FAILED
@@ -42,23 +42,23 @@ function run_sql() {
     )
 
     # add Port to connection string
-    $serverInstance += [string]",$Port"
-           
+    $serverInstance = $Instance + ",$Port"
+               
     if ($Username -eq '') {
         $sqlConnectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
     } else {
-        If ($Password) {
+        If ("$Password") {
             $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
         }
         $sqlConnectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $DBPassword;"
     }
 
-    # Create the connection object
-    $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $sqlConnectionString
-
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
-    $sqlConnection.ConnectionTimeout = $ConnectTimeout
+    $sqlConnectionString += "Connect Timeout = $ConnectTimeout;"
+
+    # Create the connection object
+    $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $sqlConnectionString
 
     # TODO: try to open connection here
     try {
@@ -183,9 +183,9 @@ This function provides list of database in JSON format
 #>
 function list_databases() {
 
-    $databases = (run_sql -Query "SELECT name FROM sys.databases")
+    $result = (run_sql -Query "SELECT name FROM sys.databases")
 
-    if ($databases.GetType() -eq [System.String]) {
+    if ($result.GetType() -eq [System.String]) {
         # Instance is not available
         return $null
     }
@@ -194,10 +194,10 @@ function list_databases() {
     $json = "{ `n`t`"data`": [`n"
 
     # generate JSON
-    foreach ($row in $databases) {
+    foreach ($row in $result) {
         $json += "`t`t{`"{#DATABASE}`": `"" + $row[0] + "`"}"
        
-        if ($idx -lt $databases.Rows.Count) {
+        if ($idx -lt $result.Rows.Count) {
             $json += ','
         }
         $json += "`n"
