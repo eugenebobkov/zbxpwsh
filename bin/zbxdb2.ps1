@@ -38,23 +38,18 @@ function run_sql() {
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
 
-    $factory = [System.Data.Common.DbProviderFactories]::GetFactory(“IBM.Data.DB2”)
-    $cstrbld = $factory.CreateConnectionStringBuilder()
-    $cstrbld.Database = $Database
-    # TODO: Domain users
-    $cstrbld.UserID = $Username
+    # Decrypy password
     If ($Password) {
         $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
     }
-    $cstrbld.Password = $DBPassword
+ 
     # Column symbol after variable name raises error
-    $cstrbld.Server = "$Hostname`:$Port"
+    $db2ConnectionString = "Database=$Database;User ID=$Username;Password=$DBPassword;Server=$Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
 
-    $cstrbld.Connect_Timeout = $ConnectTimeout
-
+    $factory = [System.Data.Common.DbProviderFactories]::GetFactory(“IBM.Data.DB2”)
+   
     $db2Connection = $factory.CreateConnection()
-    $db2Connection.ConnectionString = $cstrbld.ConnectionString
-
+    $db2Connection.ConnectionString = $db2ConnectionString
     # try to open connection
     try {
         [void]$db2Connection.Open()
@@ -130,7 +125,7 @@ function get_version() {
 
 function list_tablespaces() {
 
-    $result = (run_sql -Query "SELECT ru.tbsp_name 
+    $result = (run_sql -Query "SELECT tbsp_name 
                                  FROM sysibmadm.tbsp_utilization  
 								WHERE tbsp_type='DMS'") 
 
@@ -147,7 +142,7 @@ function list_tablespaces() {
         $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
         $idx++
 
-        if ($idx -lt $result.Rows.Count()) {
+        if ($idx -lt $result.Rows.Count) {
             $json += ','
         }
         $json += "`n"
@@ -158,11 +153,78 @@ function list_tablespaces() {
     return $json
 }
 
+<#
+Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
+Checks/Triggers for individual tablespaces are done by dependant items
+#>
+function get_tbs_state(){
+
+    $result = (run_sql -Query ("SELECT tbsp_name
+                                     , tbsp_state
+                                  FROM sysibmadm.tbsp_utilization
+                                 WHERE tbsp_type='DMS'"))
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
+function list_hadr() {
+
+    $result = (run_sql -Query "SELECT hadr_remote_host
+                                 FROM sysibmadm.snaphadr
+								WHERE tbsp_type='DMS'") 
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+
+    $idx = 0
+    $json = "{ `n`t`"data`": [`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`t{`"{#HADR_HOST}`": `"" + $row[0] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "`t]`n}"
+
+    return $json
+}
+
+
 function get_tbs_used_space() {
 
-    $result = (run_sql -Query "SELECT ru.tbsp_name 
+    $result = (run_sql -Query "SELECT tbsp_name 
                                  FROM sysibmadm.tbsp_utilization  
-								WHERE stbsp_type='DMS'") 
+								WHERE tbsp_type='DMS'") 
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
@@ -177,7 +239,7 @@ function get_tbs_used_space() {
         $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
         $idx++
 
-        if ($idx -lt $result.Rows.Count()) {
+        if ($idx -lt $result.Rows.Count) {
             $json += ','
         }
         $json += "`n"

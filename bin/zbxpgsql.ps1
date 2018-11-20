@@ -68,6 +68,8 @@ function run_sql() {
         $psql = "/usr/pgsql-10/bin/psql"
     }  
 
+    Set-Item -Path env:PGPASSFILE -Value "$RootPath\etc\.pgpass"
+
     #Process {
     #   try {
              $output += '' 
