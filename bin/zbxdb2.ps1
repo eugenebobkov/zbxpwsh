@@ -50,6 +50,7 @@ function run_sql() {
    
     $db2Connection = $factory.CreateConnection()
     $db2Connection.ConnectionString = $db2ConnectionString
+    
     # try to open connection
     try {
         [void]$db2Connection.Open()
@@ -106,10 +107,12 @@ function get_database_state() {
     }
 }
 
-
 function get_version() {
     
-    $result = (run_sql -Query "SELECT getvariable('SYSIBM.VERSION') FROM sysibm.sysdummy1")
+    $result = (run_sql -Query "SELECT service_level FROM table(sysproc.env_get_inst_info()")
+
+    # SELECT service_level FROM table(sysproc.env_get_prod_info()
+    # SELECT service_level FROM table(sysproc.env_get_sys_info()
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
@@ -219,7 +222,6 @@ function list_hadr() {
     return $json
 }
 
-
 function get_tbs_used_space() {
 
     $result = (run_sql -Query "SELECT tbsp_name 
@@ -248,6 +250,62 @@ function get_tbs_used_space() {
     $json += "`t]`n}"
 
     return $json
+}
+
+
+<#
+Function to get instance startup timestamp
+#>
+function get_startup_time() {
+    
+    $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') FROM sysibmadm.snapdbm")
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    } 
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide amount of connected applications
+#>
+function get_applications_amount() {
+    $result = (run_sql -Query ('SELECT count(*) FROM sysibmadm.applications'))
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide percentage of utilized logs
+#>
+function get_applications_amount() {
+    $result = (run_sql -Query ('SELECT log_utilization_percent FROM sysibmadm.log_utilization'))
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
 }
 
 # execute required check
