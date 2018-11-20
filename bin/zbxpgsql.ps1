@@ -33,7 +33,34 @@ function run_sql() {
         Sqlplus
     #> 
 
-    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>
+    # TODO: Implement .NET DBProvider using Npgsql https://www.npgsql.org
+
+<#
+ Add-Type -Path "C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Npgsql\v4.0_4.0.3.0__5d8b90d52f46fda7\Npgsql.dll"
+
+ # PostgeSQL-style connection string
+                $connstring = "Server=localhost;Port=5432;User Id=zabbixmon;Password=zabbix;Database=postgres;"
+
+                # Making connection with Npgsql provider
+                $conn = New-Object Npgsql.NpgsqlConnection($connstring)
+                $conn.Open()
+                # quite complex sql statement
+                $sql = "SELECT * FROM simple_table";
+                # data adapter making request from our connection
+                $da = New-Object NpgsqlDataAdapter($sql, $conn)
+                # i always reset DataSet before i do
+                # something with it.... i don't know why :-)
+                $dt = New-Object System.Data.DataTable
+                $dt.Reset()
+                # filling DataSet with result from NpgsqlDataAdapter
+                $da.Fill($dt);
+                # since it C# DataSet can handle multiple tables, we will select first
+
+                # since we only showing the result we don't need connection anymore
+                $conn.Close();
+#>
+    #  
+    
     if ([Environment]::OSVersion.Platform -eq 'Win32NT') {
         $psql = "d:\PostgreSQL\11\bin\psql.exe"
     }
