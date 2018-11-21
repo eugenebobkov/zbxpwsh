@@ -224,9 +224,59 @@ function list_hadr() {
 
 function get_tbs_used_space() {
 
-    $result = (run_sql -Query "SELECT tbsp_name 
-                                 FROM sysibmadm.tbsp_utilization  
-								WHERE tbsp_type='DMS'") 
+    $result = (run_sql -Query "SELECT '<tr><td>' || ru.tbsp_name || '</td>'
+													   || '<td>' || dbu.tbsp_state || '</td>'
+													   || '<td>' || ru.tbsp_type || ' (max ' || char(int(ru.real_max_size)) || 'GB) </td>'
+													   || CASE
+															  WHEN dec(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100) > $criticalThreshold 
+																  THEN '<td class=''error''>' || char(decimal(decimal(dbu.tbsp_total_size_kb)/1024/1024/decimal(ru.real_max_size)*100, 31, 2))
+															  WHEN dec(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100) > $warningThreshold 
+																  THEN '<td class=''warning''>' || char(dec(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100, 31, 2)) 
+															  ELSE
+																  '<td class=''ok''>' || char(quantize(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100, decfloat(0.01)))
+															  END
+													   ||'</td>'
+													   || '<td>' || char(quantize(dec(dbu.tbsp_used_size_kb)/1024/1024, decfloat(0.01)))
+													   || '<td>' || char(quantize(dec(dbu.tbsp_total_size_kb)/1024/1024, decfloat(0.01)))
+													   || '</td></tr>'
+													 FROM 
+														( SELECT tbsp_id 
+															   , char(tbsp_name,20) as tbsp_name 
+															   , CASE tbsp_content_type 
+																	 WHEN 'ANY' THEN 'REGULAR' 
+																 ELSE tbsp_content_type 
+																 END as tbsp_type 
+															   , CASE tbsp_max_size 
+																	 WHEN -1 THEN CASE tbsp_content_type 
+																				  WHEN 'ANY' 
+																					  THEN CASE tbsp_page_size 
+																							   WHEN 4096 THEN 64
+																							   WHEN 8192 THEN 128
+																							   WHEN 16384 THEN 256   
+																							   WHEN 32768 THEN 512   
+																						   ELSE  
+																							   -1 
+																						   END
+																				  WHEN 'LARGE' 
+																					  THEN CASE tbsp_page_size 
+																							   WHEN 4096 THEN 8192
+																							   WHEN 8192 THEN 16384   
+																							   WHEN 16384 THEN 32768   
+																							   WHEN 32768 THEN 65536   
+																					  ELSE  
+																						  -1 
+																					  END 
+																				  ELSE 
+																					  -1
+																				  END
+																 ELSE
+																	 dec(tbsp_max_size)/1024/1024/1024
+																 END as real_max_size 
+															FROM sysibmadm.tbsp_utilization  
+														   WHERE tbsp_type='DMS' 
+														) as ru  
+														, sysibmadm.tbsp_utilization as dbu 
+													WHERE ru.tbsp_id = dbu.tbsp_id") 
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
@@ -333,7 +383,11 @@ function get_logs_utilization_pct() {
 Function to provide time of last succeseful backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query ('SELECT log_utilization_percent FROM sysibmadm.log_utilization'))
+    $result = (run_sql -Query ("SELECT TIMESTAMP_FORMAT(end_time,'DD/MM/YYYY HH24:MI:SS')
+					              FROM SYSIBMADM.DB_HISTORY 
+							     WHERE OPERATION='B' 
+								   AND TIMESTAMP_FORMAT(end_time,'YYYYMMDDHH24MISS') > CURRENT TIMESTAMP - 1 DAYS 
+								   AND SQLCODE IS NOT NULL"))
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
