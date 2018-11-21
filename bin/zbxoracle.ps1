@@ -326,7 +326,7 @@ function get_tbs_used_space() {
     $json = "{`n"
 
     foreach ($row in $result) {
-        $json += "`t`t`"" + $row[0] + "`":{`"used_pct`":" + $row[1] + ",`"used_bytes`":" + $row[2] + ",`"max_bytes`":" + $row[3] + "}"
+        $json += "`t`"" + $row[0] + "`":{`"used_pct`":" + $row[1] + ",`"used_bytes`":" + $row[2] + ",`"max_bytes`":" + $row[3] + "}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','
@@ -375,7 +375,7 @@ function get_pdbs_tbs_used_space() {
     foreach ($row in $result) {
         if ($pdb -ne $row[0]){
             if ($first_pdb -ne $true) {
-                $json = "`t},`n"
+                $json += "`t},`n"
             }
             $json += "`"" + $row[0] + "`":{`n"
            $json += "`t`"" + $row[1] + "`":{`"used_pct`":" + $row[2] + ",`"used_bytes`":" + $row[3] + ",`"max_bytes`":" + $row[4] + "}"
@@ -455,7 +455,7 @@ function get_pdbs_tbs_state(){
     foreach ($row in $result) {
         if ($pdb -ne $row[0]){
             if ($first_pdb -ne $true) {
-                $json = "`t},`n"
+                $json += "`t},`n"
             }
             $json += "`"" + $row[0] + "`":{`n"
            $json += "`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`"}"
@@ -528,6 +528,53 @@ function get_fra_used_pct() {
     elseif ($result.GetType() -eq [System.String]) {
         return $null
     }    
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide time of last successeful database backup
+#>
+function get_last_db_backup() {
+    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS')
+					              FROM v`$rman_status
+							     WHERE object_type in ('DB FULL', 'DB INCR')
+								   AND status like 'COMPLETED%'")  `
+                       -CommandTimeout 30
+                )
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"epoch`":" + (New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date ($result.Rows[0][0]))).TotalSeconds +"`n`t}`n}"
+      return $result.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide time of last succeseful archived log backup
+#>
+function get_last_log_backup() {
+    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS')
+					              FROM v`$rman_status
+							     WHERE object_type in ('ARCHIVELOG')
+								   AND status like 'COMPLETED%'")  `
+                       -CommandTimeout 30
+                )
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"epoch`":" + (New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date ($result.Rows[0][0]))).TotalSeconds +"`n`t}`n}"
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
     else {
         return 'ERROR: UNKNOWN'
     }

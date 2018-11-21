@@ -97,7 +97,7 @@ function get_database_state() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -gt 0) {
-        return 'OK'
+        return 'ONLINE'
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
@@ -204,9 +204,10 @@ function list_hadr() {
     }
 
     $idx = 0
+    
+    # generate JSON
     $json = "{ `n`t`"data`": [`n"
 
-    # generate JSON
     foreach ($row in $result) {
         $json += "`t`t{`"{#HADR_HOST}`": `"" + $row[0] + "`"}"
         $idx++
@@ -224,82 +225,75 @@ function list_hadr() {
 
 function get_tbs_used_space() {
 
-    $result = (run_sql -Query "SELECT '<tr><td>' || ru.tbsp_name || '</td>'
-													   || '<td>' || dbu.tbsp_state || '</td>'
-													   || '<td>' || ru.tbsp_type || ' (max ' || char(int(ru.real_max_size)) || 'GB) </td>'
-													   || CASE
-															  WHEN dec(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100) > $criticalThreshold 
-																  THEN '<td class=''error''>' || char(decimal(decimal(dbu.tbsp_total_size_kb)/1024/1024/decimal(ru.real_max_size)*100, 31, 2))
-															  WHEN dec(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100) > $warningThreshold 
-																  THEN '<td class=''warning''>' || char(dec(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100, 31, 2)) 
-															  ELSE
-																  '<td class=''ok''>' || char(quantize(dec(dbu.tbsp_total_size_kb)/1024/1024/dec(ru.real_max_size)*100, decfloat(0.01)))
-															  END
-													   ||'</td>'
-													   || '<td>' || char(quantize(dec(dbu.tbsp_used_size_kb)/1024/1024, decfloat(0.01)))
-													   || '<td>' || char(quantize(dec(dbu.tbsp_total_size_kb)/1024/1024, decfloat(0.01)))
-													   || '</td></tr>'
-													 FROM 
-														( SELECT tbsp_id 
-															   , char(tbsp_name,20) as tbsp_name 
-															   , CASE tbsp_content_type 
-																	 WHEN 'ANY' THEN 'REGULAR' 
-																 ELSE tbsp_content_type 
-																 END as tbsp_type 
-															   , CASE tbsp_max_size 
-																	 WHEN -1 THEN CASE tbsp_content_type 
-																				  WHEN 'ANY' 
-																					  THEN CASE tbsp_page_size 
-																							   WHEN 4096 THEN 64
-																							   WHEN 8192 THEN 128
-																							   WHEN 16384 THEN 256   
-																							   WHEN 32768 THEN 512   
-																						   ELSE  
-																							   -1 
-																						   END
-																				  WHEN 'LARGE' 
-																					  THEN CASE tbsp_page_size 
-																							   WHEN 4096 THEN 8192
-																							   WHEN 8192 THEN 16384   
-																							   WHEN 16384 THEN 32768   
-																							   WHEN 32768 THEN 65536   
-																					  ELSE  
-																						  -1 
-																					  END 
-																				  ELSE 
-																					  -1
-																				  END
-																 ELSE
-																	 dec(tbsp_max_size)/1024/1024/1024
-																 END as real_max_size 
-															FROM sysibmadm.tbsp_utilization  
-														   WHERE tbsp_type='DMS' 
-														) as ru  
-														, sysibmadm.tbsp_utilization as dbu 
-													WHERE ru.tbsp_id = dbu.tbsp_id") 
+    $result = (run_sql -Query "SELECT ru.tbsp_name
+                                    , int(ru.real_max_size) max_gb
+                                    , dec(dbu.tbsp_used_size_kb)/dec(ru.real_max_size*1024*1024)*100 used_pct
+                                    , dec(dbu.tbsp_used_size_kb) used_kb
+		                            --, dec(dbu.tbsp_total_size_kb) used_kb
+                                 FROM 
+									( SELECT tbsp_id 
+										   , char(tbsp_name,20) as tbsp_name 
+										   , CASE tbsp_content_type 
+												 WHEN 'ANY' THEN 'REGULAR' 
+													 ELSE tbsp_content_type 
+												 END as tbsp_type 
+										   , CASE tbsp_max_size 
+                                             WHEN -1 
+                                                  THEN CASE tbsp_content_type 
+                                                       WHEN 'ANY' 
+                                                            THEN CASE tbsp_page_size 
+                                                                 WHEN 4096 THEN 64
+                                                                 WHEN 8192 THEN 128
+                                                                 WHEN 16384 THEN 256   
+                                                                 WHEN 32768 THEN 512   
+                                                            ELSE  
+                                                                -1 
+                                                            END
+                                                       WHEN 'LARGE' 
+                                                       THEN CASE tbsp_page_size 
+                                                                 WHEN 4096 THEN 8192
+                                                                 WHEN 8192 THEN 16384   
+                                                                 WHEN 16384 THEN 32768   
+                                                                 WHEN 32768 THEN 65536   
+                                                            ELSE  
+                                                                -1 
+                                                            END 
+                                                  ELSE 
+													  -1
+												  END
+											 ELSE
+												 dec(tbsp_max_size)
+											 END as real_max_size 
+                                        FROM sysibmadm.tbsp_utilization  
+                                       WHERE tbsp_type='DMS' 
+                                    ) as ru  
+                                    , sysibmadm.tbsp_utilization as dbu 
+                                WHERE ru.tbsp_id = dbu.tbsp_id") 
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
         return $null
     }
 
-    $idx = 0
-    $json = "{ `n`t`"data`": [`n"
+    $idx = 1
 
     # generate JSON
+    $json = "{`n"
+
     foreach ($row in $result) {
-        $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
-        $idx++
+        $json += "`"" + $row[0].Trim() + "`":{`"max_gb`":" + $row[1] + ",`"used_pct`":" + $row[2] + ",`"used_kb`":" + $row[3] + "}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','
         }
         $json += "`n"
+        $idx++
     }
 
-    $json += "`t]`n}"
+    $json += "}"
 
     return $json
+
 }
 
 
@@ -380,18 +374,42 @@ function get_logs_utilization_pct() {
 }
 
 <#
-Function to provide time of last succeseful backup
+Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query ("SELECT TIMESTAMP_FORMAT(end_time,'DD/MM/YYYY HH24:MI:SS')
+    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS')
 					              FROM SYSIBMADM.DB_HISTORY 
-							     WHERE OPERATION='B' 
-								   AND TIMESTAMP_FORMAT(end_time,'YYYYMMDDHH24MISS') > CURRENT TIMESTAMP - 1 DAYS 
-								   AND SQLCODE IS NOT NULL"))
+							     WHERE OPERATION = 'B' 
+								   AND SQLCODE IS NULL")  `
+                       -CommandTimeout 30
+                )
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"epoch`":" + (New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date ($result.Rows[0][0]))).TotalSeconds +"`n`t}`n}"
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide time of last succeseful archived log backup
+#>
+function get_last_log_backup() {
+    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS')
+					              FROM SYSIBMADM.DB_HISTORY 
+							     WHERE OPERATION = 'X' 
+								   AND SQLCODE IS NULL")  `
+                       -CommandTimeout 30
+                )
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"epoch`":" + (New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date ($result.Rows[0][0]))).TotalSeconds +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
