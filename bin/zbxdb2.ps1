@@ -109,7 +109,7 @@ function get_database_state() {
 
 function get_version() {
     
-    $result = (run_sql -Query "SELECT service_level FROM table(sysproc.env_get_inst_info()")
+    $result = (run_sql -Query "SELECT service_level FROM table(sysproc.env_get_inst_info())")
 
     # SELECT service_level FROM table(sysproc.env_get_prod_info()
     # SELECT service_level FROM table(sysproc.env_get_sys_info()
@@ -162,10 +162,10 @@ Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_state(){
 
-    $result = (run_sql -Query ("SELECT tbsp_name
-                                     , tbsp_state
-                                  FROM sysibmadm.tbsp_utilization
-                                 WHERE tbsp_type='DMS'"))
+    $result = (run_sql -Query "SELECT tbsp_name
+                                    , tbsp_state 
+                                 FROM sysibmadm.tbsp_utilization  
+								WHERE tbsp_type='DMS'")
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
@@ -275,7 +275,7 @@ function get_startup_time() {
 <#
 Function to provide amount of connected applications
 #>
-function get_applications_amount() {
+function get_appls_amount() {
     $result = (run_sql -Query ('SELECT count(*) FROM sysibmadm.applications'))
 
     # Check if expected object has been recieved
@@ -293,7 +293,46 @@ function get_applications_amount() {
 <#
 Function to provide percentage of utilized logs
 #>
-function get_applications_amount() {
+function get_appls_utilization_pct() {
+    # TODO: check if maxappls set to -1
+    $result = (run_sql -Query ("SELECT ROUND((c.cnt/p.value)*100,2)
+                                  FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
+                                     , (SELECT count(*) cnt FROM sysibmadm.applications) c"))
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide percentage of utilized logs
+#>
+function get_logs_utilization_pct() {
+    $result = (run_sql -Query ('SELECT log_utilization_percent FROM sysibmadm.log_utilization'))
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $result.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
+        return $null
+    }
+    else {
+        return 'ERROR: UNKNOWN'
+    }
+}
+
+<#
+Function to provide time of last succeseful backup
+#>
+function get_last_db_backup() {
     $result = (run_sql -Query ('SELECT log_utilization_percent FROM sysibmadm.log_utilization'))
 
     # Check if expected object has been recieved
