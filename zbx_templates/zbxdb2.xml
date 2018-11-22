@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-21T08:07:16Z</date>
+    <date>2018-11-22T02:20:47Z</date>
     <groups>
         <group>
             <name>IBM DB2 Databases</name>
@@ -221,7 +221,7 @@ Instance details has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Last successful database backup (date)</name>
+                    <name>Date of the last successful database backup</name>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -287,16 +287,16 @@ Instance details has to be updated in MACROS section</description>
                     </master_item>
                 </item>
                 <item>
-                    <name>Last successful database backup (epoch)</name>
+                    <name>Hours since the last successful database backup</name>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_last_db_backup,epoch]</key>
+                    <key>zbxdb2[get_last_db_backup,hours_since]</key>
                     <delay>0</delay>
                     <history>7d</history>
-                    <trends>0</trends>
+                    <trends>365d</trends>
                     <status>0</status>
-                    <value_type>4</value_type>
+                    <value_type>0</value_type>
                     <allowed_hosts/>
                     <units/>
                     <snmpv3_contextname/>
@@ -326,7 +326,7 @@ Instance details has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.epoch</params>
+                            <params>$.data.hours_since</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -412,7 +412,7 @@ Instance details has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Last successful log backup (date)</name>
+                    <name>Date of the last successful log backup</name>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -478,16 +478,16 @@ Instance details has to be updated in MACROS section</description>
                     </master_item>
                 </item>
                 <item>
-                    <name>Last successful log backup (epoch)</name>
+                    <name>Hours since the last successful log backup</name>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_last_log_backup,epoch]</key>
+                    <key>zbxdb2[get_last_log_backup,hours_since]</key>
                     <delay>0</delay>
                     <history>7d</history>
-                    <trends>0</trends>
+                    <trends>365d</trends>
                     <status>0</status>
-                    <value_type>4</value_type>
+                    <value_type>0</value_type>
                     <allowed_hosts/>
                     <units/>
                     <snmpv3_contextname/>
@@ -517,7 +517,7 @@ Instance details has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.epoch</params>
+                            <params>$.data.hours_since</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1259,6 +1259,14 @@ Instance details has to be updated in MACROS section</description>
                     <value>localhost</value>
                 </macro>
                 <macro>
+                    <macro>{$HOURS_SINCE_LAST_DB_BACKUP}</macro>
+                    <value>24</value>
+                </macro>
+                <macro>
+                    <macro>{$HOURS_SINCE_LAST_LOG_BACKUP}</macro>
+                    <value>24</value>
+                </macro>
+                <macro>
                     <macro>{$PASSWORD}</macro>
                     <value>zabbix</value>
                 </macro>
@@ -1315,6 +1323,38 @@ Instance details has to be updated in MACROS section</description>
             <status>0</status>
             <priority>4</priority>
             <description>Instance is not available</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 Database:zbxdb2[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>No database backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description/>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 Database:zbxdb2[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>No logs backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description/>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>

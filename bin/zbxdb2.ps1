@@ -377,8 +377,8 @@ function get_logs_utilization_pct() {
 Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS')
-                                     , timestampdiff(2, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS'))
+    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
+                                     , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
 					              FROM SYSIBMADM.DB_HISTORY 
 							     WHERE OPERATION = 'B' 
 								   AND SQLCODE IS NULL")  `
@@ -387,7 +387,7 @@ function get_last_db_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"seconds`":" + $result.Rows[0][1] +"`n`t}`n}"
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
@@ -401,8 +401,8 @@ function get_last_db_backup() {
 Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
-    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS')
-                                     , timestampdiff(2, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS'))
+    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
+                                     , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
 					              FROM SYSIBMADM.DB_HISTORY 
 							     WHERE OPERATION = 'X' 
 								   AND SQLCODE IS NULL")  `
@@ -411,7 +411,7 @@ function get_last_log_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"seconds`":" + $result.Rows[0][1] +"`n`t}`n}"
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null

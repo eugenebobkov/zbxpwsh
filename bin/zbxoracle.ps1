@@ -537,8 +537,8 @@ function get_fra_used_pct() {
 Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS')
-                                     , (sysdate - max(end_time)) * 86400 seconds
+    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                     , round((sysdate - max(end_time)) * 24, 6) hours_since
 					              FROM v`$rman_status
 							     WHERE object_type in ('DB FULL', 'DB INCR')
 								   AND status like 'COMPLETED%'")  `
@@ -547,7 +547,7 @@ function get_last_db_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"seconds`":" + $result.Rows[0][1] +"`n`t}`n}"
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
       return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
@@ -562,8 +562,8 @@ function get_last_db_backup() {
 Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
-    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS')
-                                     , (sysdate - max(end_time)) * 86400 seconds
+    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                     , round((sysdate - max(end_time)) * 24, 6) hours_since
 					              FROM v`$rman_status
 							     WHERE object_type in ('ARCHIVELOG')
 								   AND status like 'COMPLETED%'")  `
@@ -572,7 +572,7 @@ function get_last_log_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"seconds`":" + $result.Rows[0][1] +"`n`t}`n}"
+        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
