@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-16T07:11:58Z</date>
+    <date>2018-11-22T06:00:39Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -39,7 +39,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[get_backends_count,{$HOSTNAME},{$PORT},{$USERNAME}]</key>
+                    <key>zbxpgsql[get_backends_count,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -98,7 +98,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[get_backends_utilization_pct,{$HOSTNAME},{$PORT},{$USERNAME}]</key>
+                    <key>zbxpgsql[get_backends_utilization_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>5m</delay>
                     <history>7d</history>
                     <trends>365d</trends>
@@ -156,11 +156,70 @@ Hostname and port have to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
+                    <name>Space allocation for databases (json)</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxpgsql[get_databases_size,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <delay>1h</delay>
+                    <history>7d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
+                <item>
                     <name>Availability status</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME}]</key>
+                    <key>zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1m</delay>
                     <history>7d</history>
                     <trends>0</trends>
@@ -219,7 +278,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME}]</key>
+                    <key>zbxpgsql[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <history>90d</history>
                     <trends>0</trends>
@@ -278,7 +337,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[get_version,{$HOSTNAME},{$PORT},{$USERNAME}]</key>
+                    <key>zbxpgsql[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1d</delay>
                     <history>7d</history>
                     <trends>0</trends>
@@ -375,11 +434,11 @@ Hostname and port have to be updated in MACROS section</description>
                     <item_prototypes>
                         <item_prototype>
                             <name>Size of  &quot;{#DATABASE}&quot; database (bytes)</name>
-                            <type>0</type>
+                            <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>zbxpgsql[get_database_size,{$HOSTNAME},{$PORT},{$USERNAME},-Database {#DATABASE}]</key>
-                            <delay>15m</delay>
+                            <key>zbxpgsql[get_databases_size,{#DATABASE}]</key>
+                            <delay>0</delay>
                             <history>7d</history>
                             <trends>90d</trends>
                             <status>0</status>
@@ -410,7 +469,12 @@ Hostname and port have to be updated in MACROS section</description>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <preprocessing/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#DATABASE}.bytes</params>
+                                </step>
+                            </preprocessing>
                             <jmx_endpoint/>
                             <timeout>3s</timeout>
                             <url/>
@@ -431,7 +495,9 @@ Hostname and port have to be updated in MACROS section</description>
                             <verify_peer>0</verify_peer>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
-                            <master_item/>
+                            <master_item>
+                                <key>zbxpgsql[get_databases_size,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
                         </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes/>
@@ -468,6 +534,10 @@ Hostname and port have to be updated in MACROS section</description>
                     <value>localhost</value>
                 </macro>
                 <macro>
+                    <macro>{$PASSWORD}</macro>
+                    <value>zabbix</value>
+                </macro>
+                <macro>
                     <macro>{$PORT}</macro>
                     <value>5432</value>
                 </macro>
@@ -486,10 +556,10 @@ Hostname and port have to be updated in MACROS section</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_backends_utilization_pct,{$HOSTNAME},{$PORT},{$USERNAME}].last()}&gt;{$PROCESSES_HIGH}</expression>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_backends_utilization_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded treahold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
+            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -502,7 +572,7 @@ Hostname and port have to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME}].str(ONLINE)}=0 or {Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0 or {Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available</name>

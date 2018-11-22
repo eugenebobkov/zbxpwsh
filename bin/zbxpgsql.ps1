@@ -5,7 +5,7 @@ Param (
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,        # Host name
     [Parameter(Mandatory=$true, Position=3)][int]$Port = 5432,        # Port number
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',   # User name
-    [Parameter(Mandatory=$false, Position=5)][string]$Database = ''   # Database name
+    [Parameter(Mandatory=$false, Position=5)][string]$Password = ''   # Password, not required if .pgpass file populated
     )
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
@@ -146,10 +146,9 @@ function list_databases() {
     # generate JSON
     foreach ($row in $result) {
         $json += "`t`t{`"{#DATABASE}`": `"" + $row + "`"}"
-
         $idx++
 
-        if ($idx -lt $result.Rows.Count) {
+        if ($idx -lt $result.Count) {
             $json += ','
         }
         $json += "`n"
@@ -162,7 +161,7 @@ function list_databases() {
 
 function get_databases_size() {
 
-    $result = @(run_sql -Query "SELECT pg_database_size(datname) FROM pg_database WHERE datistemplate = false").Trim()
+    $result = @(run_sql -Query "SELECT datname, pg_database_size(datname) FROM pg_database WHERE datistemplate = false").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -172,10 +171,10 @@ function get_databases_size() {
 
         # generate JSON
         foreach ($row in $result) {
-            $json += "`t`t{`"{#DATABASE}`": ( `"bytes`" :`"" + $row[0] + "`"}}"
+            $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"bytes`":`"" + $row.Split('|')[1].Trim() + "`"}"
             $idx++
 
-            if ($idx -lt $result.Rows.Count) {
+            if ($idx -lt $result.Count) {
                 $json += ','
             }
             $json += "`n"
