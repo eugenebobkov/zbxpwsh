@@ -316,36 +316,21 @@ function get_startup_time() {
     }
 }
 
-<#
-Function to provide amount of connected applications
-#>
-function get_appls_amount() {
-    $result = (run_sql -Query ('SELECT count(*) FROM sysibmadm.applications'))
-
-    # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
-    }
-    elseif ($result.GetType() -eq [System.String]) {
-        return $null
-    }
-    else {
-        return 'ERROR: UNKNOWN'
-    }
-}
 
 <#
-Function to provide percentage of utilized logs
+Function to provide percentage of utilized applications
 #>
-function get_appls_utilization_pct() {
+function get_appls_data() {
     # TODO: check if maxappls set to -1
-    $result = (run_sql -Query ("SELECT ROUND((c.cnt/p.value)*100,2)
+    $result = (run_sql -Query ("SELECT p.value max_appls
+                                     , c.cnt current_appls
+                                     , ROUND((c.cnt/p.value)*100,2) pct_used
                                   FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
                                      , (SELECT count(*) cnt FROM sysibmadm.applications) c"))
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{`n`t`"appls`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null

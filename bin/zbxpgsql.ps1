@@ -189,24 +189,16 @@ function get_databases_size() {
     }
 }
 
-function get_backends_count() {
-    $result = (run_sql -Query "SELECT count(pid) FROM pg_stat_activity").Trim()
+function get_connections_data() {
+
+    $result = (run_sql -Query "SELECT  current_setting('max_connections')::integer   max_connections
+                                     , count(pid)::float current_connections  
+                                     , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) pct_used
+                                 FROM pg_stat_activity").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return $result
-    }
-    else {
-        return $null
-    }
-}
-
-function get_backends_utilization_pct() {
-    $result = (run_sql -Query "SELECT trunc(count(pid)::float / current_setting('max_connections')::integer * 100) FROM pg_stat_activity").Trim()
-
-    # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return $result
+        return "{`n`t`"connections`": {`n`t`t `"max`":" + $result.Split('|')[0].Trim() + ",`"current`":" + $result.Split('|')[1].Trim() + ",`"pct`":" + $result.Split('|')[2].Trim() + "`n`t}`n}"
     }
     else {
         return $null

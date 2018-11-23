@@ -130,7 +130,8 @@ function get_agent_state() {
                                ELSE
                                    BEGIN
                                        SELECT 'STOPPED' AS 'SQLServerAgent Status'
-                                   END")
+                                   END"
+              )
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
         return $result.Rows[0][0]
@@ -245,6 +246,11 @@ function get_databases_state() {
     # get-clusternode
     # get-clustergroup
     ### sys.dm_os_cluster_nodes
+    
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
 
     $idx = 1
     #$json = "{ `n`t`"data`": [`n"
@@ -268,15 +274,22 @@ function get_databases_state() {
 }
 
 <#
-Returns amount of sessions for all databases
+Returns amount of sessions for each database
 #>
 function get_databases_connections() {
 
    $result = (run_sql -Query ('SELECT name, count(status)
                                  FROM sys.databases sd
                                       LEFT JOIN master.dbo.sysprocesses sp ON sd.database_id = sp.dbid
-                                GROUP BY name'))
-
+                                GROUP BY name'
+                             )
+             )
+    
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+    
     $idx = 1
 
     # generate JSON
@@ -284,6 +297,45 @@ function get_databases_connections() {
 
     foreach ($row in $result) {
         $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
+<#
+Returns amount of sessions for each database
+#>
+function get_databases_backup() {
+
+   $result = (run_sql -Query ("SELECT sdb.Name AS DatabaseName
+                                    , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120),'') AS last_date
+                                    , ROUND(CAST(DATEDIFF(second, MAX(bus.backup_finish_date), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                 FROM sys.sysdatabases sdb
+                                      LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
+                               GROUP BY sdb.Name"
+                             )
+             )
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"date`":`"" + $row[1] + "`",`"hours_since`":`"" + $row[2] + "`"}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','

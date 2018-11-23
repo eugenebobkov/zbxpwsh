@@ -476,35 +476,19 @@ function get_pdbs_tbs_state(){
 }
 
 <#
-Function to provide amount of processes
-#>
-function get_current_processes() {
-    $result = (run_sql -Query ('SELECT count(*) FROM v$process'))
-
-    # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
-    }
-    elseif ($result.GetType() -eq [System.String]) {
-        return $null
-    }
-    else {
-        return 'ERROR: UNKNOWN'
-    }
-}
-
-<#
 Function to provide percentage of current processes to maximum available
 #>
-function get_utilization_processes_pct() {
+function get_processes_data() {
 
-    $result = (run_sql -Query ("SELECT round((count(p.pid) / max(v.value))*100) used_pct
+    $result = (run_sql -Query ("SELECT max(value) max_processes
+                                     , count(p.pid) current_processes
+                                     , trunc((count(p.pid) / max(v.value))*100, 2) pct_used
                                   FROM (SELECT value FROM v`$parameter WHERE name = 'processes') v  
                                      , v`$process p"))
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{`n`t`"processes`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
