@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T01:29:59Z</date>
+    <date>2018-11-23T02:17:42Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -999,7 +999,7 @@ percentage of utilization</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Restart time</name>
+                    <name>Startup time</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -1026,7 +1026,7 @@ percentage of utilization</description>
                     <publickey/>
                     <privatekey/>
                     <port/>
-                    <description/>
+                    <description>Startup time</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>

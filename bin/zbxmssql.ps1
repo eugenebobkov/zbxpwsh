@@ -22,9 +22,11 @@ Param (
     [Parameter(Mandatory=$false, Position=6)][string]$Database = ''  # Database name, required for database related checks
     )
 
-$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 
-Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
+Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <#
     Notes
@@ -48,7 +50,7 @@ function run_sql() {
         $sqlConnectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
     } else {
         If ("$Password") {
-            $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
+            $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
         }
         $sqlConnectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $DBPassword;"
     }
@@ -65,7 +67,7 @@ function run_sql() {
         [void]$sqlConnection.Open()
     } 
     catch {
-        write-Host $_
+        Write-Log -Message $_.Exception.Message
         return 'ERROR: CONNECTION REFUSED'
     }
 
@@ -88,7 +90,7 @@ function run_sql() {
     catch {
         # TODO: better handling and logging for invalid statements
         # DEBUG: To print error
-        Write-Host "$_"
+        Write-Log -Message $_.Exception.Message
         $result = 'ERROR: QUERY TIMED OUT'
     } 
     finally {

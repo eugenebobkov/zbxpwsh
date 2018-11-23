@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T01:29:44Z</date>
+    <date>2018-11-23T02:17:24Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -422,7 +422,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Restart time</name>
+                    <name>Startup time</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -449,7 +449,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <publickey/>
                     <privatekey/>
                     <port/>
-                    <description/>
+                    <description>Startup time</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>

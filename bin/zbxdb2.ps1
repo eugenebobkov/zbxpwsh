@@ -21,9 +21,11 @@ Param (
     [Parameter(Mandatory=$true, Position=6)][string]$Database = ''     # Database name
     )
 
-$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 
-Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
+Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <#
    OS statistics:
@@ -40,7 +42,7 @@ function run_sql() {
 
     # Decrypy password
     If ($Password) {
-        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$RootPath\etc\.pwkey")
+        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
     }
  
     # Column symbol after variable name raises error
@@ -56,7 +58,7 @@ function run_sql() {
         [void]$db2Connection.Open()
     } 
     catch {
-        write-Host $_
+        Write-Log -Message $_.Exception.Message
         return 'ERROR: CONNECTION REFUSED'
     }
 
@@ -77,7 +79,7 @@ function run_sql() {
     catch {
         # TODO: better handling and logging for invalid statements
         # DEBUG: To print error
-        Write-Host "$_"
+        Write-Log -Message $_.Exception.Message
         $result = 'ERROR: QUERY TIMED OUT'
     } 
     finally {

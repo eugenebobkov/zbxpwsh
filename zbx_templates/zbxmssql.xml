@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T01:29:32Z</date>
+    <date>2018-11-23T02:17:08Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -345,7 +345,7 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Restart time</name>
+                    <name>Startup time</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -372,9 +372,12 @@ Instance name has to be updated in MACROS section</description>
                     <publickey/>
                     <privatekey/>
                     <port/>
-                    <description/>
+                    <description>Startup time</description>
                     <inventory_link>0</inventory_link>
                     <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
                         <application>
                             <name>Microsoft SQL Server Instance</name>
                         </application>

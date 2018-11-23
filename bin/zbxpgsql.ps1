@@ -9,8 +9,10 @@ Param (
     )
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 
-Import-Module -Name "$RootPath\lib\Library-StringCrypto.psm1"
+Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
+Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <# Notes:
     Checkpint interval
@@ -68,7 +70,7 @@ function run_sql() {
         $psql = "/usr/pgsql-10/bin/psql"
     }  
 
-    Set-Item -Path env:PGPASSFILE -Value "$RootPath\etc\.pgpass"
+    Set-Item -Path env:PGPASSFILE -Value "$global:RootPath\etc\.pgpass"
 
     #Process {
     #   try {
@@ -85,6 +87,7 @@ function run_sql() {
         return $output
     } 
     else {
+        Write-Log -Message $output
         return "ERROR: CONNECTION REFUSED"
     }
 } 
