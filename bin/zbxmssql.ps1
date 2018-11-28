@@ -317,30 +317,47 @@ Returns amount of sessions for each database
 #>
 function get_databases_waits() {
 
-   $result = (run_sql -Query ("SELECT 
-                                      DBName = DB_NAME(R.database_id)
-                                    , count(R.database_id)
-                                 FROM sys.dm_os_waiting_tasks WT
-                                      Inner Join sys.dm_exec_sessions S on WT.session_id = S.session_id
-                                      Outer Apply sys.dm_exec_query_plan (R.plan_handle) CP
-                                      Outer Apply sys.dm_exec_sql_text(R.sql_handle) ST
-                                      Left Join sys.dm_exec_requests RBlocker on RBlocker.session_id = WT.blocking_session_id
-                                      Outer Apply sys.dm_exec_query_plan (RBlocker.plan_handle) CPBlocker
-                                      Outer Apply sys.dm_exec_sql_text(RBlocker.sql_handle) STBlocker
-                                WHERE R.status = 'suspended' -- Waiting on a resource
-                                  AND S.is_user_process = 1 -- Is a used process
-                                  AND R.session_id <> @@spid -- Filter out this session
-                                  AND WT.wait_type Not Like '%sleep%' -- more waits to ignore
-                                  AND WT.wait_type Not Like '%queue%' -- more waits to ignore
-                                  AND WT.wait_type Not Like -- more waits to ignore
-                                                            Case When SERVERPROPERTY('IsHadrEnabled') = 0 Then 'HADR%'
-                                                            Else 'zzzz' End
-                                  AND WT.WaitType not in ( 'CLR_SEMAPHORE','SQLTRACE_BUFFER_FLUSH','WAITFOR','REQUEST_FOR_DEADLOCK_SEARCH','XE_TIMER_EVENT','BROKER_TO_FLUSH'
-                                                         , 'BROKER_TASK_STOP','CLR_MANUAL_EVENT','CLR_AUTO_EVENT','FT_IFTS_SCHEDULER_IDLE_WAIT','XE_DISPATCHER_WAIT'
-                                                         , 'XE_DISPATCHER_JOIN','BROKER_RECEIVE_WAITFOR')
-                                GROUP BY
-                                      R.database_id"
-                             )
+   $result = (run_sql -Query ("SELECT
+	                                  sd.name
+                                    , case 
+		                                   when A.NumBlocking > 0 then A.NumBlocking
+                                      else 0
+	                                  end as numblocking
+                                 FROM sys.databases sd
+                                      left join (
+                                                  Select
+		                                                 R.database_id
+                                                       , count(*) as NumBlocking
+	                                                From sys.dm_os_waiting_tasks WT
+	                                                     Inner Join sys.dm_exec_sessions S on WT.session_id = S.session_id
+	                                                     Inner Join sys.dm_exec_requests R on R.session_id = WT.session_id
+	                                                     Left Join sys.dm_exec_requests RBlocker on RBlocker.session_id = WT.blocking_session_id
+	                                               Where R.status = 'suspended' -- Waiting on a resource
+		                                             And S.is_user_process = 1 -- Is a used process
+                                                     And R.session_id <> @@spid -- Filter out this session
+		                                             And WT.wait_type Not Like '%sleep%' -- more waits to ignore
+		                                             And WT.wait_type Not Like '%queue%' -- more waits to ignore
+		                                             And WT.wait_type Not Like -- more waits to ignore
+			                                         Case When SERVERPROPERTY('IsHadrEnabled') = 0 Then 'HADR%'
+			                                         Else 'zzzz' End
+		                                             And WT.wait_type not in (
+                                                                               'CLR_SEMAPHORE',
+                                                                               'SQLTRACE_BUFFER_FLUSH',
+                                                                               'WAITFOR',
+                                                                               'REQUEST_FOR_DEADLOCK_SEARCH',
+                                                                               'XE_TIMER_EVENT',
+                                                                               'BROKER_TO_FLUSH',
+                                                                               'BROKER_TASK_STOP',
+                                                                               'CLR_MANUAL_EVENT',
+                                                                               'CLR_AUTO_EVENT',
+                                                                               'FT_IFTS_SCHEDULER_IDLE_WAIT',
+                                                                               'XE_DISPATCHER_WAIT',
+                                                                               'XE_DISPATCHER_JOIN',
+                                                                               'BROKER_RECEIVE_WAITFOR'
+                                                                             )
+	                                               GROUP BY R.database_id
+                                                ) A on A.database_id = sd.database_id"
+                              )
              )
     
     if ($result.GetType() -eq [System.String]) {
