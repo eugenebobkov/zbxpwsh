@@ -315,6 +315,62 @@ function get_databases_connections() {
 <#
 Returns amount of sessions for each database
 #>
+function get_databases_waits() {
+
+   $result = (run_sql -Query ("SELECT 
+                                      DBName = DB_NAME(R.database_id)
+                                    , count(R.database_id)
+                                 FROM sys.dm_os_waiting_tasks WT
+                                      Inner Join sys.dm_exec_sessions S on WT.session_id = S.session_id
+                                      Outer Apply sys.dm_exec_query_plan (R.plan_handle) CP
+                                      Outer Apply sys.dm_exec_sql_text(R.sql_handle) ST
+                                      Left Join sys.dm_exec_requests RBlocker on RBlocker.session_id = WT.blocking_session_id
+                                      Outer Apply sys.dm_exec_query_plan (RBlocker.plan_handle) CPBlocker
+                                      Outer Apply sys.dm_exec_sql_text(RBlocker.sql_handle) STBlocker
+                                WHERE R.status = 'suspended' -- Waiting on a resource
+                                  AND S.is_user_process = 1 -- Is a used process
+                                  AND R.session_id <> @@spid -- Filter out this session
+                                  AND WT.wait_type Not Like '%sleep%' -- more waits to ignore
+                                  AND WT.wait_type Not Like '%queue%' -- more waits to ignore
+                                  AND WT.wait_type Not Like -- more waits to ignore
+                                                            Case When SERVERPROPERTY('IsHadrEnabled') = 0 Then 'HADR%'
+                                                            Else 'zzzz' End
+                                  AND WT.WaitType not in ( 'CLR_SEMAPHORE','SQLTRACE_BUFFER_FLUSH','WAITFOR','REQUEST_FOR_DEADLOCK_SEARCH','XE_TIMER_EVENT','BROKER_TO_FLUSH'
+                                                         , 'BROKER_TASK_STOP','CLR_MANUAL_EVENT','CLR_AUTO_EVENT','FT_IFTS_SCHEDULER_IDLE_WAIT','XE_DISPATCHER_WAIT'
+                                                         , 'XE_DISPATCHER_JOIN','BROKER_RECEIVE_WAITFOR')
+                                GROUP BY
+                                      R.database_id"
+                             )
+             )
+    
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+    
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
+<#
+Returns amount of sessions for each database
+#>
 function get_databases_backup() {
 
    $result = (run_sql -Query ("SELECT sdb.Name AS DatabaseName
