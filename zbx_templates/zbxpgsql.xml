@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T02:17:24Z</date>
+    <date>2018-11-28T03:35:39Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -716,14 +716,36 @@ Hostname and port have to be updated in MACROS section</description>
             <description>Amount of current processes exceeded threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance is not available (State: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Instance is not available</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0 or {Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance is not available</name>
+            <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

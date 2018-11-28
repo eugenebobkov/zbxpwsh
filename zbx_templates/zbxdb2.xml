@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T02:17:54Z</date>
+    <date>2018-11-28T03:36:08Z</date>
     <groups>
         <group>
             <name>IBM DB2 Databases</name>
@@ -1374,8 +1374,8 @@ Instance details has to be updated in MACROS section</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0 or {Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1396,8 +1396,8 @@ Instance details has to be updated in MACROS section</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0 or {Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1418,8 +1418,8 @@ Instance details has to be updated in MACROS section</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0 or {Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1504,7 +1504,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded treahold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
+            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -1513,14 +1513,36 @@ Instance details has to be updated in MACROS section</description>
             <description>Amount of current processes exceeded threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance is not available (State: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Instance is not available</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0 or {Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance is not available</name>
+            <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -1545,7 +1567,13 @@ Instance details has to be updated in MACROS section</description>
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
         <trigger>
@@ -1561,7 +1589,13 @@ Instance details has to be updated in MACROS section</description>
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
     </triggers>

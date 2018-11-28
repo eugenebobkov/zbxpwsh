@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T02:17:08Z</date>
+    <date>2018-11-28T03:36:22Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -656,8 +656,8 @@ Instance name has to be updated in MACROS section</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance {$INSTANCE} is not available</name>
-                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0 or {Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -729,18 +729,34 @@ Instance name has to be updated in MACROS section</description>
             <manual_close>0</manual_close>
             <dependencies>
                 <dependency>
-                    <name>Instance {$INSTANCE} is not available</name>
-                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0 or {Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                    <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0 or {Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance {$INSTANCE} is not available</name>
+            <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Instance {$INSTANCE} is not available</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance {$INSTANCE} is not available (Timeout: {$CONNECT_TIMEOUT})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

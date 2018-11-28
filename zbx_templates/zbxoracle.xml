@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-23T02:17:42Z</date>
+    <date>2018-11-28T03:35:54Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1371,8 +1371,8 @@ percentage of utilization</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1745,8 +1745,8 @@ percentage of utilization</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1767,8 +1767,8 @@ percentage of utilization</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1789,8 +1789,8 @@ percentage of utilization</description>
                             <manual_close>0</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -2142,8 +2142,8 @@ percentage of utilization</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -2164,8 +2164,8 @@ percentage of utilization</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -2186,8 +2186,8 @@ percentage of utilization</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Instance is not available</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -2289,7 +2289,13 @@ percentage of utilization</description>
             <description>Utilization of current processes exceeded threshold percentage</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
         <trigger>
@@ -2305,7 +2311,13 @@ percentage of utilization</description>
             <description>FRA used space exceeded HIGH threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
         <trigger>
@@ -2322,14 +2334,36 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description>FRA used space exceeded WARNING threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance is not available (State: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Instance is not available</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0 or {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance is not available</name>
+            <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2354,7 +2388,13 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
         <trigger>
@@ -2370,7 +2410,13 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
     </triggers>
