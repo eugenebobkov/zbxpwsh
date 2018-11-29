@@ -94,7 +94,7 @@ function run_sql() {
         $result = 'ERROR: QUERY TIMED OUT'
     } 
     finally {
-        $sqlConnection.Close()
+        [void]$sqlConnection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt
@@ -113,6 +113,9 @@ function get_instance_state() {
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
+    }     
+    else {
+        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
     }
 }
 
@@ -386,16 +389,18 @@ function get_databases_waits() {
 }
 
 <#
-Returns amount of sessions for each database
+Returns date of last database backup and hours since it for each database
 #>
 function get_databases_backup() {
-
-   $result = (run_sql -Query ("SELECT sdb.Name AS DatabaseName
-                                    , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120),'') AS last_date
-                                    , ROUND(CAST(DATEDIFF(second, MAX(bus.backup_finish_date), GETDATE()) AS FLOAT)/60/60, 4) hours_since
-                                 FROM sys.sysdatabases sdb
+   # if backup hasn't been done - it will return create date for the database
+   $result = (run_sql -Query ("SELECT sdb.name
+                                    , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
+                                    , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                 FROM master.sys.databases sdb
                                       LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
-                               GROUP BY sdb.Name"
+                                GROUP BY 
+                                      sdb.Name
+                                    , sdb.recovery_model_desc"
                              )
              )
 
@@ -411,6 +416,51 @@ function get_databases_backup() {
 
     foreach ($row in $result) {
         $json += "`t`"" + $row[0] + "`":{`"date`":`"" + $row[1] + "`",`"hours_since`":`"" + $row[2] + "`"}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
+<#
+Returns date of last transaction log backup and hours since it for each database
+#>
+
+function get_databases_log_backup() {
+  
+   # if backup hasn't been done - it will return create date for the database
+   $result = (run_sql -Query ("SELECT sdb.name
+                                    , sdb.recovery_model_desc
+                                    , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
+                                    , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                 FROM master.sys.databases sdb
+                                      LEFT OUTER JOIN msdb..backupset bus
+                                           ON bus.database_name = sdb.name
+                                           AND bus.type = 'L'
+                                GROUP BY sdb.name, sdb.recovery_model_desc"
+                             )
+             )
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+
+    $idx = 1
+
+    # generate JSON
+
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"recovery_model`":`"" + $row[1] + "`",`"date`":`"" + $row[2] + "`",`"hours_since`":`"" + $row[3] + "`"}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','

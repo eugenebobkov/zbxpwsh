@@ -100,7 +100,7 @@ function run_sql() {
         $result = 'ERROR: QUERY TIMED OUT'
     } 
     finally {
-        $oracleConnection.Close()
+        [void]$oracleConnection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt
@@ -122,7 +122,7 @@ function get_instance_state() {
         return $result
     }
     else {
-        return 'ERROR: UNKNOWN'
+        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
     }
 }
 

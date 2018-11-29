@@ -83,7 +83,7 @@ function run_sql() {
         $result = 'ERROR: QUERY TIMED OUT'
     } 
     finally {
-        $db2Connection.Close()
+        [void]$db2Connection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt
@@ -95,17 +95,17 @@ Function to check database availability
 #>
 function get_database_state() {
     
-    $result = (run_sql -Query 'SELECT count(*) FROM syscat.tablespaces')
+    $result = (run_sql -Query "SELECT ibmreqd FROM sysibm.sysdummy1")
 
     # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -gt 0) {
+    if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'Y') {
         return 'ONLINE'
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
     else {
-        return 'ERROR: UNKNOWN'
+        return "ERROR: UNKNOWN (" + $result.GetType() + ")"
     }
 }
 
