@@ -76,8 +76,9 @@ function run_sql() {
         [void]$oracleConnection.open()
         } 
     catch {
-        Write-Log -Message $_.Exception.Message
-        return 'ERROR: CONNECTION REFUSED'
+        $oracleError = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $oracleError
+        return "ERROR: CONNECTION REFUSED: $oracleError"
     }
 
     # Create command to run using connection
@@ -94,10 +95,9 @@ function run_sql() {
         $result = $dataTable
     }
     catch {
-        # TODO: better handling and logging for invalid statements
-        # DEBUG: To print error
-        Write-Log -Message $_.Exception.Message
-        $result = 'ERROR: QUERY TIMED OUT'
+        $oracleError = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $oracleError
+        $result = "ERROR: QUERY FAILED: $oracleError"
     } 
     finally {
         [void]$oracleConnection.Close()
@@ -170,7 +170,7 @@ function list_tablespaces() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return $null
     }
 
     $idx = 0
@@ -222,6 +222,78 @@ function list_pdbs() {
     }
 
     $json += "]`n}"
+
+    return $json
+}
+
+function list_standby_databases() {
+
+    $result = (run_sql -Query "SELECT destination
+                                 FROM v`$archive_dest
+                                WHERE target = 'STANDBY'")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+    # if there are no standby databases - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 0
+    $json = "{ `n`"data`": [`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t{`"{#STANDBY_DEST}`": `"" + $row[0] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "`t]`n}"
+
+    return $json
+}
+
+function get_standby_data(){
+
+    $result = (run_sql -Query "SELECT destination
+                                    , status
+                                    , valid_now
+                                 FROM v`$archive_dest
+                                WHERE target = 'STANDBY'")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+
+    # if there are no standby databases - return empty JSON
+    if ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"status`":`"" + $row[1] + "`",`"valid_now`":`"" + $row[2] + "`"}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
 
     return $json
 }

@@ -58,8 +58,9 @@ function run_sql() {
         [void]$db2Connection.Open()
     } 
     catch {
-        Write-Log -Message $_.Exception.Message
-        return 'ERROR: CONNECTION REFUSED'
+        $db2Error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $db2Error
+        return "ERROR: CONNECTION REFUSED: $db2Error"
     }
 
     $dbcmd = $factory.CreateCommand()
@@ -79,8 +80,9 @@ function run_sql() {
     catch {
         # TODO: better handling and logging for invalid statements
         # DEBUG: To print error
-        Write-Log -Message $_.Exception.Message
-        $result = 'ERROR: QUERY TIMED OUT'
+        $db2Error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $db2Error
+        $result = "ERROR: QUERY FAILED: $db2Error"
     } 
     finally {
         [void]$db2Connection.Close()
@@ -194,15 +196,18 @@ function get_tbs_state(){
     return $json
 }
 
-function list_hadr() {
+function list_hadr_hosts() {
 
-    $result = (run_sql -Query "SELECT hadr_remote_host
-                                 FROM sysibmadm.snaphadr
-								WHERE tbsp_type='DMS'") 
+    $result = (run_sql -Query 'SELECT hadr_remote_host
+                                 FROM sysibmadm.snaphadr') 
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
         return $null
+    }
+    # if there are no standby databases - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
     }
 
     $idx = 0
@@ -224,6 +229,43 @@ function list_hadr() {
 
     return $json
 }
+
+function get_hadr_data(){
+
+    $result = (run_sql -Query "SELECT hadr_remote_host
+                                    , hadr_connect_status
+                                    , hadr_state
+                                 FROM sysibmadm.snaphadr")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no standby databases - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`",`"connect_status`":`"" + $row[2] + "`"}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
 
 function get_tbs_used_space() {
 

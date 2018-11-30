@@ -88,7 +88,7 @@ function run_sql() {
     } 
     else {
         Write-Log -Message $output
-        return "ERROR: CONNECTION REFUSED"
+        return "ERROR: CONNECTION REFUSED: $output"
     }
 } 
 

@@ -67,8 +67,9 @@ function run_sql() {
         [void]$sqlConnection.Open()
     } 
     catch {
-        Write-Log -Message $_.Exception.Message
-        return 'ERROR: CONNECTION REFUSED'
+        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $sqlError
+        return "ERROR: CONNECTION REFUSED: $sqlError"
     }
 
     # Build the SQL command
@@ -88,10 +89,9 @@ function run_sql() {
          $result = $dataTable
     } 
     catch {
-        # TODO: better handling and logging for invalid statements
-        # DEBUG: To print error
-        Write-Log -Message $_.Exception.Message
-        $result = 'ERROR: QUERY TIMED OUT'
+        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $sqlError
+        $result = "ERROR: QUERY FAILED: $sqlError"
     } 
     finally {
         [void]$sqlConnection.Close()

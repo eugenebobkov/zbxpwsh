@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-28T03:35:39Z</date>
+    <date>2018-11-30T05:43:21Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
