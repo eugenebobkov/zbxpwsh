@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-30T05:43:32Z</date>
+    <date>2018-12-03T08:05:44Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1449,7 +1449,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdb_state,{#PDB_NAME}].str(READ WRITE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>PDB {$PDB_NAME} is in invalid state ({ITEM.VALUE1})</name>
+                            <name>PDB {#PDB_NAME} is in invalid state ({ITEM.VALUE1})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
