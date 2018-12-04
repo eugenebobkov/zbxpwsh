@@ -108,7 +108,7 @@ function run_sql() {
 } 
 
 <#
-Function to check instance status, OPEN stands for OK, any other results is equalent to FAIL
+    Function to check instance status, OPEN stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     
@@ -127,7 +127,7 @@ function get_instance_state() {
 }
 
 <#
-Function to get database version
+    Function to get database version
 #>
 function get_version() {
     
@@ -146,7 +146,7 @@ function get_version() {
 }
 
 <#
-Function to get instance startup timestamp
+    Function to get instance startup timestamp
 #>
 function get_startup_time() {
     
@@ -164,6 +164,9 @@ function get_startup_time() {
     }
 }
 
+<#
+    Function to list database tablespaces
+#>
 function list_tablespaces() {
 
     $result = (run_sql -Query "SELECT tablespace_name FROM dba_tablespaces WHERE contents = 'PERMANENT'")
@@ -192,6 +195,155 @@ function list_tablespaces() {
     return $json
 }
 
+<#
+    Function to list ASM diskgroups
+#>
+function list_asm_diskgroups() {
+
+    $result = (run_sql -Query "SELECT name FROM v`$asm_diskgroup")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+    # if there are no asm diskgroups - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 0
+    $json = "{ `n`"data`": [`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t{`"{#RESTORE_POINT_NAME}`": `"" + $row[0] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "`t]`n}"
+
+    return $json
+}
+
+<#
+    Function to list restore points
+#>
+function list_restore_points() {
+
+    $result = (run_sql -Query "SELECT name FROM v`$restore_point")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $null
+    }
+    # if there are no asm diskgroups - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 0
+    $json = "{ `n`"data`": [`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t{`"{#ASM_DISKGROUP_NAME}`": `"" + $row[0] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "`t]`n}"
+
+    return $json
+}
+
+<#
+    Function to get state of ASM diskgroups in the database
+#>
+function get_asm_diskgroups_state(){
+    $result = (run_sql -Query "SELECT name 
+                                    , state
+                                 FROM v`$asm_diskgroup")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no asm diskgroups - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
+<#
+    Function to get data for asm diskgroups (used_pct, used_gb, max etc.)
+#>
+function get_asm_diskgroups_data(){
+    $result = (run_sql -Query "SELECT name
+                                    , total_mb - free_mb used_mb
+                                    , round((total_mb - free_mb)/total_mb * 100, 4) used_pct
+                                    , total_mb
+                                 FROM v`$asm_diskgroup")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no asm diskgroups - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"used_mb`":" + $row[1] + ",`"used_pct`":" + $row[2] + ",`"total_mb`":" + $row[3] + "}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
+<#
+    Function to list pluggable databases
+#>
 function list_pdbs() {
 
     $result = (run_sql -Query 'select cdb from v$database')
@@ -226,6 +378,9 @@ function list_pdbs() {
     return $json
 }
 
+<#
+    Function to list standby destinations
+#>
 function list_standby_databases() {
 
     $result = (run_sql -Query "SELECT destination
@@ -260,6 +415,9 @@ function list_standby_databases() {
     return $json
 }
 
+<#
+    Function to get data about standby destinations
+#>
 function get_standby_data(){
 
     $result = (run_sql -Query "SELECT destination
@@ -271,10 +429,9 @@ function get_standby_data(){
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
         return $result
-    }
-
+    } 
     # if there are no standby databases - return empty JSON
-    if ($result.Rows.Count -eq 0) {
+    elseif ($result.Rows.Count -eq 0) {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
@@ -299,7 +456,7 @@ function get_standby_data(){
 }
 
 <#
-Function to get instance status, OPEN stands for OK, any other results are equalent to FAIL
+    Function to get instance status, OPEN stands for OK, any other results are equalent to FAIL
 #>
 function get_pdb_state() {
 
@@ -331,7 +488,7 @@ function get_pdb_state() {
 }
 
 <#
-Function to provide list of tablespaces in pluggable databases
+    Function to provide list of tablespaces in pluggable databases
 #>
 function list_pdbs_tablespaces() {
     # Check if database is container
@@ -375,8 +532,8 @@ function list_pdbs_tablespaces() {
 }
 
 <#
-Function to provide used space for tablespaces (excluding tablespaces of pluggable databases)
-Checks/Triggers for individual tablespaces are done by dependant items
+    Function to provide used space for tablespaces (excluding tablespaces of pluggable databases)
+    Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_used_space() {
 
@@ -415,8 +572,8 @@ function get_tbs_used_space() {
 }
 
 <#
-Function to provide used space for tablespaces of pluggable databases, excluding tablespaces in root container
-Checks/Triggers for individual tablespaces are done by dependant items
+    Function to provide used space for tablespaces of pluggable databases, excluding tablespaces in root container
+    Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_used_space() {
     $result = (run_sql -Query ("SELECT p.name
@@ -470,15 +627,34 @@ function get_pdbs_tbs_used_space() {
 }
 
 <#
-Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
-Checks/Triggers for individual tablespaces are done by dependant items
+    Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
+    Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_state(){
 
-    $result = (run_sql -Query ("SELECT tablespace_name
-                                     , status
-                                  FROM dba_tablespaces
-                                 WHERE contents = 'PERMANENT'"))
+    $result = (run_sql -Query ("SELECT t.tablespace_name
+                                     , t.status
+                                     , CASE
+                                           WHEN (SELECT count(*)
+                                                   FROM v`$backup b
+                                                      , dba_data_files d
+                                                  WHERE d.tablespace_name  = t.tablespace_name
+                                                    AND d.file_id = b.file#
+                                                    AND b.status = 'ACTIVE') = 0
+                                                THEN 'NOT ACTIVE'
+                                           ELSE 'ACTIVE'
+                                       END backup_mode
+                                     , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
+                                          FROM v`$backup b
+                                             , dba_data_files d
+                                         WHERE d.tablespace_name  = t.tablespace_name
+                                           AND d.file_id = b.file#
+                                           AND b.status = 'ACTIVE') backup_time
+                                  FROM dba_tablespaces t
+                                 WHERE t.contents = 'PERMANENT' 
+                               "
+                               )
+              )
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
@@ -491,7 +667,7 @@ function get_tbs_state(){
     $json = "{`n"
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
+        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`",`"backup_mode`":`"" + $row[2] + "`",`"hours_since`":" + $row[3] + "}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','
@@ -506,18 +682,37 @@ function get_tbs_state(){
 }
 
 <#
-Function to provide state for tablespaces of pluggable databases, excluding tablespaces in root container
-Checks/Triggers for individual tablespaces are done by dependant items
+    Function to provide state for tablespaces of pluggable databases, excluding tablespaces in root container
+    Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_state(){
 
     $result = (run_sql -Query ("SELECT p.name
                                      , t.tablespace_name
                                      , t.status
+                                     , CASE
+                                           WHEN (SELECT count(*)
+                                                   FROM v`$backup b
+                                                      , dba_data_files d
+                                                  WHERE d.tablespace_name  = t.tablespace_name
+                                                    AND d.file_id = b.file#
+                                                    AND b.status = 'ACTIVE') = 0
+                                                THEN 'NOT ACTIVE'
+                                           ELSE 'ACTIVE'
+                                       END backup_mode
+                                     , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
+                                          FROM v`$backup b
+                                             , dba_data_files d
+                                         WHERE d.tablespace_name  = t.tablespace_name
+                                           AND d.file_id = b.file#
+                                           AND b.status = 'ACTIVE') hours_since
                                   FROM cdb_tablespaces t
                                      , v`$pdbs p
                                  WHERE t.contents = 'PERMANENT'
-                                   AND t.con_id = p.con_id"))
+                                   AND t.con_id = p.con_id
+                               "
+                              )
+              )
 
     $idx = 1
     $pdb = ''
@@ -532,12 +727,12 @@ function get_pdbs_tbs_state(){
                 $json += "`t},`n"
             }
             $json += "`"" + $row[0] + "`":{`n"
-           $json += "`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`"}"
-           $pdb = $row[0]
-           $first_pdb = $false
+            $json += "`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + ",`"backup_mode`":`"" + $row[3] + "`",`"hours_since`":`"" + $row[4] +"}"
+            $pdb = $row[0]
+            $first_pdb = $false
         }
         else {
-          $json += "`t,`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`"}"
+            $json += "`t,`"" + $row[1] + "`":{`"state`":`"" + $row[2] + ",`"backup_mode`":`"" + $row[3] + "`",`"hours_since`":`"" + $row[4] +"}"
         }
 
         $json += "`n"
@@ -550,7 +745,7 @@ function get_pdbs_tbs_state(){
 }
 
 <#
-Function to provide percentage of current processes to maximum available
+    Function to provide percentage of current processes to maximum available
 #>
 function get_processes_data() {
 
@@ -573,7 +768,7 @@ function get_processes_data() {
 }
 
 <#
-Function to provide used FRA space
+    Function to provide used FRA space
 #>
 function get_fra_used_pct() {
 

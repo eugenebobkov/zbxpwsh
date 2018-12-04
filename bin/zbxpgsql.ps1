@@ -1,5 +1,16 @@
 #!/bin/pwsh
 
+<#
+    Created: 10/2018
+
+    UserParameter provided as part of pgsql.conf file which has to be places in zabbix_agentd.d directory
+
+    Create Postgres user which will be used for monitoring
+
+    alter role zabbixmon with login;
+
+#>
+
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,       # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,        # Host name
@@ -32,24 +43,25 @@ function run_sql() {
     # $ErrorActionPreference = 'silentlycontinue'
 
     <#
-        Sqlplus
+        psql
     #> 
 
     # TODO: Implement .NET DBProvider using Npgsql https://www.npgsql.org
 
 <#
- Add-Type -Path "C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Npgsql\v4.0_4.0.3.0__5d8b90d52f46fda7\Npgsql.dll"
+Add-Type -Path C:\@work\collateral\zabbix\zbxpwsh\dll\System.Threading.Tasks.Extensions.dll
+Add-Type -Path C:\@work\collateral\zabbix\zbxpwsh\dll\Npgsql.dll
 
- # PostgeSQL-style connection string
-                $connstring = "Server=localhost;Port=5432;User Id=zabbixmon;Password=zabbix;Database=postgres;"
+
+                $connstring = "Server=192.168.56.199;Port=5432;User Id=zabbixmon;Password=zabbix;Database=postgres;"
 
                 # Making connection with Npgsql provider
                 $conn = New-Object Npgsql.NpgsqlConnection($connstring)
                 $conn.Open()
                 # quite complex sql statement
-                $sql = "SELECT * FROM simple_table";
+                $sql = "SELECT datname FROM pg_database";
                 # data adapter making request from our connection
-                $da = New-Object NpgsqlDataAdapter($sql, $conn)
+                $da = New-Object Npgsql.NpgsqlDataAdapter($sql, $conn)
                 # i always reset DataSet before i do
                 # something with it.... i don't know why :-)
                 $dt = New-Object System.Data.DataTable
@@ -58,6 +70,9 @@ function run_sql() {
                 $da.Fill($dt);
                 # since it C# DataSet can handle multiple tables, we will select first
 
+                foreach ($row in $dt) {
+                    write-host $row[0]
+                }
                 # since we only showing the result we don't need connection anymore
                 $conn.Close();
 #>

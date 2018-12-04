@@ -1,4 +1,4 @@
-#!/bin/pwsh
+#!/bsin/pwsh
 
 <#
     Created: 02/03/2018
@@ -9,9 +9,8 @@
     
     UserParameter provided as part of mssql.conf file which has to be places in zabbix_agentd.d directory
 
-    Create MSSQL user which will be used for monitoring
+    Create MSSQL user/domain user which will be used for monitoring
 #>
-
 
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,      # Name of check function
@@ -33,7 +32,7 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 #> 
 
 <#
-Internal function to run provided sql statement. If for some reason it cannot be executed - it returns SQL EXECUTION FAILED
+    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns SQL EXECUTION FAILED
 #>
 function run_sql() {
 #    [OutputType([System.Data.DataTable])]
@@ -102,7 +101,7 @@ function run_sql() {
 }
 
 <#
-Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     $result = (run_sql -Query 'SELECT max(1) FROM sys.databases WHERE 1=1')
@@ -120,7 +119,7 @@ function get_instance_state() {
 }
 
 <#
-Function to check Agent status, 1 stands for OK, 0 stands for FAIL
+    Function to check Agent status, 1 stands for OK, 0 stands for FAIL
 #>
 function get_agent_state() {
     #$result = (run_sql -Query "xp_servicecontrol 'querystate', 'SQLSERVERAGENT'")
@@ -148,7 +147,7 @@ function get_agent_state() {
 }
 
 <#
-Function to provide MSSQL version
+    Function to provide MSSQL version
 #>
 function get_version() {
     $result = (run_sql -Query "SELECT CONCAT(CONVERT(VARCHAR, SERVERPROPERTY('ProductVersion')), ' ', 
@@ -168,7 +167,7 @@ function get_version() {
 }
 
 <#
-Function to provide time of instance startup
+    Function to provide time of instance startup
 #>
 function get_startup_time() {
     # applicable for 2008 and higher
@@ -185,7 +184,7 @@ function get_startup_time() {
 }
 
 <#
-This function provides list of database in JSON format
+    This function provides list of database in JSON format
 #>
 function list_databases() {
 
@@ -216,7 +215,7 @@ function list_databases() {
 }
 
 <#
-Returns status for selected database
+    Returns status for selected database
 #>
 function get_databases_state() {
 <#
@@ -258,7 +257,6 @@ function get_databases_state() {
     }
 
     $idx = 1
-    #$json = "{ `n`t`"data`": [`n"
     $json = "{`n"
 
     # generate JSON
@@ -272,14 +270,13 @@ function get_databases_state() {
         $idx++
     }
 
-    #$json += "`t]`n}"
     $json += "}"
 
     return $json
 }
 
 <#
-Returns amount of sessions for each database
+    Returns amount of sessions for each database
 #>
 function get_databases_connections() {
 
@@ -316,7 +313,7 @@ function get_databases_connections() {
 }
 
 <#
-Returns amount of sessions for each database
+    Returns amount of sessions for each database
 #>
 function get_databases_waits() {
 
@@ -389,7 +386,7 @@ function get_databases_waits() {
 }
 
 <#
-Returns date of last database backup and hours since it for each database
+    Returns date of last database backup and hours since it for each database
 #>
 function get_databases_backup() {
    # if backup hasn't been done - it will return create date for the database
@@ -430,7 +427,7 @@ function get_databases_backup() {
 }
 
 <#
-Returns date of last transaction log backup and hours since it for each database
+    Returns date of last transaction log backup and hours since it for each database
 #>
 
 function get_databases_log_backup() {
