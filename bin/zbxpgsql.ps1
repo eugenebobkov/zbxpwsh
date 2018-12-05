@@ -42,118 +42,115 @@ function run_sql() {
     # DEBUG: Error in SQL execution will not terminate whole script and error output will be suppressed
     # $ErrorActionPreference = 'silentlycontinue'
 
-    <#
-        psql
-    #> 
+    # Load ADO.NET extention
+    # System.Threading.Tasks.Extensions.dll is prerequisite for npgsql
+    Add-Type -Path $RootPath\dll\System.Threading.Tasks.Extensions.dll
+    Add-Type -Path $RootPath\dll\Npgsql.dll
 
-    # TODO: Implement .NET DBProvider using Npgsql https://www.npgsql.org
-
-<#
-Add-Type -Path C:\@work\collateral\zabbix\zbxpwsh\dll\System.Threading.Tasks.Extensions.dll
-Add-Type -Path C:\@work\collateral\zabbix\zbxpwsh\dll\Npgsql.dll
-
-
-                $connstring = "Server=192.168.56.199;Port=5432;User Id=zabbixmon;Password=zabbix;Database=postgres;"
-
-                # Making connection with Npgsql provider
-                $conn = New-Object Npgsql.NpgsqlConnection($connstring)
-                $conn.Open()
-                # quite complex sql statement
-                $sql = "SELECT datname FROM pg_database";
-                # data adapter making request from our connection
-                $da = New-Object Npgsql.NpgsqlDataAdapter($sql, $conn)
-                # i always reset DataSet before i do
-                # something with it.... i don't know why :-)
-                $dt = New-Object System.Data.DataTable
-                $dt.Reset()
-                # filling DataSet with result from NpgsqlDataAdapter
-                $da.Fill($dt);
-                # since it C# DataSet can handle multiple tables, we will select first
-
-                foreach ($row in $dt) {
-                    write-host $row[0]
-                }
-                # since we only showing the result we don't need connection anymore
-                $conn.Close();
-#>
-    #  
-    
-    if ([Environment]::OSVersion.Platform -eq 'Win32NT') {
-        $psql = "d:\PostgreSQL\11\bin\psql.exe"
+    If ($Password) {
+        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
     }
-    else {
-        $psql = "/usr/pgsql-10/bin/psql"
-    }  
 
-    Set-Item -Path env:PGPASSFILE -Value "$global:RootPath\etc\.pgpass"
+    # Create connection string
+    $connectionString = "Server = $Hostname; Port = $Port; Database = postgres; User Id = $Username; Password = $DBPassword;"
 
-    #Process {
-    #   try {
-             $output += '' 
-             # password should be provided in .pgpass file or cetrificate configured
-             $Query | &$psql -t -U $Username -h $Hostname --no-password postgres | Where {$_ -ne ""} | Set-Variable output
-             $rc = $LASTEXITCODE
-    #    } 
-    #    catch {
-    #        $output = $null
-    #    }     
-    #}
-    if ($rc -eq 0) {       
-        return $output
+    # How long scripts attempts to connect to instance
+    # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
+    $connectionString += "Timeout = $ConnectTimeout;"
+
+    $connectionString += "CommandTimeout = $CommandTimeout"
+
+    # Create the connection object
+    $connection = New-Object Npgsql.NpgsqlConnection("$connectionString")
+
+    # try to open connection
+    try {
+        [void]$connection.open()
+        } 
+    catch {
+        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $error
+        return "ERROR: CONNECTION REFUSED: $error"
+    }
+
+    $adapter = Npgsql.NpgsqlDataAdapter($Query, $connection)
+    $dataTable = New-Object System.Data.DataTable
+
+    try {
+        [void]$adapter.Fill($dataTable)
+        $result = $dataTable
+    }
+    catch {
+        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $error
+        $result = "ERROR: QUERY FAILED: $error"
     } 
-    else {
-        Write-Log -Message $output
-        return "ERROR: CONNECTION REFUSED: $output"
+    finally {
+        [void]$oracleConnection.Close()
     }
+
+    # Comma in front is essential as without it return provides object's value, not object itselt
+    return ,$result
 } 
 
 <#
 Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'SELECT count(*) FROM pg_database').Trim()
+    $result = (run_sql -Query 'SELECT count(*) FROM pg_database')
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
+    if ($result.GetType() -eq [System.Data.DataTable]) {
         return 'ONLINE'
     }
-    else {
+    elseif ($result.GetType() -eq [System.String]) {
         return $result
+    }
+    else {
+        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
     }
 }
 
 function get_version() {
-    $result = (run_sql -Query 'SELECT version()').Trim()
+    $result = (run_sql -Query 'SELECT version()')
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return $result 
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $resul.Rows[0][0]
     }
-    else {
+    elseif ($result.GetType() -eq [System.String]) {
         return $null
     }
+    else {
+        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
+    }
+}
 }
 
 <#
 Function to get instance startup timestamp
 #>
 function get_startup_time() {
-    $result = (run_sql -Query "SELECT pg_postmaster_start_time()").Trim()
+    $result = (run_sql -Query "SELECT pg_postmaster_start_time()")
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return $resul.Rows[0][0]
+    }
+    elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
     else {
-        return $null
+        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
     }
+}
 }
 
 function list_databases() {
 
-    $result = @(run_sql -Query "SELECT datname FROM pg_database WHERE datistemplate = false").Trim()
+    $result = (run_sql -Query "SELECT datname FROM pg_database WHERE datistemplate = false")
 
-    if ($result -Match '^ERROR:') {
+    if ($result.GetType() -eq [System.String]) {
         # Instance is not available
         return $null
     }
@@ -163,10 +160,10 @@ function list_databases() {
 
     # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t{`"{#DATABASE}`": `"" + $row + "`"}"
+        $json += "`t{`"{#DATABASE}`": `"" + $row[0] + "`"}"
         $idx++
 
-        if ($idx -lt $result.Count) {
+        if ($idx -lt $result.Rows.Count) {
             $json += ','
         }
         $json += "`n"
@@ -179,56 +176,43 @@ function list_databases() {
 
 function get_databases_size() {
 
-    $result = @(run_sql -Query "SELECT datname, pg_database_size(datname) FROM pg_database WHERE datistemplate = false").Trim()
+    $result = (run_sql -Query "SELECT datname, pg_database_size(datname) FROM pg_database WHERE datistemplate = false")
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-
-        $idx = 0
-        $json = "{`n"
-
-        # generate JSON
-        foreach ($row in $result) {
-            $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"bytes`":`"" + $row.Split('|')[1].Trim() + "`"}"
-            $idx++
-
-            if ($idx -lt $result.Count) {
-                $json += ','
-            }
-            $json += "`n"
-        }
-
-        $json += "}"
-
-        return $json
-    }
-    else {
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
         return $null
     }
+
+    $idx = 0
+    $json = "{`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"bytes`":`"" + $row[1] + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "}"
+
+    return $json
 }
 
 function get_connections_data() {
 
     $result = (run_sql -Query "SELECT  current_setting('max_connections')::integer   max_connections
                                      , count(pid)::float current_connections  
-                                     , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) pct_used
-                                 FROM pg_stat_activity").Trim()
+                                     , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) used_pct
+                                 FROM pg_stat_activity")
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return "{`n`t`"connections`": {`n`t`t `"max`":" + $result.Split('|')[0].Trim() + ",`"current`":" + $result.Split('|')[1].Trim() + ",`"pct`":" + $result.Split('|')[2].Trim() + "`n`t}`n}"
-    }
-    else {
-        return $null
-    }
-}
-
-function get_standby_instances() {
-    $result = (run_sql -Query "").Trim()
-
-    # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return $result
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return "{`n`"connections`": {`n`t`"max`":" +  $resul.Rows[0][0] + ",`"current`":" +  $resul.Rows[0][1] + ",`"pct`":" +  $resul.Rows[0][2] + "`n}`n}"
     }
     else {
         return $null

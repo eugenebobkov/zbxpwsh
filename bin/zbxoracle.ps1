@@ -62,45 +62,44 @@ function run_sql() {
     }
 
     # Create connection string
-    $oracleConnectionString = "User Id=$Username; Password=$DBPassword; Data Source=$dataSource;"
+    $connectionString = "User Id=$Username; Password=$DBPassword; Data Source=$dataSource;"
 
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
-    $oracleConnectionString += "Connect Timeout = $ConnectTimeout;"
+    $connectionString += "Connect Timeout = $ConnectTimeout;"
 
     # Create the connection object
-    $oracleConnection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$oracleConnectionString")
+    $connection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$connectionString")
 
     # try to open connection
     try {
-        [void]$oracleConnection.open()
+        [void]$connection.open()
         } 
     catch {
-        $oracleError = $_.Exception.Message.Split(':',2)[1].Trim()
-        Write-Log -Message $oracleError
-        return "ERROR: CONNECTION REFUSED: $oracleError"
+        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $error
+        return "ERROR: CONNECTION REFUSED: $error"
     }
 
     # Create command to run using connection
-    $oracleCommand = New-Object Oracle.ManagedDataAccess.Client.OracleCommand
-    $oracleCommand.Connection = $oracleConnection
-    $oracleCommand.CommandText = $Query
-    $oracleCommand.CommandTimeout = $CommandTimeout
+    $command = New-Object Oracle.ManagedDataAccess.Client.OracleCommand($Query)
+    $command.Connection = $connection
+    $command.CommandTimeout = $CommandTimeout
 
-    $oracleAdapter = New-Object Oracle.ManagedDataAccess.Client.OracleDataAdapter($oracleCommand)
+    $adapter = New-Object Oracle.ManagedDataAccess.Client.OracleDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
     try {
-        [void]$oracleAdapter.Fill($dataTable)
+        [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
     catch {
-        $oracleError = $_.Exception.Message.Split(':',2)[1].Trim()
-        Write-Log -Message $oracleError
-        $result = "ERROR: QUERY FAILED: $oracleError"
+        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $error
+        $result = "ERROR: QUERY FAILED: $error"
     } 
     finally {
-        [void]$oracleConnection.Close()
+        [void]$connection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt

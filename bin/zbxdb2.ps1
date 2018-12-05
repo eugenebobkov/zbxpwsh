@@ -46,31 +46,31 @@ function run_sql() {
     }
  
     # Column symbol after variable name raises error
-    $db2ConnectionString = "Database=$Database;User ID=$Username;Password=$DBPassword;Server=$Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
+    $connectionString = "Database = $Database; User ID = $Username; Password = $DBPassword; Server = $Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
 
     $factory = [System.Data.Common.DbProviderFactories]::GetFactory(“IBM.Data.DB2”)
    
-    $db2Connection = $factory.CreateConnection()
-    $db2Connection.ConnectionString = $db2ConnectionString
+    $connection = $factory.CreateConnection()
+    $connection.ConnectionString = $connectionString
     
     # try to open connection
     try {
-        [void]$db2Connection.Open()
+        [void]$connection.Open()
     } 
     catch {
-        $db2Error = $_.Exception.Message.Split(':',2)[1].Trim()
-        Write-Log -Message $db2Error
-        return "ERROR: CONNECTION REFUSED: $db2Error"
+        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $error
+        return "ERROR: CONNECTION REFUSED: $error"
     }
 
-    $dbcmd = $factory.CreateCommand()
-    $dbcmd.Connection = $db2Connection
-    $dbcmd.CommandText = $Query
-    $dbcmd.CommandType = [System.Data.CommandType]::Text
-    $dbcmd.CommandTimeout = $CommandTimeout
+    $command = $factory.CreateCommand()
+    $command.Connection = $connection
+    $command.CommandText = $Query
+    $command.CommandType = [System.Data.CommandType]::Text
+    $command.CommandTimeout = $CommandTimeout
 
     $da = $factory.CreateDataAdapter()
-    $da.SelectCommand = $dbcmd
+    $da.SelectCommand = $command
 
     $dataTable = New-Object System.Data.DataTable
     try {
@@ -80,12 +80,12 @@ function run_sql() {
     catch {
         # TODO: better handling and logging for invalid statements
         # DEBUG: To print error
-        $db2Error = $_.Exception.Message.Split(':',2)[1].Trim()
-        Write-Log -Message $db2Error
-        $result = "ERROR: QUERY FAILED: $db2Error"
+        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        Write-Log -Message $error
+        $result = "ERROR: QUERY FAILED: $error"
     } 
     finally {
-        [void]$db2Connection.Close()
+        [void]$connection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt
@@ -93,7 +93,7 @@ function run_sql() {
 }
 
 <#
-Function to check database availability
+    Function to check database availability
 #>
 function get_database_state() {
     
@@ -161,8 +161,8 @@ function list_tablespaces() {
 }
 
 <#
-Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
-Checks/Triggers for individual tablespaces are done by dependant items
+    Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
+    Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_state(){
 
@@ -342,7 +342,7 @@ function get_tbs_used_space() {
 
 
 <#
-Function to get instance startup timestamp
+    Function to get instance startup timestamp
 #>
 function get_startup_time() {
     
@@ -362,7 +362,7 @@ function get_startup_time() {
 
 
 <#
-Function to provide percentage of utilized applications
+    Function to provide percentage of utilized applications
 #>
 function get_appls_data() {
     # TODO: check if maxappls set to -1
@@ -385,7 +385,7 @@ function get_appls_data() {
 }
 
 <#
-Function to provide percentage of utilized logs
+    Function to provide percentage of utilized logs
 #>
 function get_logs_utilization_pct() {
     $result = (run_sql -Query ('SELECT log_utilization_percent FROM sysibmadm.log_utilization'))
@@ -403,7 +403,7 @@ function get_logs_utilization_pct() {
 }
 
 <#
-Function to provide time of last successeful database backup
+    Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
     $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
@@ -427,7 +427,7 @@ function get_last_db_backup() {
 }
 
 <#
-Function to provide time of last succeseful archived log backup
+    Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
     $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
