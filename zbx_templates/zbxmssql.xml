@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-30T05:43:12Z</date>
+    <date>2018-12-06T00:06:38Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -872,7 +872,7 @@ Instance name has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
+                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -945,14 +945,14 @@ Instance name has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
+                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE)}=0</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>

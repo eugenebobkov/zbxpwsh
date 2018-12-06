@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-11-30T05:42:51Z</date>
+    <date>2018-12-06T00:05:03Z</date>
     <groups>
         <group>
             <name>IBM DB2 Databases</name>
@@ -1321,7 +1321,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1343,7 +1343,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1696,7 +1696,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1718,7 +1718,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1740,7 +1740,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1837,14 +1837,14 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (State: {ITEM.VALUE})</name>
@@ -1891,7 +1891,7 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
@@ -1913,7 +1913,7 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE)}=0</expression>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
