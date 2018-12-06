@@ -215,7 +215,7 @@ function list_asm_diskgroups() {
 
     # generate JSON
     foreach ($row in $result) {
-        $json += "`t{`"{#RESTORE_POINT_NAME}`": `"" + $row[0] + "`"}"
+        $json += "`t{`"{#ASM_DISKGROUP_NAME}`": `"" + $row[0] + "`"}"
         $idx++
 
         if ($idx -lt $result.Rows.Count) {
@@ -250,7 +250,7 @@ function list_restore_points() {
 
     # generate JSON
     foreach ($row in $result) {
-        $json += "`t{`"{#ASM_DISKGROUP_NAME}`": `"" + $row[0] + "`"}"
+        $json += "`t{`"{#RESTORE_POINT_NAME}`": `"" + $row[0] + "`"}"
         $idx++
 
         if ($idx -lt $result.Rows.Count) {
@@ -666,7 +666,7 @@ function get_tbs_state(){
     $json = "{`n"
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`",`"backup_mode`":`"" + $row[2] + "`",`"hours_since`":" + $row[3] + "}"
+        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`",`"backup_mode`":`"" + $row[2] + "`",`"backup_mode_hours_since`":" + $row[3] + "}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','
@@ -726,12 +726,12 @@ function get_pdbs_tbs_state(){
                 $json += "`t},`n"
             }
             $json += "`"" + $row[0] + "`":{`n"
-            $json += "`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + ",`"backup_mode`":`"" + $row[3] + "`",`"hours_since`":`"" + $row[4] +"}"
+            $json += "`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`",`"backup_mode`":`"" + $row[3] + "`",`"backup_mode_hours_since`":" + $row[4] +"}"
             $pdb = $row[0]
             $first_pdb = $false
         }
         else {
-            $json += "`t,`"" + $row[1] + "`":{`"state`":`"" + $row[2] + ",`"backup_mode`":`"" + $row[3] + "`",`"hours_since`":`"" + $row[4] +"}"
+            $json += "`t,`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`",`"backup_mode`":`"" + $row[3] + "`",`"backup_mode_hours_since`":" + $row[4] +"}"
         }
 
         $json += "`n"
