@@ -290,7 +290,7 @@ function get_guarantee_restore_points_data(){
     $json = "{`n"
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"date`":" + $row[1] + ",`"used_bytes`":" + $row[2] + "}"
+        $json += "`t`"" + $row[0] + "`":{`"date`":`"" + $row[1] + "`",`"used_bytes`":" + $row[2] + "}"
 
         if ($idx -lt $result.Rows.Count) {
             $json += ','
