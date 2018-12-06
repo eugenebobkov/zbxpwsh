@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-06T03:32:42Z</date>
+    <date>2018-12-06T05:40:40Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1511,6 +1511,67 @@ percentage of utilization</description>
                     <verify_host>0</verify_host>
                 </discovery_rule>
                 <discovery_rule>
+                    <name>Guarantee restore points</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[list_guarantee_restore_points,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <delay>1h</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions>
+                            <condition>
+                                <macro>{#RESTORE_POINT_NAME}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>1h</lifetime>
+                    <description/>
+                    <item_prototypes/>
+                    <trigger_prototypes/>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                </discovery_rule>
+                <discovery_rule>
                     <name>PDBs</name>
                     <type>0</type>
                     <snmp_community/>
@@ -2160,67 +2221,6 @@ percentage of utilization</description>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
-                    <graph_prototypes/>
-                    <host_prototypes/>
-                    <jmx_endpoint/>
-                    <timeout>3s</timeout>
-                    <url/>
-                    <query_fields/>
-                    <posts/>
-                    <status_codes>200</status_codes>
-                    <follow_redirects>1</follow_redirects>
-                    <post_type>0</post_type>
-                    <http_proxy/>
-                    <headers/>
-                    <retrieve_mode>0</retrieve_mode>
-                    <request_method>0</request_method>
-                    <allow_traps>0</allow_traps>
-                    <ssl_cert_file/>
-                    <ssl_key_file/>
-                    <ssl_key_password/>
-                    <verify_peer>0</verify_peer>
-                    <verify_host>0</verify_host>
-                </discovery_rule>
-                <discovery_rule>
-                    <name>Restore points</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>zbxoracle[list_restore_points,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>1h</delay>
-                    <status>0</status>
-                    <allowed_hosts/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <filter>
-                        <evaltype>0</evaltype>
-                        <formula/>
-                        <conditions>
-                            <condition>
-                                <macro>{#RESTORE_POINT_NAME}</macro>
-                                <value/>
-                                <operator>8</operator>
-                                <formulaid>A</formulaid>
-                            </condition>
-                        </conditions>
-                    </filter>
-                    <lifetime>1h</lifetime>
-                    <description/>
-                    <item_prototypes/>
-                    <trigger_prototypes/>
                     <graph_prototypes/>
                     <host_prototypes/>
                     <jmx_endpoint/>
