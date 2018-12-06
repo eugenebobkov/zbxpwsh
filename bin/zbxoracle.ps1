@@ -230,11 +230,12 @@ function list_asm_diskgroups() {
 }
 
 <#
-    Function to list restore points
+    Function to list guarantee restore points
 #>
-function list_restore_points() {
+function list_guarantee_restore_points() {
 
-    $result = (run_sql -Query "SELECT name FROM v`$restore_point")
+    $result = (run_sql -Query "SELECT name FROM v`$restore_point 
+                                WHERE guarantee_flashback_database = 'YES'")
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
@@ -260,6 +261,45 @@ function list_restore_points() {
     }
 
     $json += "`t]`n}"
+
+    return $json
+}
+
+<#
+    Function to get data for asm diskgroups (used_pct, used_gb, max etc.)
+#>
+function get_guarantee_restore_points_data(){
+    $result = (run_sql -Query "SELECT name
+                                    , to_char(time, 'DD/MM/YYYY HH24:MI:SS') date_created
+                                    , storage_size
+                                 FROM v`$restore_point 
+                                WHERE guarantee_flashback_database = 'YES'")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no asm diskgroups - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"date`":" + $row[1] + ",`"used_bytes`":" + $row[2] + "}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
 
     return $json
 }
