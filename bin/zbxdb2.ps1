@@ -387,12 +387,15 @@ function get_appls_data() {
 <#
     Function to provide percentage of utilized logs
 #>
-function get_logs_utilization_pct() {
-    $result = (run_sql -Query ('SELECT log_utilization_percent FROM sysibmadm.log_utilization'))
+function get_logs_utilization_data() {
+    $result = (run_sql -Query ('SELECT log_utilization_percent
+                                      , total_log_used_kb 
+                                      , total_log_available_kb
+                                  FROM sysibmadm.log_utilization'))
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"used_pct`":" + $result.Rows[0][0] + ",`"used_kb`":" + $result.Rows[0][1] + ",`"available_kb`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $null
