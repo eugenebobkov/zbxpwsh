@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-06T00:05:03Z</date>
+    <date>2018-12-07T01:48:02Z</date>
     <groups>
         <group>
             <name>IBM DB2 Databases</name>
@@ -1832,6 +1832,28 @@ Instance details has to be updated in MACROS section</description>
             <status>0</status>
             <priority>4</priority>
             <description>Amount of current processes exceeded threshold</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 Database:zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance has been restarted at {ITEM.VALUE}</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description>Instance has been restarted</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies>
