@@ -368,9 +368,11 @@ function get_appls_data() {
     # TODO: check if maxappls set to -1
     $result = (run_sql -Query ("SELECT p.value max_appls
                                      , c.cnt current_appls
-                                     , ROUND((c.cnt/p.value)*100,2) pct_used
+                                     , QUANTIZE((c.cnt/p.value)*100, decfloat(0.01)) pct_used
                                   FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
-                                     , (SELECT count(*) cnt FROM sysibmadm.applications) c"))
+                                     , (SELECT count(*) cnt FROM sysibmadm.applications) c"
+                              )
+              )
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
@@ -391,7 +393,9 @@ function get_logs_utilization_data() {
     $result = (run_sql -Query ('SELECT log_utilization_percent
                                       , total_log_used_kb 
                                       , total_log_available_kb
-                                  FROM sysibmadm.log_utilization'))
+                                  FROM sysibmadm.log_utilization'
+                              )
+              )
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {

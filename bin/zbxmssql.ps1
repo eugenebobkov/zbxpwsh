@@ -122,7 +122,6 @@ function get_instance_state() {
     Function to check Agent status, 1 stands for OK, 0 stands for FAIL
 #>
 function get_agent_state() {
-    #$result = (run_sql -Query "xp_servicecontrol 'querystate', 'SQLSERVERAGENT'")
     $result = (run_sql -Query "IF EXISTS (
                                     SELECT 1
                                       FROM master.dbo.sysprocesses

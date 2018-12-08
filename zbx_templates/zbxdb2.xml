@@ -10,13 +10,13 @@
     <templates>
         <template>
             <template>Template App IBM DB2 Database</template>
-            <name>Template App IBM DB2 Database</name>
-            <description>Template for IBM DB2 database monitoring end-point&#13;
+            <name>Template App IBM DB2 LUW Database</name>
+            <description>Template for IBM DB2 LUW database monitoring end-point&#13;
 It used for monitoring from Management host with installed Zabbix agent&#13;
 Instance details has to be updated in MACROS section</description>
             <groups>
                 <group>
-                    <name>IBM DB2 Databases</name>
+                    <name>IBM DB2 LUW Databases</name>
                 </group>
             </groups>
             <applications>
