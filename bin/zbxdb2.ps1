@@ -463,8 +463,8 @@ function get_last_log_backup() {
 function get_elevated_users_data(){
     $result = (run_sql -Query "SELECT grantee
                                     , 'DBADM'
-                                 FROM syscatibm.dbauth
-                                WHERE dbadbauth = 'Y'")
+                                 FROM syscat.dbauth
+                                WHERE dbadmauth = 'Y'")
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available

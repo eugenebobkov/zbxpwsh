@@ -167,29 +167,27 @@ function get_databases_size() {
     $result = @(run_sql -Query "SELECT datname, pg_database_size(datname) FROM pg_database WHERE datistemplate = false").Trim()
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-
-        $idx = 0
-        $json = "{`n"
-
-        # generate JSON
-        foreach ($row in $result) {
-            $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"bytes`":`"" + $row.Split('|')[1].Trim() + "`"}"
-            $idx++
-
-            if ($idx -lt $result.Count) {
-                $json += ','
-            }
-            $json += "`n"
-        }
-
-        $json += "}"
-
-        return $json
-    }
-    else {
+    if ($result -Match '^ERROR:') {
         return $null
     }
+
+    $idx = 0
+    $json = "{`n"
+
+    # generate JSON
+    foreach ($row in $result) {
+        $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"bytes`":`"" + $row.Split('|')[1].Trim() + "`"}"
+        $idx++
+
+        if ($idx -lt $result.Count) {
+            $json += ','
+        }
+        $json += "`n"
+    }
+
+    $json += "}"
+
+    return $json
 }
 
 function get_connections_data() {
@@ -200,12 +198,11 @@ function get_connections_data() {
                                  FROM pg_stat_activity").Trim()
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return "{`n`t`"connections`": {`n`t`t `"max`":" + $result.Split('|')[0].Trim() + ",`"current`":" + $result.Split('|')[1].Trim() + ",`"pct`":" + $result.Split('|')[2].Trim() + "`n`t}`n}"
-    }
-    else {
+    if ($result -Match '^ERROR:') {
         return $null
     }
+
+    return "{`n`t`"connections`": {`n`t`t `"max`":" + $result.Split('|')[0].Trim() + ",`"current`":" + $result.Split('|')[1].Trim() + ",`"pct`":" + $result.Split('|')[2].Trim() + "`n`t}`n}"
 }
 
 function get_standby_instances() {
@@ -229,28 +226,23 @@ function get_elevated_users_data(){
                                  FROM pg_roles
                                 WHERE rolsuper = 't'")
 
-    if ($result.GetType() -eq [System.String]) {
-        # Instance is not available
-        return $result
-    }
-    # if there are no such users - return empty JSON
-    elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+    # Check if expected object has been recieved
+    if ($result -Match '^ERROR:') {
+        return $null
     }
 
-    $idx = 1
-
-    # generate JSON
+    $idx = 0
     $json = "{`n"
 
+    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"privilege`":`"" + $row[1] + "`"}"
+        $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"privilege`":`"" + $row.Split('|')[1].Trim() + "`"}"
+        $idx++
 
-        if ($idx -lt $result.Rows.Count) {
+        if ($idx -lt $result.Count) {
             $json += ','
         }
         $json += "`n"
-        $idx++
     }
 
     $json += "}"

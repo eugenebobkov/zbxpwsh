@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-07T02:34:47Z</date>
+    <date>2018-12-10T02:10:25Z</date>
     <groups>
         <group>
-            <name>IBM DB2 Databases</name>
+            <name>IBM DB2 LUW Databases</name>
         </group>
     </groups>
     <templates>
         <template>
-            <template>Template App IBM DB2 Database</template>
+            <template>Template App IBM DB2 LUW Database</template>
             <name>Template App IBM DB2 LUW Database</name>
             <description>Template for IBM DB2 LUW database monitoring end-point&#13;
 It used for monitoring from Management host with installed Zabbix agent&#13;
@@ -37,6 +37,9 @@ Instance details has to be updated in MACROS section</description>
                 </application>
                 <application>
                     <name>Recoverability</name>
+                </application>
+                <application>
+                    <name>Security</name>
                 </application>
             </applications>
             <items>
@@ -362,6 +365,68 @@ Instance details has to be updated in MACROS section</description>
                     <headers/>
                     <retrieve_mode>0</retrieve_mode>
                     <request_method>1</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
+                <item>
+                    <name>Accounts with elevated privilegies (json)</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxdb2[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <delay>12h</delay>
+                    <history>90d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>JSON</name>
+                        </application>
+                        <application>
+                            <name>Security</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
                     <output_format>0</output_format>
                     <allow_traps>0</allow_traps>
                     <ssl_cert_file/>
@@ -1516,7 +1581,7 @@ Instance details has to be updated in MACROS section</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 Database:zbxdb2[get_hadr_data({#HADR_HOST}, connect_status)].str(CONNECTED)}=0</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, connect_status)].str(CONNECTED)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Connect status of HADR host {$HADR_HOST} is invalid ({ITEM.VALUE})</name>
@@ -1531,14 +1596,14 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 Database:zbxdb2[get_hadr_data({#HADR_HOST}, state)].str(PEER)}=0</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, state)].str(PEER)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>State of HADR host {$HADR_HOST} is invalid ({ITEM.VALUE})</name>
@@ -1553,7 +1618,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -1891,7 +1956,7 @@ Instance details has to be updated in MACROS section</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 Database:zbxdb2[get_tbs_state,{#TABLESPACE_NAME}].str(NORMAL)}=0</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_state,{#TABLESPACE_NAME}].str(NORMAL)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE1}</name>
@@ -1906,14 +1971,14 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
@@ -1928,14 +1993,14 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App IBM DB2 Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
@@ -1950,7 +2015,7 @@ Instance details has to be updated in MACROS section</description>
                             <dependencies>
                                 <dependency>
                                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
@@ -2036,7 +2101,7 @@ Instance details has to be updated in MACROS section</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
@@ -2051,14 +2116,14 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].diff()}=1</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].diff()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance has been restarted at {ITEM.VALUE}</name>
@@ -2073,14 +2138,14 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (State: {ITEM.VALUE})</name>
@@ -2096,7 +2161,7 @@ Instance details has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
@@ -2112,7 +2177,7 @@ Instance details has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_logs_utilization_data,used_pct].last()}&gt;{$LOGS_UTLIZATION_WARNING}</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_logs_utilization_data,used_pct].last()}&gt;{$LOGS_UTLIZATION_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Log utilization exceeded threshold {$LOGS_UTLIZATION_WARNING} (ITEM.VALUE)</name>
@@ -2127,14 +2192,14 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>No database backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
@@ -2149,14 +2214,14 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 Database:zbxdb2[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>No logs backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
@@ -2171,7 +2236,7 @@ Instance details has to be updated in MACROS section</description>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
+                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
