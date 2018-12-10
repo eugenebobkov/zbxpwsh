@@ -470,5 +470,46 @@ function get_databases_log_backup() {
     return $json
 }
 
+<#
+    Function to get data about users who have privilegies above normal (SYSADMIN)
+#>
+function get_elevated_users_data(){
+    $result = (run_sql -Query "SELECT sp.name
+                                    , 'SYSADMIN'
+                                    , sp.is_disabled
+                                 FROM sys.server_role_members rm
+                                    , sys.server_principals sp
+                                WHERE rm.role_principal_id = SUSER_ID('Sysadmin')
+                                  AND rm.member_principal_id = sp.principal_id")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no such users - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"privilege`":`"" + $row[1] + "`",`"disabled`":" + $row[2] + "}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
 # execute required check
 &$CheckType

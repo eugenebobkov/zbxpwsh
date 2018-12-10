@@ -220,5 +220,43 @@ function get_standby_instances() {
     }
 }
 
+<#
+    Function to get data about roles who have privilegies above normal (SUPERUSER)
+#>
+function get_elevated_users_data(){
+    $result = (run_sql -Query "SELECT rolname
+                                    , 'SUPERUSER'
+                                 FROM pg_roles
+                                WHERE rolsuper = 't'")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no such users - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"privilege`":`"" + $row[1] + "`"}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
 # execute required check
 &$CheckType

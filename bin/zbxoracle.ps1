@@ -874,5 +874,56 @@ function get_last_log_backup() {
     }
 }
 
+<#
+    Function to get data about users who have privilegies above normal (DBA, SYSDBA)
+#>
+function get_elevated_users_data(){
+    $result = (run_sql -Query "SELECT u.username
+                                    , 'DBA'
+                                    , u.account_status
+                                 FROM dba_users u
+                                    , dba_role_privs r
+                                WHERE u.username not in ('SYS','SYSTEM')
+                                  AND u.username = r.grantee
+                                  AND r.granted_role = 'DBA'
+                                UNION ALL  
+                               SELECT u.username
+                                    , 'SYSDBA'
+                                    , u.account_status
+                                 FROM dba_users u
+                                    , v`$pwfile_users p
+                                WHERE u.username not in ('SYS','SYSTEM')
+                                  AND u.username = p.username
+                                  AND p.sysdba = 'TRUE'")
+
+    if ($result.GetType() -eq [System.String]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no such users - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
+
+    $idx = 1
+
+    # generate JSON
+    $json = "{`n"
+
+    foreach ($row in $result) {
+        $json += "`t`"" + $row[0] + "`":{`"privilege`":`"" + $row[1] + "`",`"account_status`":" + $row[2] + "}"
+
+        if ($idx -lt $result.Rows.Count) {
+            $json += ','
+        }
+        $json += "`n"
+        $idx++
+    }
+
+    $json += "}"
+
+    return $json
+}
+
 # execute required check
 &$CheckType
