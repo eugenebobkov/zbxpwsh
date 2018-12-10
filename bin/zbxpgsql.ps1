@@ -232,11 +232,11 @@ function get_elevated_users_data(){
     }
 
     $idx = 0
-    $json = "{`n"
+    $json = "{`n`"data`":`n`t[`n"
 
     # generate JSON
     foreach ($row in $result) {
-        $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"privilege`":`"" + $row.Split('|')[1].Trim() + "`"}"
+        $json += "`t`t{`"" + $row.Split('|')[0].Trim() + "`":{`"privilege`":`"" + $row.Split('|')[1].Trim() + "`"}}"
         $idx++
 
         if ($idx -lt $result.Count) {
@@ -245,7 +245,7 @@ function get_elevated_users_data(){
         $json += "`n"
     }
 
-    $json += "}"
+    $json += "`t]`n}"
 
     return $json
 }
