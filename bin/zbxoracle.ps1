@@ -241,7 +241,7 @@ function list_guarantee_restore_points() {
         # Instance is not available
         return $null
     }
-    # if there are no asm diskgroups - return empty JSON
+    # if there are no restore points - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
@@ -266,7 +266,7 @@ function list_guarantee_restore_points() {
 }
 
 <#
-    Function to get data for asm diskgroups (used_pct, used_gb, max etc.)
+    Function to get data for guarantee restore points
 #>
 function get_guarantee_restore_points_data(){
     $result = (run_sql -Query "SELECT name
@@ -279,7 +279,7 @@ function get_guarantee_restore_points_data(){
         # Instance is not available
         return $result
     }
-    # if there are no asm diskgroups - return empty JSON
+    # if there are no restore points - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
@@ -342,7 +342,7 @@ function get_asm_diskgroups_state(){
 }
 
 <#
-    Function to get data for asm diskgroups (used_pct, used_gb, max etc.)
+    Function to get data for asm diskgroups (used_pct, used_mb, max etc.)
 #>
 function get_asm_diskgroups_data(){
     $result = (run_sql -Query "SELECT name

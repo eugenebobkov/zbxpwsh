@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-10T02:10:25Z</date>
+    <date>2018-12-11T04:56:36Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -256,7 +256,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_appls_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -321,7 +321,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>1m</delay>
+                    <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -375,12 +375,12 @@ Instance details has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Accounts with elevated privilegies (json)</name>
+                    <name>Accounts with elevated privileges (json)</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>12h</delay>
+                    <delay>0;h6m0</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -442,7 +442,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -636,7 +636,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -830,7 +830,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1099,7 +1099,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1164,7 +1164,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1223,7 +1223,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1285,7 +1285,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1350,7 +1350,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdb2[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
-                    <delay>1d</delay>
+                    <delay>0;h6m0</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -2046,6 +2046,10 @@ Instance details has to be updated in MACROS section</description>
             </discovery_rules>
             <httptests/>
             <macros>
+                <macro>
+                    <macro>{$CHECK_TIMEFRAME}</macro>
+                    <value>1-7,00:00-24:00</value>
+                </macro>
                 <macro>
                     <macro>{$CONNECT_TIMEOUT}</macro>
                     <value>300</value>

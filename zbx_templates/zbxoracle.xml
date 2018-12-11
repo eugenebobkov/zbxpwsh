@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-10T02:13:35Z</date>
+    <date>2018-12-11T04:56:49Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -55,7 +55,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -117,7 +117,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -174,12 +174,12 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Accounts with elevated privilegies (json)</name>
+                    <name>Accounts with elevated privileges (json)</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>12h</delay>
+                    <delay>0;h6m0</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -241,7 +241,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>365d</trends>
                     <status>0</status>
@@ -303,7 +303,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -365,7 +365,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>1m</delay>
+                    <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -556,7 +556,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -750,7 +750,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -812,7 +812,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -842,6 +842,9 @@ Instance name has to be updated in MACROS section</description>
                         </application>
                         <application>
                             <name>JSON</name>
+                        </application>
+                        <application>
+                            <name>PDB tablespace</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -874,7 +877,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -939,7 +942,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -969,6 +972,9 @@ Instance name has to be updated in MACROS section</description>
                         </application>
                         <application>
                             <name>JSON</name>
+                        </application>
+                        <application>
+                            <name>PDB</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -1208,7 +1214,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_processes_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1276,7 +1282,7 @@ percentage of utilization</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_standby_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1338,7 +1344,7 @@ percentage of utilization</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1397,7 +1403,7 @@ percentage of utilization</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>5m</delay>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1459,7 +1465,7 @@ percentage of utilization</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1521,7 +1527,7 @@ percentage of utilization</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
-                    <delay>1d</delay>
+                    <delay>0;h6m0</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -1614,8 +1620,344 @@ percentage of utilization</description>
                     </filter>
                     <lifetime>30d</lifetime>
                     <description/>
-                    <item_prototypes/>
-                    <trigger_prototypes/>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} total space (MB)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},total_mb]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#ASM_DISKGROUP_NAME}.total_mb</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space (MB)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_mb]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#ASM_DISKGROUP_NAME}.used_mb</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space (%)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units>%</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#ASM_DISKGROUP_NAME}.used_pct</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} state</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[get_asm_diskgroups_state,{#ASM_DISKGROUP_NAME},state]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#ASM_DISKGROUP_NAME}.state</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_state,{#ASM_DISKGROUP_NAME},state].str(NORMAL)}=0</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} is in invalid state</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_HIGH} % ({ITEM.VALUE1})</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_WARNING} and {Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&lt;={$ASM_USAGE_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_WARNING} % ({ITEM.VALUE1})</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
                     <graph_prototypes/>
                     <host_prototypes/>
                     <jmx_endpoint/>
@@ -3090,15 +3432,27 @@ percentage of utilization</description>
             <httptests/>
             <macros>
                 <macro>
+                    <macro>{$ASM_USAGE_HIGH}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$ASM_USAGE_WARNING}</macro>
+                    <value>80</value>
+                </macro>
+                <macro>
+                    <macro>{$CHECK_TIMEFRAME}</macro>
+                    <value>1-7,00:00-24:00</value>
+                </macro>
+                <macro>
                     <macro>{$CONNECT_TIMEOUT}</macro>
                     <value>300</value>
                 </macro>
                 <macro>
-                    <macro>{$FRA_HIGH}</macro>
+                    <macro>{$FRA_USAGE_HIGH}</macro>
                     <value>90</value>
                 </macro>
                 <macro>
-                    <macro>{$FRA_WARNING}</macro>
+                    <macro>{$FRA_USAGE_WARNING}</macro>
                     <value>80</value>
                 </macro>
                 <macro>
@@ -3170,10 +3524,10 @@ percentage of utilization</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_HIGH}</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>FRA used space exceeded {$FRA_HIGH} % ({ITEM.VALUE1})</name>
+            <name>FRA used space exceeded {$FRA_USAGE_HIGH} % ({ITEM.VALUE1})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -3192,11 +3546,11 @@ percentage of utilization</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_WARNING}&#13;
-and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&lt;={$FRA_HIGH}</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_USAGE_WARNING}&#13;
+and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&lt;={$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>FRA used space exceeded {$FRA_WARNING} % ({ITEM.VALUE1})</name>
+            <name>FRA used space exceeded {$FRA_USAGE_WARNING} % ({ITEM.VALUE1})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

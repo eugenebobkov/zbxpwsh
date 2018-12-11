@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-10T03:14:15Z</date>
+    <date>2018-12-11T04:56:24Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -253,7 +253,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_connections_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -318,7 +318,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_databases_size,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -375,12 +375,12 @@ Hostname and port have to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Accounts with elevated privilegies (json)</name>
+                    <name>Accounts with elevated privileges (json)</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>12h</delay>
+                    <delay>0;h6m0</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -442,7 +442,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>1m</delay>
+                    <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -501,7 +501,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>1h</delay>
+                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -560,7 +560,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>1d</delay>
+                    <delay>0;h6m0</delay>
                     <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -747,6 +747,10 @@ Hostname and port have to be updated in MACROS section</description>
             </discovery_rules>
             <httptests/>
             <macros>
+                <macro>
+                    <macro>{$CHECK_TIMEFRAME}</macro>
+                    <value>1-7,00:00-24:00</value>
+                </macro>
                 <macro>
                     <macro>{$CONNECT_TIMEOUT}</macro>
                     <value>300</value>
