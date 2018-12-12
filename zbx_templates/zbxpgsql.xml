@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-11T04:56:24Z</date>
+    <date>2018-12-12T03:25:04Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -785,7 +785,7 @@ Hostname and port have to be updated in MACROS section</description>
             <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
+            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

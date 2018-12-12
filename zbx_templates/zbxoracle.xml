@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-11T04:56:49Z</date>
+    <date>2018-12-12T03:21:39Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1917,7 +1917,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_HIGH} % ({ITEM.VALUE1})</name>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_HIGH} % ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1939,7 +1939,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_WARNING} and {Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&lt;={$ASM_USAGE_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_WARNING} % ({ITEM.VALUE1})</name>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_WARNING} % ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2246,7 +2246,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdb_state,{#PDB_NAME}].str(READ WRITE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>PDB {#PDB_NAME} is in invalid state ({ITEM.VALUE1})</name>
+                            <name>PDB {#PDB_NAME} is in invalid state ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2690,7 +2690,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdbs_tbs_state,{#PDB_NAME},{#TABLESPACE_NAME}].str(ONLINE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; (PDB {#PDB_NAME}) has invalid state {ITEM.VALUE1}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; (PDB {#PDB_NAME}) has invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2712,7 +2712,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdbs_tbs_state,{#PDB_NAME},{#TABLESPACE_NAME},backup_mode_hours_since].last()}&gt;{$BACKUP_MODE_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; in PDB {#PDB_NAME} is in backup mode for more then {$BACKUP_MODE_WARNING} hours ({ITEM.VALUE1})</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; in PDB {#PDB_NAME} is in backup mode for more then {$BACKUP_MODE_WARNING} hours ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2734,7 +2734,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}, PDB {#PDB_NAME}</name>
+                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE}) of available space on {#TABLESPACE_NAME}, PDB {#PDB_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2756,7 +2756,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}, PDB {#PDB_NAME}</name>
+                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE}) of available space on {#TABLESPACE_NAME}, PDB {#PDB_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3322,7 +3322,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_state,{#TABLESPACE_NAME}].str(ONLINE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE1}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3344,7 +3344,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_state,{#TABLESPACE_NAME},backup_mode_hours_since].last()}&gt;{$BACKUP_MODE_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; is in backup mode for more then {$BACKUP_MODE_WARNING} hours ({ITEM.VALUE1})</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; is in backup mode for more then {$BACKUP_MODE_WARNING} hours ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3366,7 +3366,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE}) of available space on {#TABLESPACE_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3388,7 +3388,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE}) of available space on {#TABLESPACE_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3505,7 +3505,7 @@ percentage of utilization</description>
             <expression>{Template App Oracle Database:zbxoracle[get_processes_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
+            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -3527,7 +3527,7 @@ percentage of utilization</description>
             <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>FRA used space exceeded {$FRA_USAGE_HIGH} % ({ITEM.VALUE1})</name>
+            <name>FRA used space exceeded {$FRA_USAGE_HIGH} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -3550,7 +3550,7 @@ percentage of utilization</description>
 and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&lt;={$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>FRA used space exceeded {$FRA_USAGE_WARNING} % ({ITEM.VALUE1})</name>
+            <name>FRA used space exceeded {$FRA_USAGE_WARNING} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-11T04:56:11Z</date>
+    <date>2018-12-12T03:24:26Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -925,7 +925,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_databases_state,{#DATABASE}].last()}&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Database &quot;{#DATABASE}&quot; on &quot;{$INSTANCE}&quot; has status {ITEM.VALUE1}</name>
+                            <name>Database &quot;{#DATABASE}&quot; on &quot;{$INSTANCE}&quot; has status {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>

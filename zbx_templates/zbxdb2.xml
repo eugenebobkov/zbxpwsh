@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-11T04:56:36Z</date>
+    <date>2018-12-12T03:23:45Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1959,7 +1959,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_state,{#TABLESPACE_NAME}].str(NORMAL)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE1}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1981,7 +1981,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE}) of available space on {#TABLESPACE_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2003,7 +2003,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE1}) of available space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE}) of available space on {#TABLESPACE_NAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2108,7 +2108,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE1})</name>
+            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
