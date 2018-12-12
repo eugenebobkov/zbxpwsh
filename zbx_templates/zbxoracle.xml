@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T03:21:39Z</date>
+    <date>2018-12-12T06:58:37Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1933,7 +1933,12 @@ percentage of utilization</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_WARNING} and {Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&lt;={$ASM_USAGE_HIGH}</expression>
@@ -2262,7 +2267,12 @@ percentage of utilization</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Availability</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -2706,7 +2716,12 @@ percentage of utilization</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Availability</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdbs_tbs_state,{#PDB_NAME},{#TABLESPACE_NAME},backup_mode_hours_since].last()}&gt;{$BACKUP_MODE_WARNING}</expression>
@@ -2750,7 +2765,12 @@ percentage of utilization</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
@@ -2918,7 +2938,12 @@ percentage of utilization</description>
                             <type>0</type>
                             <manual_close>0</manual_close>
                             <dependencies/>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>HA/DR</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -3338,7 +3363,12 @@ percentage of utilization</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Availability</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_state,{#TABLESPACE_NAME},backup_mode_hours_since].last()}&gt;{$BACKUP_MODE_WARNING}</expression>
@@ -3382,7 +3412,12 @@ percentage of utilization</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
@@ -3543,7 +3578,12 @@ percentage of utilization</description>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Capacity</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_USAGE_WARNING}&#13;
@@ -3582,7 +3622,12 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
@@ -3598,7 +3643,12 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
@@ -3620,7 +3670,12 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
                     <recovery_expression/>
                 </dependency>
             </dependencies>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Recoverability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>

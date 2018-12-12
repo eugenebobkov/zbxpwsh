@@ -70,6 +70,7 @@ function run_sql() {
         $psql = "/usr/pgsql-10/bin/psql"
     }  
 
+    # Set variable to PostgreSQL password file
     Set-Item -Path env:PGPASSFILE -Value "$global:RootPath\etc\.pgpass"
 
     #Process {
@@ -83,12 +84,16 @@ function run_sql() {
     #        $output = $null
     #    }     
     #}
-    if ($rc -eq 0) {       
+
+    # Execution was succesful
+    if ($rc -eq 0) {     
         return $output
     } 
+    # issues during execution
     else {
         Write-Log -Message "$output"
-        return "ERROR: CONNECTION REFUSED: $output"
+        error = $output.Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        return "ERROR: CONNECTION REFUSED: $error"
     }
 } 
 

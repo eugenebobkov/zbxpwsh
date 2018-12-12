@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T03:24:26Z</date>
+    <date>2018-12-12T06:57:59Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -1034,7 +1034,12 @@ Instance name has to be updated in MACROS section</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
@@ -1050,7 +1055,12 @@ Instance name has to be updated in MACROS section</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
     </triggers>
 </zabbix_export>

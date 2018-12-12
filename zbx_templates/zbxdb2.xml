@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T03:23:45Z</date>
+    <date>2018-12-12T06:57:31Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1975,7 +1975,12 @@ Instance details has to be updated in MACROS section</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Availability</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
@@ -1997,7 +2002,12 @@ Instance details has to be updated in MACROS section</description>
                                     <recovery_expression/>
                                 </dependency>
                             </dependencies>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
@@ -2162,7 +2172,12 @@ Instance details has to be updated in MACROS section</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availabitlity</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
@@ -2178,7 +2193,12 @@ Instance details has to be updated in MACROS section</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_logs_utilization_data,used_pct].last()}&gt;{$LOGS_UTLIZATION_WARNING}</expression>
@@ -2222,13 +2242,18 @@ Instance details has to be updated in MACROS section</description>
                     <recovery_expression/>
                 </dependency>
             </dependencies>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Recoverability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No logs backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <name>No log backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

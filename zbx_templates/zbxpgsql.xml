@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T03:25:04Z</date>
+    <date>2018-12-12T06:58:14Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -817,7 +817,12 @@ Hostname and port have to be updated in MACROS section</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
         <trigger>
             <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
@@ -833,7 +838,12 @@ Hostname and port have to be updated in MACROS section</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
-            <tags/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
         </trigger>
     </triggers>
 </zabbix_export>

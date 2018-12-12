@@ -66,7 +66,8 @@ function run_sql() {
         [void]$sqlConnection.Open()
     } 
     catch {
-        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim()
+        # report error, sanitize it to remove IPs if there are any
+        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
         Write-Log -Message $sqlError
         return "ERROR: CONNECTION REFUSED: $sqlError"
     }
@@ -88,7 +89,8 @@ function run_sql() {
          $result = $dataTable
     } 
     catch {
-        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim()
+        # report error, sanitize it to remove IPs if there are any
+        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
         Write-Log -Message $sqlError
         $result = "ERROR: QUERY FAILED: $sqlError"
     } 

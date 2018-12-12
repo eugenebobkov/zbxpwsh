@@ -76,7 +76,8 @@ function run_sql() {
         [void]$connection.open()
         } 
     catch {
-        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        # report error, sanitize it to remove IPs if there are any
+        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
         Write-Log -Message $error
         return "ERROR: CONNECTION REFUSED: $error"
     }
@@ -90,11 +91,13 @@ function run_sql() {
     $dataTable = New-Object System.Data.DataTable
 
     try {
+        # [void] simitair to | Out-Null, prevents posting output of Fill function (amount of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
     catch {
-        $error = $_.Exception.Message.Split(':',2)[1].Trim()
+        # report error, sanitize it to remove IPs if there are any
+        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
         Write-Log -Message $error
         $result = "ERROR: QUERY FAILED: $error"
     } 
