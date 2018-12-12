@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T06:57:31Z</date>
+    <date>2018-12-12T08:01:03Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1606,7 +1606,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, state)].str(PEER)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>State of HADR host {$HADR_HOST} is invalid ({ITEM.VALUE})</name>
+                            <name>HADR host {$HADR_HOST} is in an invalid state ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1959,7 +1959,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_state,{#TABLESPACE_NAME}].str(NORMAL)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; is in an invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2148,7 +2148,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>2</priority>
             <description>Instance has been restarted</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies>
                 <dependency>
                     <name>Instance is not available (State: {ITEM.VALUE})</name>

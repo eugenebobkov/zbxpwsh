@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T06:58:37Z</date>
+    <date>2018-12-12T08:00:52Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1895,7 +1895,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_state,{#ASM_DISKGROUP_NAME},state].str(NORMAL)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} is in invalid state</name>
+                            <name>ASM diskgroup {#ASM_DISKGROUP_NAME} is in an invalid state</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2251,7 +2251,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdb_state,{#PDB_NAME}].str(READ WRITE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>PDB {#PDB_NAME} is in invalid state ({ITEM.VALUE})</name>
+                            <name>PDB {#PDB_NAME} is in an invalid state ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2700,7 +2700,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_pdbs_tbs_state,{#PDB_NAME},{#TABLESPACE_NAME}].str(ONLINE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; (PDB {#PDB_NAME}) has invalid state {ITEM.VALUE}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; (PDB {#PDB_NAME}) is in an invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2860,7 +2860,7 @@ percentage of utilization</description>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>zbxoracle[get_standby_data({#STANDBY_DEST}, status)]</key>
+                            <key>zbxoracle[get_standby_data({#STANDBY_DEST},status)]</key>
                             <delay>0</delay>
                             <history>90d</history>
                             <trends>0</trends>
@@ -2925,7 +2925,7 @@ percentage of utilization</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[get_standby_data({#STANDBY_DEST}, status)].str(VALID)}=0</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[get_standby_data({#STANDBY_DEST},status)].str(VALID)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Status of standby database {#STANDBY_DEST} is invalid ({ITEM.VALUE})</name>
@@ -3347,7 +3347,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_tbs_state,{#TABLESPACE_NAME}].str(ONLINE)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; has invalid state {ITEM.VALUE}</name>
+                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; is in an invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3597,6 +3597,28 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <status>0</status>
             <priority>2</priority>
             <description>FRA used space exceeded WARNING threshold</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies>
+                <dependency>
+                    <name>Instance is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance has been restarted at {ITEM.VALUE}</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description>Instance has been restarted</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies>

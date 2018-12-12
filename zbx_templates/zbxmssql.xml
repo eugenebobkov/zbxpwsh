@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T06:57:59Z</date>
+    <date>2018-12-12T08:00:29Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -925,7 +925,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_databases_state,{#DATABASE}].last()}&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Database &quot;{#DATABASE}&quot; on &quot;{$INSTANCE}&quot; has status {ITEM.VALUE}</name>
+                            <name>Database &quot;{#DATABASE}&quot; on &quot;{$INSTANCE}&quot; is in an invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1009,6 +1009,28 @@ Instance name has to be updated in MACROS section</description>
             <status>0</status>
             <priority>4</priority>
             <description>Agent for instance {$INSTANCE} is not running</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies>
+                <dependency>
+                    <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
+                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_startup_time,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Instance has been restarted at {ITEM.VALUE}</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>2</priority>
+            <description>Instance has been restarted</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies>
