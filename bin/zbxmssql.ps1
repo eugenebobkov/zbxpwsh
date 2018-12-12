@@ -159,7 +159,7 @@ function get_version() {
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Result
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     } 
     elseif ($result.GetType() -eq [System.String]) {
         # Error
@@ -177,7 +177,7 @@ function get_startup_time() {
     # TODO: add check for versions below 2008 if required for some reason
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Results
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     } 
     elseif ($result.GetType() -eq [System.String]) {
         return $result
@@ -193,7 +193,7 @@ function list_databases() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 1
@@ -254,7 +254,7 @@ function get_databases_state() {
     
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 1
@@ -290,7 +290,7 @@ function get_databases_connections() {
     
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
     
     $idx = 1
@@ -363,7 +363,7 @@ function get_databases_waits() {
     
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
     
     $idx = 1
@@ -404,7 +404,7 @@ function get_databases_backup() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 1
@@ -448,7 +448,7 @@ function get_databases_log_backup() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 1

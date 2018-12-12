@@ -133,11 +133,12 @@ function get_instance_state() {
 #>
 function get_version() {
     
-    $result = (run_sql -Query 'SELECT banner FROM v$version')
+    $result = (run_sql -Query 'SELECT banner version 
+                                 FROM v$version')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        $result.Rows[0][0] 
+        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}" 
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
@@ -152,14 +153,15 @@ function get_version() {
 #>
 function get_startup_time() {
     
-    $result = (run_sql -Query "SELECT to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') FROM v`$instance")
+    $result = (run_sql -Query "SELECT to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') startup_time
+                                 FROM v`$instance")
 
     # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -Match '^\d\d/\d\d/\d\d\d\d \d\d:\d\d:\d\d$') {
-        return $result.Rows[0][0]
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     } 
     else {
         return 'ERROR: UNKNOWN'
@@ -175,7 +177,7 @@ function list_tablespaces() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 0
@@ -206,7 +208,7 @@ function list_asm_diskgroups() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
     # if there are no asm diskgroups - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
@@ -242,7 +244,7 @@ function list_guarantee_restore_points() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
     # if there are no restore points - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
@@ -392,8 +394,9 @@ function list_pdbs() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available or not container database
-        return $null
-    } elseif ($result.Rows[0][0] -eq 'NO') {
+        return $result
+    } 
+    elseif ($result.Rows[0][0] -eq 'NO') {
         # return empty json
         return "{ `n`t`"data`":[`n`t]`n}"
     }
@@ -431,7 +434,7 @@ function list_standby_databases() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
     # if there are no standby databases - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
@@ -537,9 +540,10 @@ function list_pdbs_tablespaces() {
     $result = (run_sql -Query 'SELECT cdb FROM v$database')
 
     if ($result.GetType() -eq [System.String]) {
-        # Instance is not available or not container database
-        return $null
-    } elseif ($result.Rows[0][0] -eq 'NO') {
+        # Instance is not available or it's not a container database
+        return $result
+    } 
+    elseif ($result.Rows[0][0] -eq 'NO') {
         # return empty json
         return "{ `n`t`"data`": [`n`t]`n}"
     }
@@ -549,8 +553,8 @@ function list_pdbs_tablespaces() {
                                   WHERE c.contents = 'PERMANENT' AND p.name != 'PDB`$SEED' AND c.con_id = p.con_id")
 
     if ($result.GetType() -eq [System.String]) {
-        # Instance is not available or not container database
-        return $null
+        # Instance is not available
+        return $result
     }
 
     $idx = 0
@@ -802,7 +806,7 @@ function get_processes_data() {
         return "{`n`t`"processes`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'
@@ -821,7 +825,7 @@ function get_fra_used_pct() {
         return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }    
     else {
         return 'ERROR: UNKNOWN'
@@ -846,7 +850,7 @@ function get_last_db_backup() {
       return $result.Rows[0][0]
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'
@@ -870,7 +874,7 @@ function get_last_log_backup() {
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'

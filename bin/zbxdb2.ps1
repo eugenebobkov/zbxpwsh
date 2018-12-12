@@ -97,7 +97,8 @@ function run_sql() {
 #>
 function get_database_state() {
     
-    $result = (run_sql -Query "SELECT ibmreqd FROM sysibm.sysdummy1")
+    $result = (run_sql -Query 'SELECT ibmreqd 
+                                 FROM sysibm.sysdummy1')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'Y') {
@@ -113,14 +114,15 @@ function get_database_state() {
 
 function get_version() {
     
-    $result = (run_sql -Query "SELECT service_level FROM table(sysproc.env_get_inst_info())")
+    $result = (run_sql -Query 'SELECT service_level version 
+                                 FROM table(sysproc.env_get_inst_info())')
 
     # SELECT service_level FROM table(sysproc.env_get_prod_info()
     # SELECT service_level FROM table(sysproc.env_get_sys_info()
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        $result.Rows[0][0] 
+        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}" 
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
@@ -138,7 +140,7 @@ function list_tablespaces() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 0
@@ -203,7 +205,7 @@ function list_hadr_hosts() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
     # if there are no standby databases - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
@@ -316,7 +318,7 @@ function get_tbs_used_space() {
 
     if ($result.GetType() -eq [System.String]) {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 1
@@ -346,14 +348,14 @@ function get_tbs_used_space() {
 #>
 function get_startup_time() {
     
-    $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') FROM sysibmadm.snapdbm")
+    $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time FROM sysibmadm.snapdbm")
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     } 
     else {
         return 'ERROR: UNKNOWN'
@@ -376,10 +378,11 @@ function get_appls_data() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
+        # Return datata in JSON format
         return "{`n`t`"appls`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'
@@ -399,10 +402,11 @@ function get_logs_utilization_data() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
+        # Return datata in JSON format
         return "{ `"data`": {`n`t `"used_pct`":" + $result.Rows[0][0] + ",`"used_kb`":" + $result.Rows[0][1] + ",`"available_kb`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'
@@ -423,10 +427,11 @@ function get_last_db_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
+        # Return datata in JSON format
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'
@@ -447,10 +452,11 @@ function get_last_log_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
+        # Return datata in JSON format
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
     elseif ($result.GetType() -eq [System.String]) {
-        return $null
+        return $result
     }
     else {
         return 'ERROR: UNKNOWN'

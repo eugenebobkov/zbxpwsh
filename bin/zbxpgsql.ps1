@@ -117,10 +117,10 @@ function get_version() {
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return $result 
+        return "{ `"data`": {`n`t `"version`":`"" + $result.Trim() + "`"`n`t}`n}" 
     }
     else {
-        return $null
+        return $result
     }
 }
 
@@ -132,10 +132,10 @@ function get_startup_time() {
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return $result
+        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Trim() + "`"`n`t}`n}" 
     }
     else {
-        return $null
+        return $result
     }
 }
 
@@ -145,7 +145,7 @@ function list_databases() {
 
     if ($result -Match '^ERROR:') {
         # Instance is not available
-        return $null
+        return $result
     }
 
     $idx = 0
@@ -173,7 +173,7 @@ function get_databases_size() {
 
     # Check if expected object has been recieved
     if ($result -Match '^ERROR:') {
-        return $null
+        return $result
     }
 
     $idx = 0
@@ -204,12 +204,15 @@ function get_connections_data() {
 
     # Check if expected object has been recieved
     if ($result -Match '^ERROR:') {
-        return $null
+        return $result
     }
 
     return "{`n`t`"connections`": {`n`t`t `"max`":" + $result.Split('|')[0].Trim() + ",`"current`":" + $result.Split('|')[1].Trim() + ",`"pct`":" + $result.Split('|')[2].Trim() + "`n`t}`n}"
 }
 
+<#
+    Not implemented yet, JSON expected
+#>
 function get_standby_instances() {
     $result = (run_sql -Query "").Trim()
 
@@ -218,7 +221,7 @@ function get_standby_instances() {
         return $result
     }
     else {
-        return $null
+        return $result
     }
 }
 
@@ -233,7 +236,7 @@ function get_elevated_users_data(){
 
     # Check if expected object has been recieved
     if ($result -Match '^ERROR:') {
-        return $null
+        return $result
     }
 
     $idx = 0
