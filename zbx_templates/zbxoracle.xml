@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T00:58:38Z</date>
+    <date>2018-12-13T06:01:01Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -56,7 +56,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -118,7 +118,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -180,7 +180,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;h6m0</delay>
-                    <history>90d</history>
+                    <history>30d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -304,7 +304,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -813,7 +813,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -878,7 +878,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -943,7 +943,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1283,7 +1283,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_standby_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1412,7 +1412,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1474,7 +1474,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1536,7 +1536,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;h6m0</delay>
-                    <history>7d</history>
+                    <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -1644,7 +1644,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},total_mb]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -1711,7 +1711,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_mb]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -1778,7 +1778,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>0</value_type>
@@ -2046,7 +2046,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[list_guarantee_restore_points,{#RESTORE_POINT_NAME}]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>0</trends>
                             <status>0</status>
                             <value_type>1</value_type>
@@ -2198,7 +2198,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_pdb_state,{#PDB_NAME}]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>0</trends>
                             <status>0</status>
                             <value_type>1</value_type>
@@ -2364,7 +2364,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_pdbs_tbs_state,{#PDB_NAME},{#TABLESPACE_NAME},backup_mode_hours_since]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>0</trends>
                             <status>0</status>
                             <value_type>1</value_type>
@@ -2434,7 +2434,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_pdbs_tbs_state,{#PDB_NAME},{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>0</trends>
                             <status>0</status>
                             <value_type>1</value_type>
@@ -2504,7 +2504,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_tbs_max_space_bytes {#PDB_NAME},{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -2574,7 +2574,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_tbs_used_space_bytes,{#PDB_NAME},{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -2644,7 +2644,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>0</value_type>
@@ -2878,7 +2878,7 @@ percentage of utilization</description>
                             <snmp_oid/>
                             <key>zbxoracle[get_standby_data({#STANDBY_DEST},status)]</key>
                             <delay>0</delay>
-                            <history>90d</history>
+                            <history>7d</history>
                             <trends>0</trends>
                             <status>0</status>
                             <value_type>1</value_type>
@@ -3030,7 +3030,7 @@ percentage of utilization</description>
                             <key>zbxoracle[get_tbs_max_space_bytes,{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
                             <history>7d</history>
-                            <trends>90d</trends>
+                            <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3231,7 +3231,7 @@ percentage of utilization</description>
                             <key>zbxoracle[get_tbs_used_space_bytes,{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
                             <history>7d</history>
-                            <trends>90d</trends>
+                            <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3298,7 +3298,7 @@ percentage of utilization</description>
                             <key>zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}]</key>
                             <delay>0</delay>
                             <history>7d</history>
-                            <trends>90d</trends>
+                            <trends>365d</trends>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>

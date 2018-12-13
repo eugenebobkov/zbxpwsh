@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T00:58:55Z</date>
+    <date>2018-12-13T06:00:25Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -440,7 +440,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxmssql[get_elevated_users_data,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
-                    <history>7d</history>
+                    <history>30d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -625,13 +625,13 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Version</name>
+                    <name>Software version</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxmssql[get_version,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
-                    <history>7d</history>
+                    <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -873,9 +873,9 @@ Instance name has to be updated in MACROS section</description>
                             <key>zbxmssql[get_databases_waits,{#DATABASE}]</key>
                             <delay>0</delay>
                             <history>7d</history>
-                            <trends>0</trends>
+                            <trends>365d</trends>
                             <status>0</status>
-                            <value_type>1</value_type>
+                            <value_type>3</value_type>
                             <allowed_hosts/>
                             <units/>
                             <snmpv3_contextname/>

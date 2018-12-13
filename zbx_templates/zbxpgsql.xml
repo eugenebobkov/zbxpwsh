@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T00:59:09Z</date>
+    <date>2018-12-13T06:00:47Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -381,7 +381,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
-                    <history>7d</history>
+                    <history>30d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -678,7 +678,7 @@ Hostname and port have to be updated in MACROS section</description>
                             <key>zbxpgsql[get_databases_size,{#DATABASE}]</key>
                             <delay>0</delay>
                             <history>7d</history>
-                            <trends>90d</trends>
+                            <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>

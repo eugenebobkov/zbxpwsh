@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T00:58:20Z</date>
+    <date>2018-12-13T06:01:17Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -381,7 +381,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxdb2[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
                     <delay>0;h6m0</delay>
-                    <history>90d</history>
+                    <history>30d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1165,7 +1165,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -1232,7 +1232,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxdb2[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1294,7 +1294,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
+                    <history>7d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1359,7 +1359,7 @@ Instance details has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxdb2[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
                     <delay>0;h6m0</delay>
-                    <history>7d</history>
+                    <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
