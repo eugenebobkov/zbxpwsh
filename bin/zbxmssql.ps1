@@ -17,8 +17,7 @@ Param (
     [Parameter(Mandatory=$true, Position=2)][string]$Instance,       # Instance name, required for instance related checks, <SERVERNAME>\<INSTANCE>
     [Parameter(Mandatory=$false, Position=3)][int]$Port = 1433,      # Port number, if required for non standart configuration, by default 1433
     [Parameter(Mandatory=$false, Position=4)][string]$Username = '', # User name, required for SQL server authentication
-    [Parameter(Mandatory=$false, Position=5)][string]$Password = '', # Password, required for SQL server authentication
-    [Parameter(Mandatory=$false, Position=6)][string]$Database = ''  # Database name, required for database related checks
+    [Parameter(Mandatory=$false, Position=5)][string]$Password = ''  # Password, required for SQL server authentication
     )
 
 $global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)

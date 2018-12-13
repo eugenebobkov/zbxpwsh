@@ -107,9 +107,6 @@ function get_database_state() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
-    else {
-        return "ERROR: UNKNOWN (" + $result.GetType() + ")"
-    }
 }
 
 function get_version() {
@@ -127,9 +124,6 @@ function get_version() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }    
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 function list_tablespaces() {
@@ -357,9 +351,6 @@ function get_startup_time() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     } 
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 
@@ -384,9 +375,6 @@ function get_appls_data() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -407,9 +395,6 @@ function get_logs_utilization_data() {
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
-    }
-    else {
-        return 'ERROR: UNKNOWN'
     }
 }
 
@@ -433,9 +418,6 @@ function get_last_db_backup() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -457,9 +439,6 @@ function get_last_log_backup() {
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
-    }
-    else {
-        return 'ERROR: UNKNOWN'
     }
 }
 

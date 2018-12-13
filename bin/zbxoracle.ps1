@@ -24,8 +24,7 @@ Param (
     [Parameter(Mandatory=$true, Position=3)][int]$Port = 1521,         # Port number, if required for non standart configuration, by default 1521
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',    # User name
     [Parameter(Mandatory=$true, Position=5)][string]$Password = '',    # Password
-    [Parameter(Mandatory=$true, Position=6)][string]$Service = '',     # Service name
-    [Parameter(Mandatory=$false, Position=7)][string]$Container_Id = 0 # Container ID
+    [Parameter(Mandatory=$true, Position=6)][string]$Service = ''     # Service name
     )
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
