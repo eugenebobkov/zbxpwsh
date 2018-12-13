@@ -1,4 +1,4 @@
-#!/bsin/pwsh
+#!/bsin/pwshf
 
 <#
     Created: 02/03/2018
@@ -172,7 +172,8 @@ function get_version() {
 #>
 function get_startup_time() {
     # applicable for 2008 and higher
-    $result = (run_sql -Query "SELECT sqlserver_start_time FROM sys.dm_os_sys_info")
+    $result = (run_sql -Query "SELECT CONVERT(CHAR(19), sqlserver_start_time, 120) 
+                                 FROM sys.dm_os_sys_info")
 
     # TODO: add check for versions below 2008 if required for some reason
     if ($result.GetType() -eq [System.Data.DataTable]) {

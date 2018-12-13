@@ -123,9 +123,6 @@ function get_instance_state() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
-    else {
-        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
-    }
 }
 
 <#
@@ -143,9 +140,6 @@ function get_version() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }    
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -163,9 +157,6 @@ function get_startup_time() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     } 
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -809,9 +800,6 @@ function get_processes_data() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -828,9 +816,6 @@ function get_fra_used_pct() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }    
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -853,9 +838,6 @@ function get_last_db_backup() {
     elseif ($result.GetType() -eq [System.String]) {
         return $result
     }
-    else {
-        return 'ERROR: UNKNOWN'
-    }
 }
 
 <#
@@ -876,9 +858,6 @@ function get_last_log_backup() {
     }
     elseif ($result.GetType() -eq [System.String]) {
         return $result
-    }
-    else {
-        return 'ERROR: UNKNOWN'
     }
 }
 
