@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T08:00:52Z</date>
+    <date>2018-12-13T00:58:38Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1372,10 +1372,18 @@ percentage of utilization</description>
                         <application>
                             <name>Availability</name>
                         </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
-                    <preprocessing/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.data.startup_time</params>
+                        </step>
+                    </preprocessing>
                     <jmx_endpoint/>
                     <timeout>3s</timeout>
                     <url/>
@@ -1555,10 +1563,18 @@ percentage of utilization</description>
                         <application>
                             <name>Configuration</name>
                         </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
-                    <preprocessing/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.data.version</params>
+                        </step>
+                    </preprocessing>
                     <jmx_endpoint/>
                     <timeout>3s</timeout>
                     <url/>
@@ -3473,6 +3489,10 @@ percentage of utilization</description>
                 <macro>
                     <macro>{$ASM_USAGE_WARNING}</macro>
                     <value>80</value>
+                </macro>
+                <macro>
+                    <macro>{$BACKUP_MODE_WARNING}</macro>
+                    <value>144</value>
                 </macro>
                 <macro>
                     <macro>{$CHECK_TIMEFRAME}</macro>

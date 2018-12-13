@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-12T08:01:03Z</date>
+    <date>2018-12-13T00:58:20Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1192,10 +1192,18 @@ Instance details has to be updated in MACROS section</description>
                         <application>
                             <name>Availability</name>
                         </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
-                    <preprocessing/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.data.startup_time</params>
+                        </step>
+                    </preprocessing>
                     <jmx_endpoint/>
                     <timeout>3s</timeout>
                     <url/>
@@ -1378,10 +1386,18 @@ Instance details has to be updated in MACROS section</description>
                         <application>
                             <name>Configuration</name>
                         </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
-                    <preprocessing/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.data.version</params>
+                        </step>
+                    </preprocessing>
                     <jmx_endpoint/>
                     <timeout>3s</timeout>
                     <url/>

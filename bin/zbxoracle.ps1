@@ -675,6 +675,7 @@ function get_pdbs_tbs_used_space() {
 <#
     Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
     Checks/Triggers for individual tablespaces are done by dependant items
+    Time in backup mode in hours
 #>
 function get_tbs_state(){
 
