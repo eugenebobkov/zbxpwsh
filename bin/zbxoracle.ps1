@@ -119,7 +119,8 @@ function get_instance_state() {
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'OPEN') {
         return 'OPEN'
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    # data is not in [System.Data.DataTable] format
+    else {
         return $result
     }
 }
@@ -134,9 +135,10 @@ function get_version() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}" 
+        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    # data is not in [System.Data.DataTable] format
+    else {
         return $result
     }    
 }
@@ -153,7 +155,8 @@ function get_startup_time() {
     if ($result.GetType() -eq [System.Data.DataTable]) {
         return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    # data is not in [System.Data.DataTable] format
+    else {
         return $result
     } 
 }
@@ -165,7 +168,7 @@ function list_tablespaces() {
 
     $result = (run_sql -Query "SELECT tablespace_name FROM dba_tablespaces WHERE contents = 'PERMANENT'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -196,7 +199,7 @@ function list_asm_diskgroups() {
 
     $result = (run_sql -Query "SELECT name FROM v`$asm_diskgroup")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -232,7 +235,7 @@ function list_guarantee_restore_points() {
     $result = (run_sql -Query "SELECT name FROM v`$restore_point 
                                 WHERE guarantee_flashback_database = 'YES'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -270,7 +273,7 @@ function get_guarantee_restore_points_data(){
                                  FROM v`$restore_point 
                                 WHERE guarantee_flashback_database = 'YES'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -307,7 +310,7 @@ function get_asm_diskgroups_state(){
                                     , state
                                  FROM v`$asm_diskgroup")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -346,7 +349,7 @@ function get_asm_diskgroups_data(){
                                     , total_mb
                                  FROM v`$asm_diskgroup")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -382,7 +385,7 @@ function list_pdbs() {
 
     $result = (run_sql -Query 'select cdb from v$database')
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available or not container database
         return $result
     } 
@@ -391,7 +394,10 @@ function list_pdbs() {
         return "{ `n`t`"data`":[`n`t]`n}"
     }
 
-    $result = (run_sql -Query ("select con_id, name from v`$pdbs where name != 'PDB`$SEED'"))
+    $result = (run_sql -Query "SELECT con_id
+                                    , name 
+                                 FROM v`$pdbs 
+                                WHERE name != 'PDB`$SEED'")
 
     $idx = 0
 
@@ -422,7 +428,7 @@ function list_standby_databases() {
                                  FROM v`$archive_dest
                                 WHERE target = 'STANDBY'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -461,7 +467,7 @@ function get_standby_data(){
                                  FROM v`$archive_dest
                                 WHERE target = 'STANDBY'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     } 
@@ -495,9 +501,12 @@ function get_standby_data(){
 #>
 function get_pdb_state() {
 
-    $result = (run_sql -Query ("SELECT name, open_mode FROM v`$pdbs WHERE name not in ('PDB`$SEED')"))
+    $result = (run_sql -Query "SELECT name
+                                    , open_mode 
+                                 FROM v`$pdbs 
+                                WHERE name not in ('PDB`$SEED')")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -527,9 +536,10 @@ function get_pdb_state() {
 #>
 function list_pdbs_tablespaces() {
     # Check if database is container
-    $result = (run_sql -Query 'SELECT cdb FROM v$database')
+    $result = (run_sql -Query 'SELECT cdb 
+                                 FROM v$database')
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available or it's not a container database
         return $result
     } 
@@ -538,13 +548,22 @@ function list_pdbs_tablespaces() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $result = run_sql -Query ("SELECT c.con_id, p.name, c.tablespace_name 
-                                   FROM cdb_tablespaces c, v`$pdbs p 
-                                  WHERE c.contents = 'PERMANENT' AND p.name != 'PDB`$SEED' AND c.con_id = p.con_id")
+    $result = (run_sql -Query "SELECT c.con_id
+                                    , p.name
+                                    , c.tablespace_name 
+                                 FROM cdb_tablespaces c
+                                    , v`$pdbs p 
+                                WHERE c.contents = 'PERMANENT' 
+                                  AND p.name != 'PDB`$SEED' 
+                                  AND c.con_id = p.con_id")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
+    }
+    # if there are no PDB - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
     }
 
     $idx = 0
@@ -573,16 +592,16 @@ function list_pdbs_tablespaces() {
 #>
 function get_tbs_used_space() {
 
-    $result = (run_sql -Query ("SELECT d.tablespace_name 
-                                     , trunc(used_percent,2) used_pct
-                                     , used_space * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) used_bytes
-                                     , tablespace_size * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) max_bytes
-                                  FROM dba_tablespace_usage_metrics d
-                                     , dba_tablespaces t
-                                 WHERE t.contents = 'PERMANENT'
-                                   AND t.tablespace_name = d.tablespace_name"))
+    $result = (run_sql -Query "SELECT d.tablespace_name 
+                                    , trunc(used_percent,2) used_pct
+                                    , used_space * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) used_bytes
+                                    , tablespace_size * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) max_bytes
+                                 FROM dba_tablespace_usage_metrics d
+                                    , dba_tablespaces t
+                                WHERE t.contents = 'PERMANENT'
+                                  AND t.tablespace_name = d.tablespace_name")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -612,25 +631,34 @@ function get_tbs_used_space() {
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_used_space() {
-    $result = (run_sql -Query ("SELECT p.name
-                                     , d.tablespace_name
-                                     , trunc(used_percent,2) used_pct
-                                     , used_space * (SELECT block_size
-                                                       FROM cdb_tablespaces t 
-                                                      WHERE t.tablespace_name = d.tablespace_name
-                                                        AND con_id = d.con_id) used_bytes
-                                     , tablespace_size * (SELECT block_size
-                                                            FROM cdb_tablespaces t 
-                                                           WHERE t.tablespace_name = d.tablespace_name
-                                                             AND con_id = d.con_id) max_bytes
-                                  FROM cdb_tablespace_usage_metrics d
-                                     , cdb_tablespaces t
-                                     , v`$pdbs p
-                                 WHERE t.contents = 'PERMANENT'
-                                   AND t.tablespace_name = d.tablespace_name
-                                   AND t.con_id = d.con_id
-                                   AND p.con_id = d.con_id
-                                 ORDER BY p.name, d.tablespace_name"))
+    $result = (run_sql -Query "SELECT p.name
+                                    , d.tablespace_name
+                                    , trunc(used_percent,2) used_pct
+                                    , used_space * (SELECT block_size
+                                                      FROM cdb_tablespaces t 
+                                                     WHERE t.tablespace_name = d.tablespace_name
+                                                       AND con_id = d.con_id) used_bytes
+                                    , tablespace_size * (SELECT block_size
+                                                           FROM cdb_tablespaces t 
+                                                          WHERE t.tablespace_name = d.tablespace_name
+                                                            AND con_id = d.con_id) max_bytes
+                                 FROM cdb_tablespace_usage_metrics d
+                                    , cdb_tablespaces t
+                                    , v`$pdbs p
+                                WHERE t.contents = 'PERMANENT'
+                                  AND t.tablespace_name = d.tablespace_name
+                                  AND t.con_id = d.con_id
+                                  AND p.con_id = d.con_id
+                                ORDER BY p.name, d.tablespace_name")
+
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no PDB - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
 
     $idx = 1
     $pdb = ''
@@ -669,31 +697,29 @@ function get_pdbs_tbs_used_space() {
 #>
 function get_tbs_state(){
 
-    $result = (run_sql -Query ("SELECT t.tablespace_name
-                                     , t.status
-                                     , CASE
-                                           WHEN (SELECT count(*)
-                                                   FROM v`$backup b
-                                                      , dba_data_files d
-                                                  WHERE d.tablespace_name  = t.tablespace_name
-                                                    AND d.file_id = b.file#
-                                                    AND b.status = 'ACTIVE') = 0
-                                                THEN 'NOT ACTIVE'
-                                           ELSE 'ACTIVE'
-                                       END backup_mode
-                                     , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
-                                          FROM v`$backup b
-                                             , dba_data_files d
-                                         WHERE d.tablespace_name  = t.tablespace_name
-                                           AND d.file_id = b.file#
-                                           AND b.status = 'ACTIVE') backup_time
-                                  FROM dba_tablespaces t
-                                 WHERE t.contents = 'PERMANENT' 
-                               "
-                               )
+    $result = (run_sql -Query "SELECT t.tablespace_name
+                                    , t.status
+                                    , CASE
+                                          WHEN (SELECT count(*)
+                                                  FROM v`$backup b
+                                                     , dba_data_files d
+                                                 WHERE d.tablespace_name  = t.tablespace_name
+                                                   AND d.file_id = b.file#
+                                                   AND b.status = 'ACTIVE') = 0
+                                               THEN 'NOT ACTIVE'
+                                          ELSE 'ACTIVE'
+                                      END backup_mode
+                                    , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
+                                         FROM v`$backup b
+                                            , dba_data_files d
+                                        WHERE d.tablespace_name  = t.tablespace_name
+                                          AND d.file_id = b.file#
+                                          AND b.status = 'ACTIVE') backup_time
+                                 FROM dba_tablespaces t
+                                WHERE t.contents = 'PERMANENT'"
               )
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -724,32 +750,39 @@ function get_tbs_state(){
 #>
 function get_pdbs_tbs_state(){
 
-    $result = (run_sql -Query ("SELECT p.name
-                                     , t.tablespace_name
-                                     , t.status
-                                     , CASE
-                                           WHEN (SELECT count(*)
-                                                   FROM v`$backup b
-                                                      , dba_data_files d
-                                                  WHERE d.tablespace_name  = t.tablespace_name
-                                                    AND d.file_id = b.file#
-                                                    AND b.status = 'ACTIVE') = 0
-                                                THEN 'NOT ACTIVE'
-                                           ELSE 'ACTIVE'
-                                       END backup_mode
-                                     , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
-                                          FROM v`$backup b
-                                             , dba_data_files d
-                                         WHERE d.tablespace_name  = t.tablespace_name
-                                           AND d.file_id = b.file#
-                                           AND b.status = 'ACTIVE') hours_since
-                                  FROM cdb_tablespaces t
-                                     , v`$pdbs p
-                                 WHERE t.contents = 'PERMANENT'
-                                   AND t.con_id = p.con_id
-                               "
-                              )
+    $result = (run_sql -Query "SELECT p.name
+                                    , t.tablespace_name
+                                    , t.status
+                                    , CASE
+                                          WHEN (SELECT count(*)
+                                                  FROM v`$backup b
+                                                     , dba_data_files d
+                                                 WHERE d.tablespace_name  = t.tablespace_name
+                                                   AND d.file_id = b.file#
+                                                   AND b.status = 'ACTIVE') = 0
+                                               THEN 'NOT ACTIVE'
+                                          ELSE 'ACTIVE'
+                                      END backup_mode
+                                    , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
+                                         FROM v`$backup b
+                                            , dba_data_files d
+                                        WHERE d.tablespace_name  = t.tablespace_name
+                                          AND d.file_id = b.file#
+                                          AND b.status = 'ACTIVE') hours_since
+                                 FROM cdb_tablespaces t
+                                    , v`$pdbs p
+                                WHERE t.contents = 'PERMANENT'
+                                  AND t.con_id = p.con_id"
               )
+
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no PDB - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
 
     $idx = 1
     $pdb = ''
@@ -786,17 +819,19 @@ function get_pdbs_tbs_state(){
 #>
 function get_processes_data() {
 
-    $result = (run_sql -Query ("SELECT max(value) max_processes
-                                     , count(p.pid) current_processes
-                                     , trunc((count(p.pid) / max(v.value))*100, 2) pct_used
-                                  FROM (SELECT value FROM v`$parameter WHERE name = 'processes') v  
-                                     , v`$process p"))
+    $result = (run_sql -Query "SELECT max(value) max_processes
+                                    , count(p.pid) current_processes
+                                    , trunc((count(p.pid) / max(v.value))*100, 2) pct_used
+                                 FROM (SELECT value 
+                                         FROM v`$parameter 
+                                        WHERE name = 'processes') v  
+                                    , v`$process p")
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
         return "{`n`t`"processes`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -806,13 +841,14 @@ function get_processes_data() {
 #>
 function get_fra_used_pct() {
 
-    $result = (run_sql -Query ('SELECT trunc(sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE), 2) used_pct FROM v$flash_recovery_area_usage'))
+    $result = (run_sql -Query 'SELECT trunc(sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE), 2) used_pct 
+                                 FROM v$flash_recovery_area_usage')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"used_pct`":" + $result.Rows[0][0] + "`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }    
 }
@@ -821,11 +857,11 @@ function get_fra_used_pct() {
 Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
-                                     , round((sysdate - max(end_time)) * 24, 6) hours_since
-					              FROM v`$rman_status
-							     WHERE object_type in ('DB FULL', 'DB INCR')
-								   AND status like 'COMPLETED%'")  `
+    $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , round((sysdate - max(end_time)) * 24, 6) hours_since
+					             FROM v`$rman_status
+							    WHERE object_type in ('DB FULL', 'DB INCR')
+							   AND status like 'COMPLETED%'" `
                        -CommandTimeout 30
                 )
 
@@ -834,7 +870,7 @@ function get_last_db_backup() {
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
       return $result.Rows[0][0]
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -843,11 +879,11 @@ function get_last_db_backup() {
 Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
-    $result = (run_sql -Query ("SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
-                                     , round((sysdate - max(end_time)) * 24, 6) hours_since
-					              FROM v`$rman_status
-							     WHERE object_type in ('ARCHIVELOG')
-								   AND status like 'COMPLETED%'")  `
+    $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , round((sysdate - max(end_time)) * 24, 6) hours_since
+					             FROM v`$rman_status
+							    WHERE object_type in ('ARCHIVELOG')
+							   AND status like 'COMPLETED%'"  `
                        -CommandTimeout 30
                 )
 
@@ -855,7 +891,7 @@ function get_last_log_backup() {
     if ($result.GetType() -eq [System.Data.DataTable]) {
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -882,7 +918,7 @@ function get_elevated_users_data(){
                                   AND u.username = p.username
                                   AND p.sysdba = 'TRUE'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
