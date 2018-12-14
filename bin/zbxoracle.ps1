@@ -9,10 +9,12 @@
     
     UserParameter provided as part of oracle.conf file which has to be places in zabbix_agentd.d directory
 
+    Create new profile with unlimited expire_time (or modify default)
     Create oracle user with the following privilegies
  
-    SQL> create user c##zabbix identified by '<password>';
-    SQL> grant select any dictionary to c##zabbix;
+    SQL> create user zabbix identified by '<password>' profile service_profie;
+    SQL> grant create session, select any dictionary to zabbix;
+    (for PDB monitoring)
     SQL> alter user c##zabbix set container_data=all container=current;
 
     Change user's profile settings to ulimited life_time
@@ -512,6 +514,10 @@ function get_pdb_state() {
         # Instance is not available
         return $result
     }
+    # if there are no PDB databases - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    }
 
     $idx = 1
 
@@ -592,9 +598,9 @@ function list_pdbs_tablespaces() {
     Function to provide used space for tablespaces (excluding tablespaces of pluggable databases)
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
-function get_tbs_used_space() {
+function get_tbs_space_data() {
 
-    $result = (run_sql -Query "SELECT d.tablespace_name 
+<#    $result = (run_sql -Query "SELECT d.tablespace_name 
                                     , trunc(used_percent,2) used_pct
                                     , used_space * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) used_bytes
                                     , tablespace_size * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) max_bytes
@@ -602,6 +608,30 @@ function get_tbs_used_space() {
                                     , dba_tablespaces t
                                 WHERE t.contents = 'PERMANENT'
                                   AND t.tablespace_name = d.tablespace_name")
+#>
+
+    $result = (run_sql -Query "SELECT c.tablespace_name
+                                    , round(((bytes_alloc - nvl(bytes_free,0))/bytes_max)*100, 2) used_pct
+                                    , bytes_alloc-nvl(bytes_free,0) used_bytes
+                                    , bytes_max max_bytes
+                                 FROM ( SELECT sum(bytes) bytes_free
+                                             , tablespace_name
+                                          FROM dba_free_space 
+                                         GROUP BY
+                                               tablespace_name 
+                                      ) a
+                                    , ( SELECT sum(bytes) bytes_alloc 
+                                             , sum(greatest(maxbytes, bytes)) bytes_max
+                                             , tablespace_name 
+                                          FROM dba_data_files 
+                                         GROUP BY 
+                                               tablespace_name 
+                                      ) b
+                                    , dba_tablespaces c
+                                WHERE a.tablespace_name (+) = b.tablespace_name
+                                  AND b.tablespace_name = c.tablespace_name
+                                  AND c.contents = 'PERMANENT'
+                                  AND c.status = 'ONLINE'")
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
@@ -856,7 +886,12 @@ function get_fra_used_pct() {
 }
 
 <#
-Function to provide time of last successeful database backup
+    Function to provide time of last successeful database backup
+    
+    For 11g, if it's timed out - following actions can be done:
+    Option 1: SQL> exec dbms_stats.gather_fixed_objects_stats;
+    Option 2: QUERIES ON V$RMAN_STATUS are very slow even after GATHER_FIXED_OBJECTS_STATS is run (Doc ID 1525917.1)
+              SQL> exec dbms_stats.DELETE_TABLE_STATS('SYS','X$KCCRSR')
 #>
 function get_last_db_backup() {
     $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
@@ -878,7 +913,13 @@ function get_last_db_backup() {
 }
 
 <#
-Function to provide time of last succeseful archived log backup
+    Function to provide time of last succeseful archived log backup
+
+    For 11g, if it's timed out - following actions can be done:
+    Option 1: SQL> exec dbms_stats.gather_fixed_objects_stats;
+    Option 2: QUERIES ON V$RMAN_STATUS are very slow even after GATHER_FIXED_OBJECTS_STATS is run (Doc ID 1525917.1)
+              SQL> exec dbms_stats.DELETE_TABLE_STATS('SYS','X$KCCRSR')
+
 #>
 function get_last_log_backup() {
     $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
