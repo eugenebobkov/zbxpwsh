@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-14T01:37:23Z</date>
+    <date>2018-12-14T02:18:05Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -1925,13 +1925,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
@@ -1947,13 +1941,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -1974,13 +1962,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -2281,13 +2263,7 @@ percentage of utilization</description>
                             <description>PDB is not in READ/WRITE mode</description>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -2730,13 +2706,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -2757,13 +2727,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
@@ -2779,13 +2743,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -2806,13 +2764,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -3377,13 +3329,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -3404,13 +3350,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
@@ -3426,13 +3366,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -3453,13 +3387,7 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -3574,13 +3502,7 @@ percentage of utilization</description>
             <description>Utilization of current processes exceeded threshold percentage</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -3596,13 +3518,7 @@ percentage of utilization</description>
             <description>FRA used space exceeded HIGH threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags>
                 <tag>
                     <tag>Scope</tag>
@@ -3624,13 +3540,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description>FRA used space exceeded WARNING threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -3646,13 +3556,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description>Instance has been restarted</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -3710,13 +3614,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags>
                 <tag>
                     <tag>Scope</tag>
@@ -3737,13 +3635,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
     </triggers>

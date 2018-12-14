@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-14T02:05:22Z</date>
+    <date>2018-12-14T02:17:36Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -955,13 +955,7 @@ Instance name has to be updated in MACROS section</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -1032,13 +1026,7 @@ Instance name has to be updated in MACROS section</description>
             <description>Agent for instance {$INSTANCE} is not running</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -1054,13 +1042,7 @@ Instance name has to be updated in MACROS section</description>
             <description>Instance has been restarted</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>

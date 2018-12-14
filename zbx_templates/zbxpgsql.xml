@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T06:00:47Z</date>
+    <date>2018-12-14T02:17:46Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -810,13 +810,7 @@ Hostname and port have to be updated in MACROS section</description>
             <description>Amount of current processes exceeded threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -869,13 +863,7 @@ Hostname and port have to be updated in MACROS section</description>
             <description>Instance is not available</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags>
                 <tag>
                     <tag>Scope</tag>

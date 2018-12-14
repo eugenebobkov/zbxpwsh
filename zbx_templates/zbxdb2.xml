@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T06:01:17Z</date>
+    <date>2018-12-14T02:17:24Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1609,13 +1609,7 @@ Instance details has to be updated in MACROS section</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
@@ -1631,13 +1625,7 @@ Instance details has to be updated in MACROS section</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -1984,13 +1972,7 @@ Instance details has to be updated in MACROS section</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -2011,13 +1993,7 @@ Instance details has to be updated in MACROS section</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -2038,13 +2014,7 @@ Instance details has to be updated in MACROS section</description>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
-                            <dependencies>
-                                <dependency>
-                                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                                    <recovery_expression/>
-                                </dependency>
-                            </dependencies>
+                            <dependencies/>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -2143,13 +2113,7 @@ Instance details has to be updated in MACROS section</description>
             <description>Amount of current processes exceeded threshold</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -2165,13 +2129,7 @@ Instance details has to be updated in MACROS section</description>
             <description>Instance has been restarted</description>
             <type>0</type>
             <manual_close>1</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -2229,13 +2187,7 @@ Instance details has to be updated in MACROS section</description>
             <description>Log utilization</description>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
         <trigger>
@@ -2251,13 +2203,7 @@ Instance details has to be updated in MACROS section</description>
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags>
                 <tag>
                     <tag>Scope</tag>
@@ -2278,13 +2224,7 @@ Instance details has to be updated in MACROS section</description>
             <description/>
             <type>0</type>
             <manual_close>0</manual_close>
-            <dependencies>
-                <dependency>
-                    <name>Instance is not available (State: {ITEM.VALUE})</name>
-                    <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].str(ONLINE,#2)}=0</expression>
-                    <recovery_expression/>
-                </dependency>
-            </dependencies>
+            <dependencies/>
             <tags/>
         </trigger>
     </triggers>
