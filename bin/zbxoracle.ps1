@@ -197,7 +197,8 @@ function list_tablespaces() {
 #>
 function list_asm_diskgroups() {
 
-    $result = (run_sql -Query "SELECT name FROM v`$asm_diskgroup")
+    $result = (run_sql -Query 'SELECT name 
+                                 FROM v$asm_diskgroup')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
@@ -306,9 +307,9 @@ function get_guarantee_restore_points_data(){
     Function to get state of ASM diskgroups in the database
 #>
 function get_asm_diskgroups_state(){
-    $result = (run_sql -Query "SELECT name 
+    $result = (run_sql -Query 'SELECT name 
                                     , state
-                                 FROM v`$asm_diskgroup")
+                                 FROM v$asm_diskgroup')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
@@ -343,11 +344,11 @@ function get_asm_diskgroups_state(){
     Function to get data for asm diskgroups (used_pct, used_mb, max etc.)
 #>
 function get_asm_diskgroups_data(){
-    $result = (run_sql -Query "SELECT name
+    $result = (run_sql -Query 'SELECT name
                                     , total_mb - free_mb used_mb
                                     , round((total_mb - free_mb)/total_mb * 100, 4) used_pct
                                     , total_mb
-                                 FROM v`$asm_diskgroup")
+                                 FROM v$asm_diskgroup')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
@@ -383,7 +384,8 @@ function get_asm_diskgroups_data(){
 #>
 function list_pdbs() {
 
-    $result = (run_sql -Query 'select cdb from v$database')
+    $result = (run_sql -Query 'SELECT cdb 
+                                 FROM v$database')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available or not container database
@@ -861,7 +863,7 @@ function get_last_db_backup() {
                                     , round((sysdate - max(end_time)) * 24, 6) hours_since
 					             FROM v`$rman_status
 							    WHERE object_type in ('DB FULL', 'DB INCR')
-							   AND status like 'COMPLETED%'" `
+							      AND status like 'COMPLETED%'" `
                        -CommandTimeout 30
                 )
 
@@ -883,7 +885,7 @@ function get_last_log_backup() {
                                     , round((sysdate - max(end_time)) * 24, 6) hours_since
 					             FROM v`$rman_status
 							    WHERE object_type in ('ARCHIVELOG')
-							   AND status like 'COMPLETED%'"  `
+							      AND status like 'COMPLETED%'"  `
                        -CommandTimeout 30
                 )
 

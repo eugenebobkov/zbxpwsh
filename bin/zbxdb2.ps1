@@ -228,10 +228,10 @@ function list_hadr_hosts() {
 
 function get_hadr_data(){
 
-    $result = (run_sql -Query "SELECT hadr_remote_host
+    $result = (run_sql -Query 'SELECT hadr_remote_host
                                     , hadr_connect_status
                                     , hadr_state
-                                 FROM sysibmadm.snaphadr")
+                                 FROM sysibmadm.snaphadr')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
