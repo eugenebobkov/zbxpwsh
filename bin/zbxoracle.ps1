@@ -168,7 +168,7 @@ function list_tablespaces() {
 
     $result = (run_sql -Query "SELECT tablespace_name FROM dba_tablespaces WHERE contents = 'PERMANENT'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -199,7 +199,7 @@ function list_asm_diskgroups() {
 
     $result = (run_sql -Query "SELECT name FROM v`$asm_diskgroup")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -235,7 +235,7 @@ function list_guarantee_restore_points() {
     $result = (run_sql -Query "SELECT name FROM v`$restore_point 
                                 WHERE guarantee_flashback_database = 'YES'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -273,7 +273,7 @@ function get_guarantee_restore_points_data(){
                                  FROM v`$restore_point 
                                 WHERE guarantee_flashback_database = 'YES'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -310,7 +310,7 @@ function get_asm_diskgroups_state(){
                                     , state
                                  FROM v`$asm_diskgroup")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -349,7 +349,7 @@ function get_asm_diskgroups_data(){
                                     , total_mb
                                  FROM v`$asm_diskgroup")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -385,7 +385,7 @@ function list_pdbs() {
 
     $result = (run_sql -Query 'select cdb from v$database')
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available or not container database
         return $result
     } 
@@ -428,7 +428,7 @@ function list_standby_databases() {
                                  FROM v`$archive_dest
                                 WHERE target = 'STANDBY'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -467,7 +467,7 @@ function get_standby_data(){
                                  FROM v`$archive_dest
                                 WHERE target = 'STANDBY'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     } 
@@ -506,7 +506,7 @@ function get_pdb_state() {
                                  FROM v`$pdbs 
                                 WHERE name not in ('PDB`$SEED')")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -539,7 +539,7 @@ function list_pdbs_tablespaces() {
     $result = (run_sql -Query 'SELECT cdb 
                                  FROM v$database')
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available or it's not a container database
         return $result
     } 
@@ -601,7 +601,7 @@ function get_tbs_used_space() {
                                 WHERE t.contents = 'PERMANENT'
                                   AND t.tablespace_name = d.tablespace_name")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -651,7 +651,7 @@ function get_pdbs_tbs_used_space() {
                                   AND p.con_id = d.con_id
                                 ORDER BY p.name, d.tablespace_name")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -719,7 +719,7 @@ function get_tbs_state(){
                                 WHERE t.contents = 'PERMANENT'"
               )
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -775,7 +775,7 @@ function get_pdbs_tbs_state(){
                                   AND t.con_id = p.con_id"
               )
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -918,7 +918,7 @@ function get_elevated_users_data(){
                                   AND u.username = p.username
                                   AND p.sysdba = 'TRUE'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }

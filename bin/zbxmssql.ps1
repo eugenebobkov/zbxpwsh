@@ -189,7 +189,7 @@ function list_databases() {
     $result = (run_sql -Query 'SELECT name 
                                  FROM sys.databases')
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -252,7 +252,7 @@ function get_databases_state() {
     # get-clustergroup
     ### sys.dm_os_cluster_nodes
     
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -288,7 +288,7 @@ function get_databases_connections() {
                                GROUP BY name'
              )
     
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -362,7 +362,7 @@ function get_databases_waits() {
                                                ) A on A.database_id = sd.database_id"
              )
     
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -402,7 +402,7 @@ function get_databases_backup() {
                                    , sdb.recovery_model_desc'
              )
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -445,7 +445,7 @@ function get_databases_log_backup() {
                                GROUP BY sdb.name, sdb.recovery_model_desc"
              )
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -483,7 +483,7 @@ function get_elevated_users_data(){
                                 WHERE rm.role_principal_id = SUSER_ID('Sysadmin')
                                   AND rm.member_principal_id = sp.principal_id")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }

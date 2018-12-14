@@ -132,7 +132,7 @@ function list_tablespaces() {
                                  FROM sysibmadm.tbsp_utilization  
 								WHERE tbsp_type='DMS'") 
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -167,7 +167,7 @@ function get_tbs_state(){
                                  FROM sysibmadm.tbsp_utilization  
 								WHERE tbsp_type='DMS'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -197,7 +197,7 @@ function list_hadr_hosts() {
     $result = (run_sql -Query 'SELECT hadr_remote_host
                                  FROM sysibmadm.snaphadr') 
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -233,7 +233,7 @@ function get_hadr_data(){
                                     , hadr_state
                                  FROM sysibmadm.snaphadr")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -309,7 +309,7 @@ function get_tbs_used_space() {
                                     , sysibmadm.tbsp_utilization as dbu 
                                 WHERE ru.tbsp_id = dbu.tbsp_id") 
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -449,7 +449,7 @@ function get_elevated_users_data(){
                                  FROM syscat.dbauth
                                 WHERE dbadmauth = 'Y'")
 
-    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
