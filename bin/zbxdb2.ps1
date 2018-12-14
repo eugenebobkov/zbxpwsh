@@ -104,7 +104,7 @@ function get_database_state() {
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'Y') {
         return 'ONLINE'
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -121,7 +121,7 @@ function get_version() {
     if ($result.GetType() -eq [System.Data.DataTable]) {
         return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}" 
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }    
 }
@@ -132,7 +132,7 @@ function list_tablespaces() {
                                  FROM sysibmadm.tbsp_utilization  
 								WHERE tbsp_type='DMS'") 
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -167,7 +167,7 @@ function get_tbs_state(){
                                  FROM sysibmadm.tbsp_utilization  
 								WHERE tbsp_type='DMS'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -197,7 +197,7 @@ function list_hadr_hosts() {
     $result = (run_sql -Query 'SELECT hadr_remote_host
                                  FROM sysibmadm.snaphadr') 
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -233,7 +233,7 @@ function get_hadr_data(){
                                     , hadr_state
                                  FROM sysibmadm.snaphadr")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -269,7 +269,6 @@ function get_tbs_used_space() {
                                     , int(ru.real_max_size) max_gb
                                     , dec(dbu.tbsp_used_size_kb)/dec(ru.real_max_size*1024*1024)*100 used_pct
                                     , dec(dbu.tbsp_used_size_kb) used_kb
-		                            --, dec(dbu.tbsp_total_size_kb) used_kb
                                  FROM 
 									( SELECT tbsp_id 
 										   , char(tbsp_name,20) as tbsp_name 
@@ -310,7 +309,7 @@ function get_tbs_used_space() {
                                     , sysibmadm.tbsp_utilization as dbu 
                                 WHERE ru.tbsp_id = dbu.tbsp_id") 
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -333,7 +332,6 @@ function get_tbs_used_space() {
     $json += "}"
 
     return $json
-
 }
 
 
@@ -342,13 +340,14 @@ function get_tbs_used_space() {
 #>
 function get_startup_time() {
     
-    $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time FROM sysibmadm.snapdbm")
+    $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time 
+                                 FROM sysibmadm.snapdbm")
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
         return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     } 
 }
@@ -359,12 +358,11 @@ function get_startup_time() {
 #>
 function get_appls_data() {
     # TODO: check if maxappls set to -1
-    $result = (run_sql -Query ("SELECT p.value max_appls
-                                     , c.cnt current_appls
-                                     , QUANTIZE((c.cnt/p.value)*100, decfloat(0.01)) pct_used
-                                  FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
-                                     , (SELECT count(*) cnt FROM sysibmadm.applications) c"
-                              )
+    $result = (run_sql -Query "SELECT p.value max_appls
+                                    , c.cnt current_appls
+                                    , QUANTIZE((c.cnt/p.value)*100, decfloat(0.01)) pct_used
+                                 FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
+                                    , (SELECT count(*) cnt FROM sysibmadm.applications) c"
               )
 
     # Check if expected object has been recieved
@@ -372,7 +370,7 @@ function get_appls_data() {
         # Return datata in JSON format
         return "{`n`t`"appls`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -393,7 +391,7 @@ function get_logs_utilization_data() {
         # Return datata in JSON format
         return "{ `"data`": {`n`t `"used_pct`":" + $result.Rows[0][0] + ",`"used_kb`":" + $result.Rows[0][1] + ",`"available_kb`":" + $result.Rows[0][2] + "`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -402,11 +400,11 @@ function get_logs_utilization_data() {
     Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                     , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
-					              FROM SYSIBMADM.DB_HISTORY 
-							     WHERE OPERATION = 'B' 
-								   AND SQLCODE IS NULL")  `
+    $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
+					             FROM SYSIBMADM.DB_HISTORY 
+							    WHERE OPERATION = 'B' 
+							   AND SQLCODE IS NULL"  `
                        -CommandTimeout 30
                 )
 
@@ -415,7 +413,7 @@ function get_last_db_backup() {
         # Return datata in JSON format
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -424,11 +422,11 @@ function get_last_db_backup() {
     Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
-    $result = (run_sql -Query ("SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                     , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
-					              FROM SYSIBMADM.DB_HISTORY 
-							     WHERE OPERATION = 'X' 
-								   AND SQLCODE IS NULL")  `
+    $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
+					             FROM SYSIBMADM.DB_HISTORY 
+							    WHERE OPERATION = 'X' 
+							      AND SQLCODE IS NULL"  `
                        -CommandTimeout 30
                 )
 
@@ -437,7 +435,7 @@ function get_last_log_backup() {
         # Return datata in JSON format
         return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -451,7 +449,7 @@ function get_elevated_users_data(){
                                  FROM syscat.dbauth
                                 WHERE dbadmauth = 'Y'")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }

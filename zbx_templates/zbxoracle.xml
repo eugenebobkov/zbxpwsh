@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-13T06:01:01Z</date>
+    <date>2018-12-14T01:37:23Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -275,7 +275,12 @@ Instance name has to be updated in MACROS section</description>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
-                    <preprocessing/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.data.used_pct</params>
+                        </step>
+                    </preprocessing>
                     <jmx_endpoint/>
                     <timeout>3s</timeout>
                     <url/>

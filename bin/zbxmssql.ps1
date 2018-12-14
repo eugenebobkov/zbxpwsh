@@ -111,12 +111,9 @@ function get_instance_state() {
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
         return 'ONLINE'
     }
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }     
-    else {
-        return "ERROR: UNKNOWN (" + $result.Rows[0][0] + ")"
-    }
 }
 
 <#
@@ -138,9 +135,9 @@ function get_agent_state() {
               )
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return $result.Rows[0][0]
+        return "{ `"data`": {`n`t `"state`":" + $result.Rows[0][0] + "`n`t}`n}"
     } 
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         # Error
         return $result
     } 
@@ -160,7 +157,7 @@ function get_version() {
         # Result
         return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     } 
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         # Error
         return $result
     }
@@ -171,15 +168,15 @@ function get_version() {
 #>
 function get_startup_time() {
     # applicable for 2008 and higher
-    $result = (run_sql -Query "SELECT CONVERT(CHAR(19), sqlserver_start_time, 120) 
-                                 FROM sys.dm_os_sys_info")
+    $result = (run_sql -Query 'SELECT CONVERT(CHAR(19), sqlserver_start_time, 120) 
+                                 FROM sys.dm_os_sys_info')
 
     # TODO: add check for versions below 2008 if required for some reason
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Results
         return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     } 
-    elseif ($result.GetType() -eq [System.String]) {
+    else {
         return $result
     }
 }
@@ -189,9 +186,10 @@ function get_startup_time() {
 #>
 function list_databases() {
 
-    $result = (run_sql -Query "SELECT name FROM sys.databases")
+    $result = (run_sql -Query 'SELECT name 
+                                 FROM sys.databases')
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -230,7 +228,9 @@ function get_databases_state() {
  7 - Database Does Not Exist on Server
 #>
 
-    $result = (run_sql -Query ('SELECT name, state FROM sys.databases'))
+    $result = (run_sql -Query 'SELECT name
+                                    , state 
+                                 FROM sys.databases')
 
     ### TODO: AOAG check
     # if ($output -ne 'ONLINE') {
@@ -252,7 +252,7 @@ function get_databases_state() {
     # get-clustergroup
     ### sys.dm_os_cluster_nodes
     
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -281,14 +281,14 @@ function get_databases_state() {
 #>
 function get_databases_connections() {
 
-   $result = (run_sql -Query ('SELECT name, count(status)
-                                 FROM sys.databases sd
-                                      LEFT JOIN master.dbo.sysprocesses sp ON sd.database_id = sp.dbid
-                                GROUP BY name'
-                             )
+   $result = (run_sql -Query 'SELECT name
+                                   , count(status)
+                                FROM sys.databases sd
+                                     LEFT JOIN master.dbo.sysprocesses sp ON sd.database_id = sp.dbid
+                               GROUP BY name'
              )
     
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -318,50 +318,51 @@ function get_databases_connections() {
 #>
 function get_databases_waits() {
 
-   $result = (run_sql -Query ("SELECT
-	                                  sd.name
-                                    , case 
-		                                   when A.NumBlocking > 0 then A.NumBlocking
-                                      else 0
-	                                  end as numblocking
-                                 FROM sys.databases sd
-                                      left join (
-                                                  Select
-		                                                 R.database_id
-                                                       , count(*) as NumBlocking
-	                                                From sys.dm_os_waiting_tasks WT
-	                                                     Inner Join sys.dm_exec_sessions S on WT.session_id = S.session_id
-	                                                     Inner Join sys.dm_exec_requests R on R.session_id = WT.session_id
-	                                                     Left Join sys.dm_exec_requests RBlocker on RBlocker.session_id = WT.blocking_session_id
-	                                               Where R.status = 'suspended' -- Waiting on a resource
-		                                             And S.is_user_process = 1 -- Is a used process
-                                                     And R.session_id <> @@spid -- Filter out this session
-		                                             And WT.wait_type Not Like '%sleep%' -- more waits to ignore
-		                                             And WT.wait_type Not Like '%queue%' -- more waits to ignore
-		                                             And WT.wait_type Not Like -- more waits to ignore
-			                                         Case When SERVERPROPERTY('IsHadrEnabled') = 0 Then 'HADR%'
-			                                         Else 'zzzz' End
-		                                             And WT.wait_type not in (
-                                                                               'CLR_SEMAPHORE',
-                                                                               'SQLTRACE_BUFFER_FLUSH',
-                                                                               'WAITFOR',
-                                                                               'REQUEST_FOR_DEADLOCK_SEARCH',
-                                                                               'XE_TIMER_EVENT',
-                                                                               'BROKER_TO_FLUSH',
-                                                                               'BROKER_TASK_STOP',
-                                                                               'CLR_MANUAL_EVENT',
-                                                                               'CLR_AUTO_EVENT',
-                                                                               'FT_IFTS_SCHEDULER_IDLE_WAIT',
-                                                                               'XE_DISPATCHER_WAIT',
-                                                                               'XE_DISPATCHER_JOIN',
-                                                                               'BROKER_RECEIVE_WAITFOR'
-                                                                             )
-	                                               GROUP BY R.database_id
-                                                ) A on A.database_id = sd.database_id"
-                              )
+   $result = (run_sql -Query "SELECT
+	                                 sd.name
+                                   , case 
+		                                  when A.NumBlocking > 0 then A.NumBlocking
+                                     else 0
+	                                 end as numblocking
+                                FROM sys.databases sd
+                                     left join (
+                                                 SELECT
+		                                                R.database_id
+                                                      , count(*) as NumBlocking
+	                                               FROM sys.dm_os_waiting_tasks WT
+	                                                    Inner Join sys.dm_exec_sessions S on WT.session_id = S.session_id
+	                                                    Inner Join sys.dm_exec_requests R on R.session_id = WT.session_id
+	                                                    Left Join sys.dm_exec_requests RBlocker on RBlocker.session_id = WT.blocking_session_id
+	                                              WHERE R.status = 'suspended' -- Waiting on a resource
+		                                            AND S.is_user_process = 1 -- Is a used process
+                                                    AND R.session_id <> @@spid -- Filter out this session
+		                                            AND WT.wait_type Not Like '%sleep%' -- more waits to ignore
+		                                            AND WT.wait_type Not Like '%queue%' -- more waits to ignore
+		                                            AND WT.wait_type Not Like -- more waits to ignore
+			                                        CASE 
+                                                        WHEN SERVERPROPERTY('IsHadrEnabled') = 0 THEN 'HADR%'
+			                                            ELSE 'zzzz' 
+                                                    END
+		                                            AND WT.wait_type not in (
+                                                                              'CLR_SEMAPHORE',
+                                                                              'SQLTRACE_BUFFER_FLUSH',
+                                                                              'WAITFOR',
+                                                                              'REQUEST_FOR_DEADLOCK_SEARCH',
+                                                                              'XE_TIMER_EVENT',
+                                                                              'BROKER_TO_FLUSH',
+                                                                              'BROKER_TASK_STOP',
+                                                                              'CLR_MANUAL_EVENT',
+                                                                              'CLR_AUTO_EVENT',
+                                                                              'FT_IFTS_SCHEDULER_IDLE_WAIT',
+                                                                              'XE_DISPATCHER_WAIT',
+                                                                              'XE_DISPATCHER_JOIN',
+                                                                              'BROKER_RECEIVE_WAITFOR'
+                                                                            )
+	                                              GROUP BY R.database_id
+                                               ) A on A.database_id = sd.database_id"
              )
     
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -391,18 +392,17 @@ function get_databases_waits() {
 #>
 function get_databases_backup() {
    # if backup hasn't been done - it will return create date for the database
-   $result = (run_sql -Query ("SELECT sdb.name
-                                    , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
-                                    , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
-                                 FROM master.sys.databases sdb
-                                      LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
-                                GROUP BY 
-                                      sdb.Name
-                                    , sdb.recovery_model_desc"
-                             )
+   $result = (run_sql -Query 'SELECT sdb.name
+                                   , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
+                                   , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                FROM master.sys.databases sdb
+                                     LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
+                               GROUP BY 
+                                     sdb.Name
+                                   , sdb.recovery_model_desc'
              )
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -434,19 +434,18 @@ function get_databases_backup() {
 function get_databases_log_backup() {
   
    # if backup hasn't been done - it will return create date for the database
-   $result = (run_sql -Query ("SELECT sdb.name
-                                    , sdb.recovery_model_desc
-                                    , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
-                                    , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
-                                 FROM master.sys.databases sdb
-                                      LEFT OUTER JOIN msdb..backupset bus
-                                           ON bus.database_name = sdb.name
-                                           AND bus.type = 'L'
-                                GROUP BY sdb.name, sdb.recovery_model_desc"
-                             )
+   $result = (run_sql -Query "SELECT sdb.name
+                                   , sdb.recovery_model_desc
+                                   , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
+                                   , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                FROM master.sys.databases sdb
+                                     LEFT OUTER JOIN msdb..backupset bus
+                                          ON bus.database_name = sdb.name
+                                          AND bus.type = 'L'
+                               GROUP BY sdb.name, sdb.recovery_model_desc"
              )
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
@@ -484,7 +483,7 @@ function get_elevated_users_data(){
                                 WHERE rm.role_principal_id = SUSER_ID('Sysadmin')
                                   AND rm.member_principal_id = sp.principal_id")
 
-    if ($result.GetType() -eq [System.String]) {
+    if (-Not $result.GetType() -eq [System.Data.DataTable]) {
         # Instance is not available
         return $result
     }
