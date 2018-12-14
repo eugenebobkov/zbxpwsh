@@ -135,7 +135,7 @@ function get_agent_state() {
               )
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"state`":" + $result.Rows[0][0] + "`n`t}`n}"
+        return "{ `"data`": {`n`t `"state`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
     } 
     else {
         # Error
