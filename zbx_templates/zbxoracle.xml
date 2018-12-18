@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-14T08:38:56Z</date>
+    <date>2018-12-18T06:07:16Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -56,7 +56,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -118,7 +118,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -242,7 +242,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>30d</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -278,7 +278,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.used_pct</params>
+                            <params>$.used_pct</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -309,7 +309,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -371,7 +371,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -430,7 +430,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_db_backup,date]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -463,7 +463,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.date</params>
+                            <params>$.date</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -496,7 +496,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_db_backup,hours_since]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>90d</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -529,7 +529,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.hours_since</params>
+                            <params>$.hours_since</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -562,7 +562,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -624,7 +624,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_log_backup,date]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>90d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -657,7 +657,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.date</params>
+                            <params>$.date</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -690,7 +690,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_log_backup,hours_since]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>90d</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -723,7 +723,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.hours_since</params>
+                            <params>$.hours_since</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -756,7 +756,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -818,7 +818,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -883,7 +883,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -948,7 +948,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1013,7 +1013,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_processes_data,current]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>3</value_type>
@@ -1049,7 +1049,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.processes.current</params>
+                            <params>$.current</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1118,7 +1118,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.processes.max</params>
+                            <params>$.max</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1187,7 +1187,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.processes.pct</params>
+                            <params>$.pct</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1220,7 +1220,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_processes_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1288,7 +1288,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_standby_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1386,7 +1386,7 @@ percentage of utilization</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.startup_time</params>
+                            <params>$.startup_time</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1417,7 +1417,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1479,7 +1479,7 @@ percentage of utilization</description>
                     <snmp_oid/>
                     <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -1577,7 +1577,7 @@ percentage of utilization</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.version</params>
+                            <params>$.version</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -3560,7 +3560,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(OPEN,#2)}=0</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(ONLINE,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (State: {ITEM.VALUE})</name>

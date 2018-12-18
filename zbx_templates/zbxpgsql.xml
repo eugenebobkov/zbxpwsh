@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-14T02:17:46Z</date>
+    <date>2018-12-18T06:06:51Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -47,7 +47,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_connections_data,current]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>3</value_type>
@@ -83,7 +83,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.connections.current</params>
+                            <params>$.current</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -116,7 +116,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_connections_data,max]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>3</value_type>
@@ -152,7 +152,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.connections.max</params>
+                            <params>$.max</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -185,7 +185,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_connections_data,pct]</key>
                     <delay>0</delay>
-                    <history>7d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -221,7 +221,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.connections.pct</params>
+                            <params>$.pct</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -254,7 +254,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_connections_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -319,7 +319,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_databases_size,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -443,7 +443,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
-                    <history>7d</history>
+                    <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -538,7 +538,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.startup_time</params>
+                            <params>$.startup_time</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -569,7 +569,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_oid/>
                     <key>zbxpgsql[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
-                    <history>7d</history>
+                    <history>1w</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>1</value_type>
@@ -605,7 +605,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.version</params>
+                            <params>$.version</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -858,7 +858,7 @@ Hostname and port have to be updated in MACROS section</description>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
-            <status>0</status>
+            <status>1</status>
             <priority>4</priority>
             <description>Instance is not available</description>
             <type>0</type>
