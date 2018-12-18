@@ -210,9 +210,12 @@ function get_connections_data() {
         return $result
     }
 
-    return "{`n`t`"connections`": {`n`t`t `"max`":" + $result.Split('|')[0].Trim() + ",`"current`":" + $result.Split('|')[1].Trim() + ",`"pct`":" + $result.Split('|')[2].Trim() + "`n`t}`n}"
+    return ( @{
+                max = $result.Split('|')[0].Trim()
+                current = $result.Split('|')[1].Trim()
+                pct = $result.Split('|')[2].Trim()
+             } | ConvertTo-Json)
 }
-
 <#
     Not implemented yet, JSON expected
 #>
