@@ -144,7 +144,7 @@ function list_tablespaces() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
+        $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -169,7 +169,7 @@ function get_tbs_state(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{state = $row[1]})
+        $dict.Add($row[0], @{state = $row[1]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -192,7 +192,7 @@ function list_hadr_hosts() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#HADR_HOST}' = $row[0]})
+        $list.Add(@{'{#HADR_HOST}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -217,7 +217,7 @@ function get_hadr_data(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{state = $row[1]; connect_status = $row[2]})
+        $dict.Add($row[0], @{state = $row[1]; connect_status = $row[2]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -278,7 +278,7 @@ function get_tbs_used_space() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{max_gb = $row[1]; used_pct = $row[2]; used_kb = $row[3]})
+        $dict.Add($row[0], @{max_gb = $row[1]; used_pct = $row[2]; used_kb = $row[3]})
     }
 
     return ($dict | ConvertTo-Json)

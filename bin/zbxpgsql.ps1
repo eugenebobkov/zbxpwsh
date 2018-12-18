@@ -175,7 +175,7 @@ function get_databases_size() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row.Split('|')[0].Trim(), @{bytes = $row.Split('|')[1].Trim()})
+        $dict.Add($row.Split('|')[0].Trim(), @{bytes = $row.Split('|')[1].Trim()})
     }
 
     return ($dict | ConvertTo-Json)

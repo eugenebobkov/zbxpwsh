@@ -180,7 +180,7 @@ function list_tablespaces() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
+        $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -207,7 +207,7 @@ function list_asm_diskgroups() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#ASM_DISKGROUP_NAME}' = $row[0]})
+        $list.Add(@{'{#ASM_DISKGROUP_NAME}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -233,7 +233,7 @@ function list_guarantee_restore_points() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#RESTORE_POINT_NAME}' = $row[0]})
+        $list.Add(@{'{#RESTORE_POINT_NAME}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -261,7 +261,7 @@ function get_guarantee_restore_points_data(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{date = $row[1]; used_bytes = $row[2]})
+        $dict.Add($row[0], @{date = $row[1]; used_bytes = $row[2]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -287,7 +287,7 @@ function get_asm_diskgroups_state(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{state = $row[1]})
+        $dict.Add($row[0], @{state = $row[1]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -315,7 +315,7 @@ function get_asm_diskgroups_data(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{used_mb = $row[1]; used_pct = $row[2]; total_mb = $row[3]})
+        $dict.Add($row[0], @{used_mb = $row[1]; used_pct = $row[2]; total_mb = $row[3]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -345,7 +345,7 @@ function list_pdbs() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#PDB_NAME}' = $row[0]})
+        $list.Add(@{'{#PDB_NAME}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -372,7 +372,7 @@ function list_standby_databases() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#STANDBY_DEST}' = $row[0]})
+        $list.Add(@{'{#STANDBY_DEST}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -401,7 +401,7 @@ function get_standby_data(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{status = $row[1]; valid_now = $row[2]})
+        $dict.Add($row[0], @{status = $row[1]; valid_now = $row[2]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -429,7 +429,7 @@ function get_pdb_state() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{state = $row[1]})
+        $dict.Add($row[0], @{state = $row[1]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -472,7 +472,7 @@ function list_pdbs_tablespaces() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#PDB_NAME}' = $row[0]; '{#TABLESPACE_NAME}' = $row[1]})
+        $list.Add(@{'{#PDB_NAME}' = $row[0]; '{#TABLESPACE_NAME}' = $row[1]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -525,7 +525,7 @@ function get_tbs_space_data() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{used_pct = $row[1]; used_bytes = $row[2]; max_bytes = $row[3]})
+        $dict.Add($row[0], @{used_pct = $row[1]; used_bytes = $row[2]; max_bytes = $row[3]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -565,34 +565,20 @@ function get_pdbs_tbs_used_space() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
+    $dict = @{}
     $pdb = ''
-    $first_pdb = $true
-
-    # generate JSON
-    $json = "{`n"
 
     foreach ($row in $result) {
-        if ($pdb -ne $row[0]){
-            if ($first_pdb -ne $true) {
-                $json += "`t},`n"
-            }
-            $json += "`"" + $row[0] + "`":{`n"
-           $json += "`t`"" + $row[1] + "`":{`"used_pct`":" + $row[2] + ",`"used_bytes`":" + $row[3] + ",`"max_bytes`":" + $row[4] + "}"
-           $pdb = $row[0]
-           $first_pdb = $false
-        }
-        else {
-          $json += "`t,`"" + $row[1] + "`":{`"used_pct`":" + $row[2] + ",`"used_bytes`":" + $row[3] + ",`"max_bytes`":" + $row[4] + "}" 
+        
+        if ($pdb -ne $row[0]) {
+            $pdb = $row[0]
+            $dict.Add($pdb, @{})
         }
 
-        $json += "`n"
-        $idx++
+        $dict.$pdb.Add($row[1], @{used_pct = $row[2]; used_bytes = $row[3]; max_bytes = $row[4]})
     }
 
-    $json += "`t}`n}"
-    
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -632,7 +618,7 @@ function get_tbs_state(){
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{state = $row[1]; backup_mode = $row[2]; backup_mode_hours_since = $row[3]})
+        $dict.Add($row[0], @{state = $row[1]; backup_mode = $row[2]; backup_mode_hours_since = $row[3]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -666,7 +652,9 @@ function get_pdbs_tbs_state(){
                                  FROM cdb_tablespaces t
                                     , v`$pdbs p
                                 WHERE t.contents = 'PERMANENT'
-                                  AND t.con_id = p.con_id"
+                                  AND t.con_id = p.con_id
+                                ORDER BY
+                                      p.name"
               )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -678,35 +666,22 @@ function get_pdbs_tbs_state(){
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
+    $dict = @{}
     $pdb = ''
-    $first_pdb = $true
-
-    # generate JSON
-    $json = "{`n"
 
     foreach ($row in $result) {
-        if ($pdb -ne $row[0]){
-            if ($first_pdb -ne $true) {
-                $json += "`t},`n"
-            }
-            $json += "`"" + $row[0] + "`":{`n"
-            $json += "`t`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`",`"backup_mode`":`"" + $row[3] + "`",`"backup_mode_hours_since`":" + $row[4] +"}"
+        
+        if ($pdb -ne $row[0]) {
             $pdb = $row[0]
-            $first_pdb = $false
-        }
-        else {
-            $json += "`t,`"" + $row[1] + "`":{`"state`":`"" + $row[2] + "`",`"backup_mode`":`"" + $row[3] + "`",`"backup_mode_hours_since`":" + $row[4] +"}"
+            $dict.Add($pdb, @{})
         }
 
-        $json += "`n"
-        $idx++
+        $dict.$pdb.Add($row[1], @{state = $row[2]; backup_mode = $row[3]; backup_mode_hours_since = $row[4]})
     }
 
-    $json += "`t}`n}"
+    return ($dict | ConvertTo-Json)
+} 
 
-    return $json
-}
 
 <#
     Function to provide percentage of current processes to maximum available

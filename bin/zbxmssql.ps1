@@ -200,7 +200,7 @@ function list_databases() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#DATABASE}' = $row[0]})
+        $list.Add(@{'{#DATABASE}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json)
@@ -253,7 +253,7 @@ function get_databases_state() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{state = $row[1]})
+        $dict.Add($row[0], @{state = $row[1]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -279,7 +279,7 @@ function get_databases_connections() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{connections = $row[1]})
+        $dict.Add($row[0], @{connections = $row[1]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -342,7 +342,7 @@ function get_databases_waits() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{waits = $row[1]})
+        $dict.Add($row[0], @{waits = $row[1]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -371,7 +371,7 @@ function get_databases_backup() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{date = $row[1]; hours_since = $row[2]})
+        $dict.Add($row[0], @{date = $row[1]; hours_since = $row[2]})
     }
 
     return ($dict | ConvertTo-Json)
@@ -403,7 +403,7 @@ function get_databases_log_backup() {
     $dict = @{}
 
     foreach ($row in $result) {
-       $dict.Add($row[0], @{recovery_model = $row[1]; date = $row[2]; hours_since = $row[3]})
+        $dict.Add($row[0], @{recovery_model = $row[1]; date = $row[2]; hours_since = $row[3]})
     }
 
     return ($dict | ConvertTo-Json)
