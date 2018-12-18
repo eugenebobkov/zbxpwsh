@@ -177,24 +177,15 @@ function list_tablespaces() {
         return $result
     }
 
-    $idx = 0
-    $json = "{ `n`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
     }
 
-    $json += "`t]`n}"
+    return (@{data = $list} | ConvertTo-Json)
+} 
 
-    return $json
-}
 
 <#
     Function to list ASM diskgroups
@@ -213,23 +204,13 @@ function list_asm_diskgroups() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 0
-    $json = "{ `n`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t{`"{#ASM_DISKGROUP_NAME}`": `"" + $row[0] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#ASM_DISKGROUP_NAME}' = $row[0]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#
@@ -249,23 +230,13 @@ function list_guarantee_restore_points() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 0
-    $json = "{ `n`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t{`"{#RESTORE_POINT_NAME}`": `"" + $row[0] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#RESTORE_POINT_NAME}' = $row[0]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#
@@ -400,29 +371,17 @@ function list_pdbs() {
         return "{ `n`t`"data`":[`n`t]`n}"
     }
 
-    $result = (run_sql -Query "SELECT con_id
-                                    , name 
+    $result = (run_sql -Query "SELECT name 
                                  FROM v`$pdbs 
                                 WHERE name != 'PDB`$SEED'")
 
-    $idx = 0
-
-    # generate JSON
-    $json = "{ `n`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-        $json += "`t{`"{#CON_ID}`":" + $row[0] + ", `"{#PDB_NAME}`":`"" + $row[1] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#PDB_NAME}' = $row[0]})
     }
 
-    $json += "]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#
@@ -443,23 +402,13 @@ function list_standby_databases() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 0
-    $json = "{ `n`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t{`"{#STANDBY_DEST}`": `"" + $row[0] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#STANDBY_DEST}' = $row[0]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#
@@ -558,8 +507,7 @@ function list_pdbs_tablespaces() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $result = (run_sql -Query "SELECT c.con_id
-                                    , p.name
+    $result = (run_sql -Query "SELECT p.name
                                     , c.tablespace_name 
                                  FROM cdb_tablespaces c
                                     , v`$pdbs p 
@@ -576,24 +524,13 @@ function list_pdbs_tablespaces() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 0
-    # generate JSON
-    $json = "{ `n`t`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-        $json += "`t`t{`"{#CON_ID}`" : " + $row[0] + ", `"{#PDB_NAME}`" : `"" + $row[1] + "`", `"{#TABLESPACE_NAME}`" : `"" + $row[2] + "`"}"
-
-        $idx++
-
-        if ($idx -lt $result.Rous.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#PDB_NAME}' = $row[0]; '{#TABLESPACE_NAME}' = $row[1]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#

@@ -151,23 +151,13 @@ function list_databases() {
         return $result
     }
 
-    $idx = 0
-    $json = "{ `n`t`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t{`"{#DATABASE}`": `"" + $row + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#DATABASE}' = $row})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 function get_databases_size() {

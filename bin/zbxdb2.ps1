@@ -141,23 +141,13 @@ function list_tablespaces() {
         return $result
     }
 
-    $idx = 0
-    $json = "{ `n`t`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t{`"{#TABLESPACE_NAME}`": `"" + $row[0] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#
@@ -210,24 +200,13 @@ function list_hadr_hosts() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 0
-    
-    # generate JSON
-    $json = "{ `n`t`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-        $json += "`t`t{`"{#HADR_HOST}`": `"" + $row[0] + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $list.Add(@{'{#HADR_HOST}' = $row[0]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 function get_hadr_data(){

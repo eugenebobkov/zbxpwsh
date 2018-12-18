@@ -197,23 +197,13 @@ function list_databases() {
         return $result
     }
 
-    $idx = 1
-    $json = "{ `n`t`"data`": [`n"
+    $list = New-Object System.Collections.Generic.List[System.Object]
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t{`"{#DATABASE}`": `"" + $row[0] + "`"}"
-       
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++  
+       $list.Add(@{'{#DATABASE}' = $row[0]})
     }
 
-    $json += "`t]`n}"
-
-    return $json
+    return (@{data = $list} | ConvertTo-Json)
 }
 
 <#
