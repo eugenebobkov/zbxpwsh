@@ -44,6 +44,7 @@ function run_sql() {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
+        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
@@ -111,7 +112,7 @@ function run_sql() {
 } 
 
 <#
-    Function to check instance status, OPEN stands for OK, any other results is equalent to FAIL
+    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     
@@ -119,8 +120,9 @@ function get_instance_state() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'OPEN') {
-        return 'OPEN'
+        return 'ONLINE'
     }
+    #TODO: any other statuses to check?
     # data is not in [System.Data.DataTable] format
     else {
         return $result
@@ -927,7 +929,7 @@ function get_last_log_backup() {
 					             FROM v`$rman_status
 							    WHERE object_type in ('ARCHIVELOG')
 							      AND status like 'COMPLETED%'"  `
-                       -CommandTimeout 30
+                       -CommandTimeout 25
                 )
 
     # Check if expected object has been recieved

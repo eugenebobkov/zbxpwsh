@@ -37,8 +37,9 @@ function run_sql() {
 #    [OutputType([System.Data.DataTable])]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
+        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
-        [Parameter(Mandatory=$false)][int32]$CommandTimeout = 5      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
+        [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
 
     # add Port to connection string

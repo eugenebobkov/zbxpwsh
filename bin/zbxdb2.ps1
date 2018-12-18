@@ -36,6 +36,7 @@ function run_sql() {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
+        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
@@ -405,7 +406,7 @@ function get_last_db_backup() {
 					             FROM SYSIBMADM.DB_HISTORY 
 							    WHERE OPERATION = 'B' 
 							   AND SQLCODE IS NULL"  `
-                       -CommandTimeout 30
+                       -CommandTimeout 25
                 )
 
     # Check if expected object has been recieved
@@ -427,7 +428,7 @@ function get_last_log_backup() {
 					             FROM SYSIBMADM.DB_HISTORY 
 							    WHERE OPERATION = 'X' 
 							      AND SQLCODE IS NULL"  `
-                       -CommandTimeout 30
+                       -CommandTimeout 25
                 )
 
     # Check if expected object has been recieved
