@@ -166,24 +166,13 @@ function get_tbs_state(){
         return $result
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{state = $row[1]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 function list_hadr_hosts() {
@@ -225,26 +214,15 @@ function get_hadr_data(){
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`",`"connect_status`":`"" + $row[2] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{state = $row[1]; connect_status = $row[2]})
     }
 
-    $json += "}"
+    return ($dict | ConvertTo-Json)
 
-    return $json
 }
-
 
 function get_tbs_used_space() {
 
@@ -297,24 +275,13 @@ function get_tbs_used_space() {
         return $result
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`"" + $row[0].Trim() + "`":{`"max_gb`":" + $row[1] + ",`"used_pct`":" + $row[2] + ",`"used_kb`":" + $row[3] + "}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{max_gb = $row[1]; used_pct = $row[2]; used_kb = $row[3]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 
@@ -392,7 +359,7 @@ function get_logs_utilization_data() {
 #>
 function get_last_db_backup() {
     $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 6) hours_since
+                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
 					             FROM SYSIBMADM.DB_HISTORY 
 							    WHERE OPERATION = 'B' 
 							   AND SQLCODE IS NULL"  `
@@ -417,7 +384,7 @@ function get_last_db_backup() {
 #>
 function get_last_log_backup() {
     $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 6) hours_since
+                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
 					             FROM SYSIBMADM.DB_HISTORY 
 							    WHERE OPERATION = 'X' 
 							      AND SQLCODE IS NULL"  `

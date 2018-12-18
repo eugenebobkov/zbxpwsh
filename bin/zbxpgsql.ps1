@@ -162,30 +162,23 @@ function list_databases() {
 
 function get_databases_size() {
 
-    $result = @(run_sql -Query "SELECT datname, pg_database_size(datname) FROM pg_database WHERE datistemplate = false").Trim()
+    $result = @(run_sql -Query "SELECT datname
+                                     , pg_database_size(datname) 
+                                  FROM pg_database 
+                                 WHERE datistemplate = false").Trim()
 
     # Check if expected object has been recieved
     if ($result -Match '^ERROR:') {
         return $result
     }
 
-    $idx = 0
-    $json = "{`n"
+    $dict = @{}
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`"" + $row.Split('|')[0].Trim() + "`":{`"bytes`":`"" + $row.Split('|')[1].Trim() + "`"}"
-        $idx++
-
-        if ($idx -lt $result.Count) {
-            $json += ','
-        }
-        $json += "`n"
+       $dict.Add($row.Split('|')[0].Trim(), @{bytes = $row.Split('|')[1].Trim()})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 function get_connections_data() {

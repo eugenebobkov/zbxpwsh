@@ -138,7 +138,7 @@ function get_agent_state() {
               )
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"state`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
+        return (@{state = $result.Rows[0][0]} | ConvertTo-Json)
     } 
     else {
         # Error
@@ -250,23 +250,13 @@ function get_databases_state() {
         return $result
     }
 
-    $idx = 1
-    $json = "{`n"
+    $dict = @{}
 
-    # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{state = $row[1]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -285,25 +275,14 @@ function get_databases_connections() {
         # Instance is not available
         return $result
     }
-    
-    $idx = 1
 
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{connections = $row[1]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -360,24 +339,13 @@ function get_databases_waits() {
         return $result
     }
     
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`t`"" + $row[0] + "`":`"" + $row[1] + "`""
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{waits = $row[1]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -400,24 +368,13 @@ function get_databases_backup() {
         return $result
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"date`":`"" + $row[1] + "`",`"hours_since`":`"" + $row[2] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{date = $row[1]; hours_since = $row[2]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -443,25 +400,13 @@ function get_databases_log_backup() {
         return $result
     }
 
-    $idx = 1
-
-    # generate JSON
-
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"recovery_model`":`"" + $row[1] + "`",`"date`":`"" + $row[2] + "`",`"hours_since`":`"" + $row[3] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{recovery_model = $row[1]; date = $row[2]; hours_since = $row[3]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#

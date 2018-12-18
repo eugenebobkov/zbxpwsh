@@ -258,24 +258,13 @@ function get_guarantee_restore_points_data(){
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"date`":`"" + $row[1] + "`",`"used_bytes`":" + $row[2] + "}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{date = $row[1]; used_bytes = $row[2]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -295,24 +284,13 @@ function get_asm_diskgroups_state(){
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{state = $row[1]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -334,24 +312,13 @@ function get_asm_diskgroups_data(){
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"used_mb`":" + $row[1] + ",`"used_pct`":" + $row[2] + ",`"total_mb`":" + $row[3] + "}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{used_mb = $row[1]; used_pct = $row[2]; total_mb = $row[3]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -431,24 +398,13 @@ function get_standby_data(){
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"status`":`"" + $row[1] + "`",`"valid_now`":`"" + $row[2] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{status = $row[1]; valid_now = $row[2]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -470,24 +426,13 @@ function get_pdb_state() {
         return "{ `n`t`"data`": [`n`t]`n}"
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`"}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{state = $row[1]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -577,24 +522,13 @@ function get_tbs_space_data() {
         return $result
     }
 
-    $idx = 1
-
-    # generate JSON to process by dependant items
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"used_pct`":" + $row[1] + ",`"used_bytes`":" + $row[2] + ",`"max_bytes`":" + $row[3] + "}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{used_pct = $row[1]; used_bytes = $row[2]; max_bytes = $row[3]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
@@ -695,24 +629,13 @@ function get_tbs_state(){
         return $result
     }
 
-    $idx = 1
-
-    # generate JSON
-    $json = "{`n"
+    $dict = @{}
 
     foreach ($row in $result) {
-        $json += "`t`"" + $row[0] + "`":{`"state`":`"" + $row[1] + "`",`"backup_mode`":`"" + $row[2] + "`",`"backup_mode_hours_since`":" + $row[3] + "}"
-
-        if ($idx -lt $result.Rows.Count) {
-            $json += ','
-        }
-        $json += "`n"
-        $idx++
+       $dict.Add($row[0], @{state = $row[1]; backup_mode = $row[2]; backup_mode_hours_since = $row[3]})
     }
 
-    $json += "}"
-
-    return $json
+    return ($dict | ConvertTo-Json)
 }
 
 <#
