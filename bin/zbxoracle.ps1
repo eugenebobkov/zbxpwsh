@@ -27,7 +27,7 @@ Param (
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',    # User name
     [Parameter(Mandatory=$true, Position=5)][string]$Password = '',    # Password
     [Parameter(Mandatory=$true, Position=6)][string]$Service = ''     # Service name
-    )
+)
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition

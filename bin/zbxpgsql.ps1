@@ -6,7 +6,7 @@ Param (
     [Parameter(Mandatory=$true, Position=3)][int]$Port = 5432,        # Port number
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',   # User name
     [Parameter(Mandatory=$false, Position=5)][string]$Password = ''   # Password, not required if .pgpass file populated
-    )
+)
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition

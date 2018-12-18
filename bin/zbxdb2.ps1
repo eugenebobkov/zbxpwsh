@@ -19,7 +19,7 @@ Param (
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',    # User name
     [Parameter(Mandatory=$true, Position=5)][string]$Password = '',    # Password
     [Parameter(Mandatory=$true, Position=6)][string]$Database = ''     # Database name
-    )
+)
 
 $global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
@@ -413,7 +413,7 @@ function get_logs_utilization_data() {
 #>
 function get_last_db_backup() {
     $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
+                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 6) hours_since
 					             FROM SYSIBMADM.DB_HISTORY 
 							    WHERE OPERATION = 'B' 
 							   AND SQLCODE IS NULL"  `
@@ -438,7 +438,7 @@ function get_last_db_backup() {
 #>
 function get_last_log_backup() {
     $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , round(timestampdiff(8, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')), 6) hours_since
+                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 6) hours_since
 					             FROM SYSIBMADM.DB_HISTORY 
 							    WHERE OPERATION = 'X' 
 							      AND SQLCODE IS NULL"  `
