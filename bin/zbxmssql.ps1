@@ -106,7 +106,9 @@ function run_sql() {
     Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'SELECT max(1) FROM sys.databases WHERE 1=1')
+    $result = (run_sql -Query 'SELECT max(1) 
+                                 FROM sys.databases 
+                                WHERE 1=1')
     
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 1) {
@@ -145,7 +147,7 @@ function get_agent_state() {
 }
 
 <#
-    Function to provide MSSQL version
+    Function to get software version
 #>
 function get_version() {
     $result = (run_sql -Query "SELECT CONCAT(CONVERT(VARCHAR, SERVERPROPERTY('ProductVersion')), ' ', 
@@ -156,10 +158,10 @@ function get_version() {
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Result
-        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
+        return (@{version = $result.Rows[0][0]} | ConvertTo-Json)
     } 
     else {
-        # Error
+        # data is not in [System.Data.DataTable] format
         return $result
     }
 }
@@ -175,7 +177,7 @@ function get_startup_time() {
     # TODO: add check for versions below 2008 if required for some reason
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Results
-        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
+        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json)
     } 
     else {
         return $result

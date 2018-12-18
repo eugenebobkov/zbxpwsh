@@ -112,12 +112,15 @@ function get_instance_state() {
     }
 }
 
+<#
+    Function to get software version
+#>
 function get_version() {
     $result = (run_sql -Query 'SELECT version()').Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return "{ `"data`": {`n`t `"version`":`"" + $result.Trim() + "`"`n`t}`n}" 
+        return (@{version = $result.Trim()} | ConvertTo-Json)
     }
     else {
         return $result
@@ -125,14 +128,14 @@ function get_version() {
 }
 
 <#
-Function to get instance startup timestamp
+    Function to get instance startup timestamp
 #>
 function get_startup_time() {
     $result = (run_sql -Query "SELECT to_char(pg_postmaster_start_time(),'DD/MM/YYYY HH24:MI:SS')").Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Trim() + "`"`n`t}`n}" 
+        return (@{startup_time = $result.Trim()} | ConvertTo-Json)
     }
     else {
         return $result

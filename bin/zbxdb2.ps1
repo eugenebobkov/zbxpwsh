@@ -110,6 +110,9 @@ function get_database_state() {
     }
 }
 
+<#
+    Function to get software version
+#>
 function get_version() {
     
     $result = (run_sql -Query 'SELECT service_level version 
@@ -120,7 +123,7 @@ function get_version() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"version`":`"" + $result.Rows[0][0] + "`"`n`t}`n}" 
+        return (@{version = $result.Rows[0][0]} | ConvertTo-Json)
     }
     else {
         return $result
@@ -346,7 +349,7 @@ function get_startup_time() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return "{ `"data`": {`n`t `"startup_time`":`"" + $result.Rows[0][0] + "`"`n`t}`n}"
+        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json)
     }
     else {
         return $result
@@ -369,7 +372,11 @@ function get_appls_data() {
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Return datata in JSON format
-        return "{`n`t`"appls`": {`n`t`t `"max`":" + $result.Rows[0][0] + ",`"current`":" + $result.Rows[0][1] + ",`"pct`":" + $result.Rows[0][2] + "`n`t}`n}"
+        return ( @{
+                     max = $result.Rows[0][0]
+                     current = $result.Rows[0][1]
+                     pct = $result.Rows[0][2]
+                 } | ConvertTo-Json)
     }
     else {
         return $result
@@ -390,7 +397,11 @@ function get_logs_utilization_data() {
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Return datata in JSON format
-        return "{ `"data`": {`n`t `"used_pct`":" + $result.Rows[0][0] + ",`"used_kb`":" + $result.Rows[0][1] + ",`"available_kb`":" + $result.Rows[0][2] + "`n`t}`n}"
+        return ( @{
+                     used_pct = $result.Rows[0][0]
+                     used_kb = $result.Rows[0][1]
+                     available_kb = $result.Rows[0][2]
+                 } | ConvertTo-Json)
     }
     else {
         return $result
@@ -412,7 +423,10 @@ function get_last_db_backup() {
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Return datata in JSON format
-        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
+        return ( @{
+                     date = $result.Rows[0][0]
+                     hours_since = $result.Rows[0][1]
+                 } | ConvertTo-Json)
     }
     else {
         return $result
@@ -434,7 +448,10 @@ function get_last_log_backup() {
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Return datata in JSON format
-        return "{ `"data`": {`n`t `"date`":`"" + $result.Rows[0][0] + "`",`"hours_since`":" + $result.Rows[0][1] +"`n`t}`n}"
+        return ( @{
+                     date = $result.Rows[0][0]
+                     hours_since = $result.Rows[0][1]
+                 } | ConvertTo-Json)
     }
     else {
         return $result
