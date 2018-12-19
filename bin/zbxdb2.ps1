@@ -232,7 +232,7 @@ function get_tbs_used_space() {
                                     , dec(dbu.tbsp_used_size_kb) used_kb
                                  FROM 
 									( SELECT tbsp_id 
-										   , char(tbsp_name,20) as tbsp_name 
+										   , tbsp_name as tbsp_name 
 										   , CASE tbsp_content_type 
 												 WHEN 'ANY' THEN 'REGULAR' 
 													 ELSE tbsp_content_type 
