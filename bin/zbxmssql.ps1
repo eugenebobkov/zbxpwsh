@@ -138,7 +138,7 @@ function get_agent_state() {
               )
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{state = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{state = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     } 
     else {
         # Error
@@ -158,7 +158,7 @@ function get_version() {
 
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Result
-        return (@{version = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{version = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     } 
     else {
         # data is not in [System.Data.DataTable] format
@@ -177,7 +177,7 @@ function get_startup_time() {
     # TODO: add check for versions below 2008 if required for some reason
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Results
-        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     } 
     else {
         return $result
@@ -203,7 +203,7 @@ function list_databases() {
         $list.Add(@{'{#DATABASE}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -256,7 +256,7 @@ function get_databases_state() {
         $dict.Add($row[0], @{state = $row[1]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -282,7 +282,7 @@ function get_databases_connections() {
         $dict.Add($row[0], @{connections = $row[1]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -345,7 +345,7 @@ function get_databases_waits() {
         $dict.Add($row[0], @{waits = $row[1]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -354,7 +354,7 @@ function get_databases_waits() {
 function get_databases_backup() {
    # if backup hasn't been done - it will return create date for the database
    $result = (run_sql -Query 'SELECT sdb.name
-                                   , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
+                                   , CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) AS last_date
                                    , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
                                 FROM master.sys.databases sdb
                                      LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
@@ -374,7 +374,7 @@ function get_databases_backup() {
         $dict.Add($row[0], @{date = $row[1]; hours_since = $row[2]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -386,7 +386,7 @@ function get_databases_log_backup() {
    # if backup hasn't been done - it will return create date for the database
    $result = (run_sql -Query "SELECT sdb.name
                                    , sdb.recovery_model_desc
-                                   , COALESCE(CONVERT(CHAR(19), MAX(bus.backup_finish_date), 120), max(sdb.create_date)) AS last_date
+                                   , CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) AS last_date
                                    , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
                                 FROM master.sys.databases sdb
                                      LEFT OUTER JOIN msdb..backupset bus
@@ -406,7 +406,7 @@ function get_databases_log_backup() {
         $dict.Add($row[0], @{recovery_model = $row[1]; date = $row[2]; hours_since = $row[3]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#

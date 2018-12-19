@@ -139,7 +139,7 @@ function get_version() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{version = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{version = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     # data is not in [System.Data.DataTable] format
     else {
@@ -157,7 +157,7 @@ function get_startup_time() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     # data is not in [System.Data.DataTable] format
     else {
@@ -183,7 +183,7 @@ function list_tablespaces() {
         $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 } 
 
 
@@ -210,7 +210,7 @@ function list_asm_diskgroups() {
         $list.Add(@{'{#ASM_DISKGROUP_NAME}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -236,7 +236,7 @@ function list_guarantee_restore_points() {
         $list.Add(@{'{#RESTORE_POINT_NAME}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -264,7 +264,7 @@ function get_guarantee_restore_points_data(){
         $dict.Add($row[0], @{date = $row[1]; used_bytes = $row[2]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -290,7 +290,7 @@ function get_asm_diskgroups_state(){
         $dict.Add($row[0], @{state = $row[1]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -318,7 +318,7 @@ function get_asm_diskgroups_data(){
         $dict.Add($row[0], @{used_mb = $row[1]; used_pct = $row[2]; total_mb = $row[3]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -348,7 +348,7 @@ function list_pdbs() {
         $list.Add(@{'{#PDB_NAME}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -375,7 +375,7 @@ function list_standby_databases() {
         $list.Add(@{'{#STANDBY_DEST}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -404,7 +404,7 @@ function get_standby_data(){
         $dict.Add($row[0], @{status = $row[1]; valid_now = $row[2]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -432,7 +432,7 @@ function get_pdb_state() {
         $dict.Add($row[0], @{state = $row[1]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -475,7 +475,7 @@ function list_pdbs_tablespaces() {
         $list.Add(@{'{#PDB_NAME}' = $row[0]; '{#TABLESPACE_NAME}' = $row[1]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -528,7 +528,7 @@ function get_tbs_space_data() {
         $dict.Add($row[0], @{used_pct = $row[1]; used_bytes = $row[2]; max_bytes = $row[3]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -578,7 +578,7 @@ function get_pdbs_tbs_used_space() {
         $dict.$pdb.Add($row[1], @{used_pct = $row[2]; used_bytes = $row[3]; max_bytes = $row[4]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -621,7 +621,7 @@ function get_tbs_state(){
         $dict.Add($row[0], @{state = $row[1]; backup_mode = $row[2]; backup_mode_hours_since = $row[3]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
@@ -679,7 +679,7 @@ function get_pdbs_tbs_state(){
         $dict.$pdb.Add($row[1], @{state = $row[2]; backup_mode = $row[3]; backup_mode_hours_since = $row[4]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 } 
 
 
@@ -702,7 +702,7 @@ function get_processes_data() {
                      max = $result.Rows[0][0]
                      current = $result.Rows[0][1]
                      pct = $result.Rows[0][2]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -719,7 +719,7 @@ function get_fra_used_pct() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{used_pct = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{used_pct = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -748,7 +748,7 @@ function get_last_db_backup() {
         return ( @{
                      date = $result.Rows[0][0]
                      hours_since = $result.Rows[0][1]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -778,7 +778,7 @@ function get_last_log_backup() {
         return ( @{
                      date = $result.Rows[0][0]
                      hours_since = $result.Rows[0][1]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result

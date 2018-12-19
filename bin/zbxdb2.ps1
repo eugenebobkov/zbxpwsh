@@ -123,7 +123,7 @@ function get_version() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{version = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{version = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -147,7 +147,7 @@ function list_tablespaces() {
         $list.Add(@{'{#TABLESPACE_NAME}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -172,7 +172,7 @@ function get_tbs_state(){
         $dict.Add($row[0], @{state = $row[1]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 function list_hadr_hosts() {
@@ -195,7 +195,7 @@ function list_hadr_hosts() {
         $list.Add(@{'{#HADR_HOST}' = $row[0]})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 function get_hadr_data(){
@@ -220,7 +220,7 @@ function get_hadr_data(){
         $dict.Add($row[0], @{state = $row[1]; connect_status = $row[2]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 
 }
 
@@ -281,7 +281,7 @@ function get_tbs_used_space() {
         $dict.Add($row[0], @{max_gb = $row[1]; used_pct = $row[2]; used_kb = $row[3]})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 
@@ -295,7 +295,7 @@ function get_startup_time() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json)
+        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -322,7 +322,7 @@ function get_appls_data() {
                      max = $result.Rows[0][0]
                      current = $result.Rows[0][1]
                      pct = $result.Rows[0][2]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -347,7 +347,7 @@ function get_logs_utilization_data() {
                      used_pct = $result.Rows[0][0]
                      used_kb = $result.Rows[0][1]
                      available_kb = $result.Rows[0][2]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -372,7 +372,7 @@ function get_last_db_backup() {
         return ( @{
                      date = $result.Rows[0][0]
                      hours_since = $result.Rows[0][1]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -397,7 +397,7 @@ function get_last_log_backup() {
         return ( @{
                      date = $result.Rows[0][0]
                      hours_since = $result.Rows[0][1]
-                 } | ConvertTo-Json)
+                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result

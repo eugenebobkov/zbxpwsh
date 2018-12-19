@@ -120,7 +120,7 @@ function get_version() {
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return (@{version = $result.Trim()} | ConvertTo-Json)
+        return (@{version = $result.Trim()} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -135,7 +135,7 @@ function get_startup_time() {
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
-        return (@{startup_time = $result.Trim()} | ConvertTo-Json)
+        return (@{startup_time = $result.Trim()} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -157,7 +157,7 @@ function list_databases() {
        $list.Add(@{'{#DATABASE}' = $row})
     }
 
-    return (@{data = $list} | ConvertTo-Json)
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 function get_databases_size() {
@@ -178,7 +178,7 @@ function get_databases_size() {
         $dict.Add($row.Split('|')[0].Trim(), @{bytes = $row.Split('|')[1].Trim()})
     }
 
-    return ($dict | ConvertTo-Json)
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 function get_connections_data() {
@@ -197,7 +197,7 @@ function get_connections_data() {
                 max = $result.Split('|')[0].Trim()
                 current = $result.Split('|')[1].Trim()
                 pct = $result.Split('|')[2].Trim()
-             } | ConvertTo-Json)
+             } | ConvertTo-Json -Compress)
 }
 <#
     Not implemented yet, JSON expected
