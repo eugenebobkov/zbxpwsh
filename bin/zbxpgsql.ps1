@@ -21,7 +21,6 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 #>
 
 function run_sql() {
-    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection

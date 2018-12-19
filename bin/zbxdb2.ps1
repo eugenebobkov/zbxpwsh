@@ -15,10 +15,10 @@
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
-    [Parameter(Mandatory=$true, Position=3)][int]$Port = 50000,        # Port number if required
-    [Parameter(Mandatory=$true, Position=4)][string]$Username = '',    # User name
-    [Parameter(Mandatory=$true, Position=5)][string]$Password = '',    # Password
-    [Parameter(Mandatory=$true, Position=6)][string]$Database = ''     # Database name
+    [Parameter(Mandatory=$true, Position=3)][string]$Service = '',     # Database name
+    [Parameter(Mandatory=$true, Position=4)][int]$Port = 50000,        # Port number if required
+    [Parameter(Mandatory=$true, Position=5)][string]$Username = '',    # User name
+    [Parameter(Mandatory=$true, Position=6)][string]$Password = ''     # Password
 )
 
 $global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
@@ -33,7 +33,6 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 #>
 
 function run_sql() {
-    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server

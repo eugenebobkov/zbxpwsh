@@ -41,7 +41,6 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 #>
 
 function run_sql() {
-    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server

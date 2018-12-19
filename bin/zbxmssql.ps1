@@ -14,10 +14,11 @@
 
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,      # Name of check function
-    [Parameter(Mandatory=$true, Position=2)][string]$Instance,       # Instance name, required for instance related checks, <SERVERNAME>\<INSTANCE>
-    [Parameter(Mandatory=$false, Position=3)][int]$Port = 1433,      # Port number, if required for non standart configuration, by default 1433
-    [Parameter(Mandatory=$false, Position=4)][string]$Username = '', # User name, required for SQL server authentication
-    [Parameter(Mandatory=$false, Position=5)][string]$Password = ''  # Password, required for SQL server authentication
+    [Parameter(Mandatory=$true, Position=2)][string]$Hostname,       # Hostname, required for instance related checks, <HOSTNAME>\<SERVICE>
+    [Parameter(Mandatory=$true, Position=3)][string]$Service = '',  # Service name like SQL001
+    [Parameter(Mandatory=$false, Position=4)][int]$Port = 1433,      # Port number, if required for non standart configuration, by default 1433
+    [Parameter(Mandatory=$false, Position=5)][string]$Username = '', # User name, required for SQL server authentication
+    [Parameter(Mandatory=$false, Position=6)][string]$Password = ''  # Password, required for SQL server authentication
 )
 
 $global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
@@ -31,10 +32,9 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 #> 
 
 <#
-    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns SQL EXECUTION FAILED
+    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
 #>
 function run_sql() {
-#    [OutputType([System.Data.DataTable])]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
@@ -42,8 +42,13 @@ function run_sql() {
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
 
-    # add Port to connection string
-    $serverInstance = $Instance + ",$Port"
+    # Construct serverInstance connection string
+    if ($Service -ne 'MSSQLSERVER') {
+        $serverInstance = $Hostname + "\$Service,$Port"
+    } 
+    else {
+        $serverInstance = $Hostname + ",$Port"
+    }
                
     if ($Username -eq '') {
         $sqlConnectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
