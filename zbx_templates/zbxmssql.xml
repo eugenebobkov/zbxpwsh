@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-19T01:56:10Z</date>
+    <date>2018-12-19T08:09:52Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -54,7 +54,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_agent_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_agent_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1w</history>
                     <trends>0</trends>
@@ -118,7 +118,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_databases_backup,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_databases_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -183,7 +183,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_databases_connections,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_databases_connections,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -248,7 +248,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_databases_log_backup,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_databases_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -313,7 +313,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_databases_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_databases_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -378,7 +378,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_databases_waits,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_databases_waits,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -443,7 +443,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_elevated_users_data,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_elevated_users_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
                     <history>30d</history>
                     <trends>0</trends>
@@ -505,7 +505,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>365d</history>
                     <trends>0</trends>
@@ -531,6 +531,9 @@ Instance name has to be updated in MACROS section</description>
                     <description/>
                     <inventory_link>0</inventory_link>
                     <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
                         <application>
                             <name>Microsoft SQL Server Instance</name>
                         </application>
@@ -564,7 +567,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_startup_time,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
@@ -634,7 +637,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_version,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_version,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
                     <history>365d</history>
                     <trends>0</trends>
@@ -703,7 +706,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[list_databases,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[list_databases,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -797,7 +800,7 @@ Instance name has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_databases_connections,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_databases_connections,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -867,7 +870,7 @@ Instance name has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_databases_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_databases_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -937,7 +940,7 @@ Instance name has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_databases_waits,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_databases_waits,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -992,8 +995,8 @@ Instance name has to be updated in MACROS section</description>
                     <value>300</value>
                 </macro>
                 <macro>
-                    <macro>{$INSTANCE}</macro>
-                    <value>SQL001</value>
+                    <macro>{$HOSTNAME}</macro>
+                    <value>localhost</value>
                 </macro>
                 <macro>
                     <macro>{$PASSWORD}</macro>
@@ -1002,6 +1005,10 @@ Instance name has to be updated in MACROS section</description>
                 <macro>
                     <macro>{$PORT}</macro>
                     <value>1433</value>
+                </macro>
+                <macro>
+                    <macro>{$SERVICE}</macro>
+                    <value>SQL001</value>
                 </macro>
                 <macro>
                     <macro>{$USERNAME}</macro>
@@ -1014,7 +1021,7 @@ Instance name has to be updated in MACROS section</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_agent_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(RUNNING)}=0</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_agent_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].str(RUNNING)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Agent for instance {$INSTANCE} is not running</name>
@@ -1030,7 +1037,7 @@ Instance name has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_startup_time,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance has been restarted at {ITEM.VALUE}</name>
@@ -1046,7 +1053,7 @@ Instance name has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>
@@ -1067,7 +1074,7 @@ Instance name has to be updated in MACROS section</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance {$INSTANCE} is not available (Timeout: {$CONNECT_TIMEOUT})</name>

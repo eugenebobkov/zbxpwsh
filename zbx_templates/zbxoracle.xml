@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-19T01:56:32Z</date>
+    <date>2018-12-19T08:16:17Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -54,7 +54,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -116,7 +116,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -178,7 +178,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_elevated_users_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
                     <history>30d</history>
                     <trends>0</trends>
@@ -240,7 +240,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>30d</history>
                     <trends>365d</trends>
@@ -307,7 +307,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -369,7 +369,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>365d</history>
                     <trends>0</trends>
@@ -486,7 +486,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -552,7 +552,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -560,7 +560,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_last_db_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -680,7 +680,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -746,7 +746,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -754,7 +754,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_last_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -816,7 +816,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -881,7 +881,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -946,7 +946,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1072,7 +1072,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_processes_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_processes_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -1141,7 +1141,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_processes_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_processes_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -1210,7 +1210,7 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_processes_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                        <key>zbxoracle[get_processes_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -1218,7 +1218,7 @@ Instance name has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_processes_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_processes_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1286,7 +1286,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_standby_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_standby_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1348,7 +1348,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
@@ -1415,7 +1415,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1477,7 +1477,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1539,7 +1539,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[get_version,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
                     <history>365d</history>
                     <trends>0</trends>
@@ -1608,7 +1608,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[list_asm_diskgroups,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[list_asm_diskgroups,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -1706,7 +1706,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1773,7 +1773,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1840,7 +1840,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_asm_diskgroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1907,7 +1907,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_asm_diskgroups_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -1992,7 +1992,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[list_guarantee_restore_points,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[list_guarantee_restore_points,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -2090,7 +2090,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_guarantee_restore_points_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -2138,7 +2138,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[list_pdbs,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[list_pdbs,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -2239,7 +2239,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_pdb_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -2292,7 +2292,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[list_pdbs_tablespaces,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[list_pdbs_tablespaces,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -2386,7 +2386,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -2456,7 +2456,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_pdbs_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -2526,7 +2526,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -2596,7 +2596,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -2669,7 +2669,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_pdbs_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -2775,7 +2775,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[list_standby_databases,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[list_standby_databases,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -2873,7 +2873,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_standby_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_standby_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -2926,7 +2926,7 @@ percentage of utilization</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[list_tablespaces,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                    <key>zbxoracle[list_tablespaces,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -3024,7 +3024,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -3091,7 +3091,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -3158,7 +3158,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -3225,7 +3225,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -3292,7 +3292,7 @@ percentage of utilization</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}]</key>
+                                <key>zbxoracle[get_tbs_space_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -3487,7 +3487,7 @@ percentage of utilization</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_USAGE_HIGH}</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].last()}&gt;{$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>FRA used space exceeded {$FRA_USAGE_HIGH} % ({ITEM.VALUE})</name>
@@ -3508,8 +3508,8 @@ percentage of utilization</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&gt;{$FRA_USAGE_WARNING}&#13;
-and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].last()}&lt;={$FRA_USAGE_HIGH}</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].last()}&gt;{$FRA_USAGE_WARNING}&#13;
+and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].last()}&lt;={$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>FRA used space exceeded {$FRA_USAGE_WARNING} % ({ITEM.VALUE})</name>
@@ -3525,7 +3525,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].diff()}=1</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance has been restarted at {ITEM.VALUE}</name>
@@ -3541,7 +3541,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (State: {ITEM.VALUE})</name>
@@ -3562,7 +3562,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>

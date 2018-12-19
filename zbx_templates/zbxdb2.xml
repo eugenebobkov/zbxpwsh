@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-19T01:56:45Z</date>
+    <date>2018-12-19T08:00:13Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -109,7 +109,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_appls_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_appls_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -178,7 +178,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_appls_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_appls_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -247,7 +247,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_appls_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_appls_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -255,7 +255,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_appls_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_appls_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -316,11 +316,11 @@ Instance details has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Database availability status</name>
+                    <name>Availability status</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>365d</history>
                     <trends>0</trends>
@@ -379,7 +379,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_elevated_users_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_elevated_users_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
                     <history>30d</history>
                     <trends>0</trends>
@@ -441,7 +441,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -561,7 +561,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -627,7 +627,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -635,7 +635,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_last_db_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -755,7 +755,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -821,7 +821,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -829,7 +829,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_last_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -952,7 +952,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -1021,7 +1021,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -1090,7 +1090,7 @@ Instance details has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                        <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
@@ -1098,7 +1098,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_logs_utilization_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1163,7 +1163,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>90d</history>
                     <trends>0</trends>
@@ -1230,7 +1230,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1292,7 +1292,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1357,7 +1357,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[get_version,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;h6m0</delay>
                     <history>365d</history>
                     <trends>0</trends>
@@ -1426,7 +1426,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[list_hadr_hosts,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[list_hadr_hosts,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -1524,7 +1524,7 @@ Instance details has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                                <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1591,7 +1591,7 @@ Instance details has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                                <key>zbxdb2[get_hadr_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -1655,7 +1655,7 @@ Instance details has to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxdb2[list_tablespaces,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                    <key>zbxdb2[list_tablespaces,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -1753,7 +1753,7 @@ Instance details has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                                <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1820,7 +1820,7 @@ Instance details has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxdb2[get_tbs_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                                <key>zbxdb2[get_tbs_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1887,7 +1887,7 @@ Instance details has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                                <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1954,7 +1954,7 @@ Instance details has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}]</key>
+                                <key>zbxdb2[get_tbs_used_space,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
@@ -2051,10 +2051,6 @@ Instance details has to be updated in MACROS section</description>
                     <value>300</value>
                 </macro>
                 <macro>
-                    <macro>{$DATABASE}</macro>
-                    <value/>
-                </macro>
-                <macro>
                     <macro>{$HOSTNAME}</macro>
                     <value>localhost</value>
                 </macro>
@@ -2081,6 +2077,10 @@ Instance details has to be updated in MACROS section</description>
                 <macro>
                     <macro>{$PROCESSES_HIGH}</macro>
                     <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$SERVICE}</macro>
+                    <value/>
                 </macro>
                 <macro>
                     <macro>{$TBS_HIGH}</macro>
@@ -2117,7 +2117,7 @@ Instance details has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].diff()}=1</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance has been restarted at {ITEM.VALUE}</name>
@@ -2133,7 +2133,7 @@ Instance details has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (State: {ITEM.VALUE})</name>
@@ -2154,7 +2154,7 @@ Instance details has to be updated in MACROS section</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$DATABASE}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>

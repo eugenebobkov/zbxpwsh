@@ -15,7 +15,7 @@
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,      # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,       # Hostname, required for instance related checks, <HOSTNAME>\<SERVICE>
-    [Parameter(Mandatory=$true, Position=3)][string]$Service = '',  # Service name like SQL001
+    [Parameter(Mandatory=$true, Position=3)][string]$Service,        # Service name like SQL001
     [Parameter(Mandatory=$false, Position=4)][int]$Port = 1433,      # Port number, if required for non standart configuration, by default 1433
     [Parameter(Mandatory=$false, Position=5)][string]$Username = '', # User name, required for SQL server authentication
     [Parameter(Mandatory=$false, Position=6)][string]$Password = ''  # Password, required for SQL server authentication

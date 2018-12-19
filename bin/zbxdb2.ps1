@@ -15,10 +15,10 @@
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
-    [Parameter(Mandatory=$true, Position=3)][string]$Service = '',     # Database name
+    [Parameter(Mandatory=$true, Position=3)][string]$Service,          # Database name
     [Parameter(Mandatory=$true, Position=4)][int]$Port = 50000,        # Port number if required
-    [Parameter(Mandatory=$true, Position=5)][string]$Username = '',    # User name
-    [Parameter(Mandatory=$true, Position=6)][string]$Password = ''     # Password
+    [Parameter(Mandatory=$false, Position=5)][string]$Username,         # User name
+    [Parameter(Mandatory=$false, Position=6)][string]$Password          # Password
 )
 
 $global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
@@ -46,7 +46,7 @@ function run_sql() {
     }
  
     # Column symbol after variable name raises error
-    $connectionString = "Database = $Database; User ID = $Username; Password = $DBPassword; Server = $Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
+    $connectionString = "Database = $Service; User ID = $Username; Password = $DBPassword; Server = $Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
 
     $factory = [System.Data.Common.DbProviderFactories]::GetFactory(“IBM.Data.DB2”)
    
