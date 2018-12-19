@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-18T06:06:42Z</date>
+    <date>2018-12-19T01:56:10Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -89,7 +89,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.data.state</params>
+                            <params>$.state</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -773,7 +773,7 @@ Instance name has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#DATABASE}</params>
+                                    <params>$.{#DATABASE}.connections</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -843,7 +843,7 @@ Instance name has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#DATABASE}</params>
+                                    <params>$.{#DATABASE}.state</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -913,7 +913,7 @@ Instance name has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#DATABASE}</params>
+                                    <params>$.{#DATABASE}.waits</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1046,7 +1046,7 @@ Instance name has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].str(ONLINE,#2)}=0</expression>
+            <expression>{Template App Microsoft SQL Server:zbxmssql[get_instance_state,{$INSTANCE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance {$INSTANCE} is not available (State: {ITEM.VALUE})</name>

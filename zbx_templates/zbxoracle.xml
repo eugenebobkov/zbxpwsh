@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-18T06:07:16Z</date>
+    <date>2018-12-19T01:56:32Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -2162,16 +2162,10 @@ percentage of utilization</description>
                         <formula/>
                         <conditions>
                             <condition>
-                                <macro>{#CON_ID}</macro>
-                                <value/>
-                                <operator>8</operator>
-                                <formulaid>A</formulaid>
-                            </condition>
-                            <condition>
                                 <macro>{#PDB_NAME}</macro>
                                 <value/>
                                 <operator>8</operator>
-                                <formulaid>B</formulaid>
+                                <formulaid>A</formulaid>
                             </condition>
                         </conditions>
                     </filter>
@@ -2320,20 +2314,7 @@ percentage of utilization</description>
                     <filter>
                         <evaltype>0</evaltype>
                         <formula/>
-                        <conditions>
-                            <condition>
-                                <macro>{#CON_ID}</macro>
-                                <value/>
-                                <operator>8</operator>
-                                <formulaid>A</formulaid>
-                            </condition>
-                            <condition>
-                                <macro>{#PDB_NAME}</macro>
-                                <value/>
-                                <operator>8</operator>
-                                <formulaid>B</formulaid>
-                            </condition>
-                        </conditions>
+                        <conditions/>
                     </filter>
                     <lifetime>30d</lifetime>
                     <description>List all tablespaces for all tablespaces</description>
@@ -3560,7 +3541,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$PORT}
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].str(ONLINE,#2)}=0</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD},{$SERVICE}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Instance is not available (State: {ITEM.VALUE})</name>
