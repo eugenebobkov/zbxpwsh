@@ -115,7 +115,8 @@ function run_sql() {
 #>
 function get_instance_state() {
     
-    $result = (run_sql -Query 'SELECT status FROM v$instance')
+    $result = (run_sql -Query 'SELECT status 
+                                 FROM v$instance')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'OPEN') {
