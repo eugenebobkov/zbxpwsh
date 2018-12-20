@@ -1,4 +1,4 @@
-#!/bsin/pwshf
+#!/bsin/pwsh
 
 <#
     Created: 02/03/2018
