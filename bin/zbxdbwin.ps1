@@ -22,10 +22,6 @@ Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 #> 
 
 <#
-    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
-#>
-
-<#
     Function to provide list of filesystems
 #>
 function list_filesystems() {
@@ -33,7 +29,7 @@ function list_filesystems() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($Drive in (Get-WmiObject -ComputerName $Hostname -Class Win32_Volume | Where-Object { $_.DriveType -eq 3})) {
-        $list.Add(@{'{#FILESYSTEM}' = $Drive.Name})
+        $list.Add(@{'{#FSNAME}' = $Drive.Name})
     }
 
     return (@{data = $list} | ConvertTo-Json -Compress)    
@@ -42,14 +38,20 @@ function list_filesystems() {
 <#
     Function to provide data for filesystems
 #>
-function get_fs_state() {
+function get_fs_data() {
 
     $dict = @{}
 
     foreach ($Drive in (Get-WmiObject -ComputerName $Hostname -Class Win32_Volume | Where-Object { $_.DriveType -eq 3})) {
-        $usedSpacePct = [math]::round(($Drive.Capacity - $Drive.FreeSpace)/$Drive.Capacity*100, 4)
+        if ($Drive.Capacity) {
+            $usedSpacePct = [math]::round(($Drive.Capacity - $Drive.FreeSpace)/$Drive.Capacity * 100, 4)
 
-        $dict.Add($Drive.Name, @{'total'= $Drive.Capacity; used_pct = $usedSpacePct; used_bytes = $Drive.Capacity - $Drive.FreeSpace; free_bytes = $Drive.FreeSpace})
+            $dict.Add($Drive.Name, @{'total'= $Drive.Capacity; used_pct = $usedSpacePct; used_bytes = $Drive.Capacity - $Drive.FreeSpace; free_bytes = $Drive.FreeSpace})
+        }
+        else {
+            # Drive information is not available (it can be due to security restrictions)
+            $dict.Add($Drive.Name, @{'total'= 0; used_pct = 0; used_bytes = 0; free_bytes = 0})
+        }
     }
 
     return ($dict | ConvertTo-Json -Compress)

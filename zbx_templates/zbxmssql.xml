@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-19T08:09:52Z</date>
+    <date>2018-12-21T02:06:24Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -881,7 +881,7 @@ Instance name has to be updated in MACROS section</description>
                             <key>zbxmssql[get_databases_waits,{#DATABASE}]</key>
                             <delay>0</delay>
                             <history>7d</history>
-                            <trends>365d</trends>
+                            <trends>90d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>

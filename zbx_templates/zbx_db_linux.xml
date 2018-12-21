@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-20T04:52:40Z</date>
+    <date>2018-12-21T03:17:41Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -50,7 +50,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_oid/>
                     <key>ssh.run[load1m]</key>
                     <delay>0</delay>
-                    <history>90d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -116,7 +116,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_oid/>
                     <key>ssh.run[load5m]</key>
                     <delay>0</delay>
-                    <history>90d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -182,7 +182,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_oid/>
                     <key>ssh.run[load15m]</key>
                     <delay>0</delay>
-                    <history>90d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
@@ -247,9 +247,9 @@ Eugene Bobkov 10/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ssh.run[memory_free,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>1m</delay>
-                    <history>90d</history>
-                    <trends>365d</trends>
+                    <delay>15m</delay>
+                    <history>1w</history>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -314,9 +314,9 @@ Eugene Bobkov 10/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>10m</delay>
-                    <history>90d</history>
-                    <trends>365d</trends>
+                    <delay>15m</delay>
+                    <history>1w</history>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -382,7 +382,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_oid/>
                     <key>ssh.run[sysload,{$HOSTNAME},{$SSH_PORT}]</key>
                     <delay>1m</delay>
-                    <history>90d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -480,7 +480,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmp_oid/>
                             <key>ssh.run[free_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
                             <delay>60m</delay>
-                            <history>90d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -543,7 +543,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmp_oid/>
                             <key>ssh.run[total_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
                             <delay>60m</delay>
-                            <history>90d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -605,8 +605,8 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
-                            <delay>5m</delay>
-                            <history>90d</history>
+                            <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -669,7 +669,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmp_oid/>
                             <key>ssh.run[used_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
                             <delay>60m</delay>
-                            <history>90d</history>
+                            <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
                             <value_type>3</value_type>
@@ -728,10 +728,10 @@ END {print &quot;]\n}&quot;}'</params>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_AVERAGE}</expression>
+                            <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_AVERAGE} % (ITEM.VALUE1) for {#FSNAME}</name>
+                            <name>Space usage exceeded {$FS_AVERAGE} % {ITEM.VALUE} for {#FSNAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -744,10 +744,10 @@ END {print &quot;]\n}&quot;}'</params>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING} and {Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$FS_AVERAGE}</expression>
+                            <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING} and {Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_WARNING} % (ITEM.VALUE1) on {#FSNAME}</name>
+                            <name>Space usage exceeded {$FS_WARNING} % {ITEM.VALUE} on {#FSNAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -785,7 +785,11 @@ END {print &quot;]\n}&quot;}'</params>
             <httptests/>
             <macros>
                 <macro>
-                    <macro>{$FS_AVERAGE}</macro>
+                    <macro>{$CHECK_TIMEFRAME}</macro>
+                    <value>1-7,00:00-24:00</value>
+                </macro>
+                <macro>
+                    <macro>{$FS_HIGH}</macro>
                     <value>90</value>
                 </macro>
                 <macro>
@@ -798,10 +802,10 @@ END {print &quot;]\n}&quot;}'</params>
                 </macro>
                 <macro>
                     <macro>{$SSH_USERNAME}</macro>
-                    <value>dcaumon</value>
+                    <value>svc_zabbix</value>
                 </macro>
                 <macro>
-                    <macro>{$SWAP_AVERAGE}</macro>
+                    <macro>{$SWAP_HIGH}</macro>
                     <value>50</value>
                 </macro>
                 <macro>
@@ -815,7 +819,7 @@ END {print &quot;]\n}&quot;}'</params>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_AVERAGE}</expression>
+            <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Swap usage above {$SWAP_AVERAGE}%</name>
