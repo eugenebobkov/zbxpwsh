@@ -57,5 +57,32 @@ function get_fs_data() {
     return ($dict | ConvertTo-Json -Compress)
 }
 
+<#
+    Function to provide data for CPU load
+#>
+function get_cpu_data() {
+
+    return (@{used_pct = (Get-WmiObject win32_processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average }| ConvertTo-Json -Compress)
+
+}
+
+<#
+    Function to provide data for memory utilization
+#>
+function get_memory_data() {
+
+    return (@{used_pct = (Get-WmiObject win32_operatingsystem -ComputerName $Hostname | Foreach {"{0:N2}" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)})} | ConvertTo-Json -Compress)
+
+}
+
+<#
+    Function to provide data for memory utilization
+#>
+function get_swap_data() {
+
+    return (@{ used_pct = (Get-WmiObject win32_operatingsystem -ComputerName $Hostname | Foreach {"{0:N2}" -f ((($_.TotalVirtualMemorySize - $_.FreeVirtualMemory)*100)/ $_.TotalVirtualMemorySize)})} | ConvertTo-Json -Compress)
+
+}
+
 # execute required check
 &$CheckType
