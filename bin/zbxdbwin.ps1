@@ -70,18 +70,13 @@ function get_cpu_data() {
     Function to provide data for memory utilization
 #>
 function get_memory_data() {
+  
+    $os = Get-WmiObject win32_operatingsystem -ComputerName $Hostname
 
-    return (@{used_pct = (Get-WmiObject win32_operatingsystem -ComputerName $Hostname | Foreach {"{0:N2}" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)})} | ConvertTo-Json -Compress)
-
-}
-
-<#
-    Function to provide data for memory utilization
-#>
-function get_swap_data() {
-
-    return (@{ used_pct = (Get-WmiObject win32_operatingsystem -ComputerName $Hostname | Foreach {"{0:N2}" -f ((($_.TotalVirtualMemorySize - $_.FreeVirtualMemory)*100)/ $_.TotalVirtualMemorySize)})} | ConvertTo-Json -Compress)
-
+    return (@{ 
+                 memory_used_pct = ("{0:N2}" -f ((($os.TotalVisibleMemorySize - $os.FreePhysicalMemory)*100) / $os.TotalVisibleMemorySize))
+                 swap_used_pct = ("{0:N2}" -f ((($os.TotalVirtualMemorySize - $os.FreeVirtualMemory)*100) / $os.TotalVirtualMemorySize))
+             } | ConvertTo-Json -Compress)
 }
 
 # execute required check
