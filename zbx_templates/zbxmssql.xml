@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-21T02:06:24Z</date>
+    <date>2018-12-21T07:59:06Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -949,7 +949,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_databases_state,{#DATABASE}].last()}&gt;0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Database &quot;{#DATABASE}&quot; on &quot;{$INSTANCE}&quot; is in an invalid state {ITEM.VALUE}</name>
+                            <name>Database {#DATABASE} is in an invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1024,13 +1024,13 @@ Instance name has to be updated in MACROS section</description>
             <expression>{Template App Microsoft SQL Server:zbxmssql[get_agent_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].str(RUNNING)}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Agent for instance {$INSTANCE} is not running</name>
+            <name>Agent is not running</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>4</priority>
-            <description>Agent for instance {$INSTANCE} is not running</description>
+            <description>Agent for instance is not running</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>

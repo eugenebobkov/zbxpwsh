@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-21T03:17:58Z</date>
+    <date>2018-12-21T08:03:51Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -44,18 +44,18 @@ Eugene Bobkov 12/2018</description>
             </applications>
             <items>
                 <item>
-                    <name>Free memory (%)</name>
-                    <type>13</type>
+                    <name>System load (%)</name>
+                    <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>ssh.run[memory_free,{$HOSTNAME},{$SSH_PORT}]</key>
+                    <key>zbxdbwin[get_cpu_data,{$HOSTNAME}]</key>
                     <delay>1m</delay>
-                    <history>90d</history>
+                    <history>1w</history>
                     <trends>365d</trends>
-                    <status>1</status>
+                    <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
-                    <units/>
+                    <units>%</units>
                     <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -63,82 +63,15 @@ Eugene Bobkov 12/2018</description>
                     <snmpv3_authpassphrase/>
                     <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
-                    <params>awk '{if($1~/^MemTotal:$/){t=$2};if($1~/^MemAvailable:$/){a=$2};}END{print &quot;{\&quot;free_pct\&quot;: &quot; a/t*100&quot;}&quot;}' /proc/meminfo</params>
+                    <params/>
                     <ipmi_sensor/>
-                    <authtype>1</authtype>
-                    <username>{$SSH_USERNAME}</username>
+                    <authtype>0</authtype>
+                    <username/>
                     <password/>
-                    <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
-                    <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
+                    <publickey/>
+                    <privatekey/>
                     <port/>
-                    <description>Amount of free memory on the host</description>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Capacity</name>
-                        </application>
-                        <application>
-                            <name>JSON</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing>
-                        <step>
-                            <type>12</type>
-                            <params>$.free_pct</params>
-                        </step>
-                    </preprocessing>
-                    <jmx_endpoint/>
-                    <timeout>3s</timeout>
-                    <url/>
-                    <query_fields/>
-                    <posts/>
-                    <status_codes>200</status_codes>
-                    <follow_redirects>1</follow_redirects>
-                    <post_type>0</post_type>
-                    <http_proxy/>
-                    <headers/>
-                    <retrieve_mode>0</retrieve_mode>
-                    <request_method>0</request_method>
-                    <output_format>0</output_format>
-                    <allow_traps>0</allow_traps>
-                    <ssl_cert_file/>
-                    <ssl_key_file/>
-                    <ssl_key_password/>
-                    <verify_peer>0</verify_peer>
-                    <verify_host>0</verify_host>
-                    <master_item/>
-                </item>
-                <item>
-                    <name>Swap space usage (%)</name>
-                    <type>13</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>10m</delay>
-                    <history>90d</history>
-                    <trends>365d</trends>
-                    <status>1</status>
-                    <value_type>0</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params>awk '{if($1~/^SwapTotal:$/){t=$2};if($1~/^SwapFree:$/){f=$2};}END{print &quot;{\&quot;used_pct\&quot;: &quot; (t-f)/t*100 &quot;}&quot; }' /proc/meminfo</params>
-                    <ipmi_sensor/>
-                    <authtype>1</authtype>
-                    <username>{$SSH_USERNAME}</username>
-                    <password/>
-                    <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
-                    <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
-                    <port/>
-                    <description>Percentage of used swap space</description>
+                    <description>CPU load</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
@@ -184,7 +117,7 @@ Eugene Bobkov 12/2018</description>
                     <snmp_oid/>
                     <key>zbxdbwin[get_fs_data,{$HOSTNAME}]</key>
                     <delay>15m</delay>
-                    <history>90d</history>
+                    <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
                     <value_type>4</value_type>
@@ -206,6 +139,71 @@ Eugene Bobkov 12/2018</description>
                     <privatekey/>
                     <port/>
                     <description>Filesystems' data</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Filesystem</name>
+                        </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
+                <item>
+                    <name>Memory data (json)</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxdbwin[get_memory_data,{$HOSTNAME}]</key>
+                    <delay>15m</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Memory information</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
@@ -239,10 +237,148 @@ Eugene Bobkov 12/2018</description>
                     <verify_host>0</verify_host>
                     <master_item/>
                 </item>
+                <item>
+                    <name>Memory usage (%)</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxdbwin[memory_used,{$HOSTNAME}]</key>
+                    <delay>0</delay>
+                    <history>1w</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>%</units>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Percentage of used physical memory space</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Performance</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.memory_used_pct</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxdbwin[get_memory_data,{$HOSTNAME}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Swap usage (%)</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxdbwin[swap_used,{$HOSTNAME}]</key>
+                    <delay>0</delay>
+                    <history>1w</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>%</units>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Percentage of used swap space</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Performance</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.swap_used_pct</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxdbwin[get_memory_data,{$HOSTNAME}]</key>
+                    </master_item>
+                </item>
             </items>
             <discovery_rules>
                 <discovery_rule>
-                    <name>Filesystem discovery</name>
+                    <name>Filesystems</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -273,6 +409,216 @@ Eugene Bobkov 12/2018</description>
                     <lifetime>30d</lifetime>
                     <description/>
                     <item_prototypes>
+                        <item_prototype>
+                            <name>Filesystem {#FSNAME} free space (bytes)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxdbwin[fs_data,{#FSNAME},free]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Filesystem</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].free_bytes</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxdbwin[get_fs_data,{$HOSTNAME}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Filesystem {#FSNAME} total size (bytes)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxdbwin[fs_data,{#FSNAME},total]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Filesystem</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].used_pct</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxdbwin[get_fs_data,{$HOSTNAME}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Filesystem {#FSNAME} used space (bytes)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxdbwin[fs_data,{#FSNAME},used_bytes]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Filesystem</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].used_bytes</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxdbwin[get_fs_data,{$HOSTNAME}]</key>
+                            </master_item>
+                        </item_prototype>
                         <item_prototype>
                             <name>Filesystem {#FSNAME} used space (%)</name>
                             <type>18</type>
@@ -316,7 +662,7 @@ Eugene Bobkov 12/2018</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{$FSNAME}.used_pct</params>
+                                    <params>$['{#FSNAME}'].used_pct</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -344,7 +690,50 @@ Eugene Bobkov 12/2018</description>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
-                    <trigger_prototypes/>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Space usage exceeded {$FS_HIGH} % {ITEM.VALUE} for {#FSNAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_WARNING} and {Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&lt;={$FS_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Space usage exceeded {$FS_HIGH} % {ITEM.VALUE} for {#FSNAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                    </trigger_prototypes>
                     <graph_prototypes/>
                     <host_prototypes/>
                     <jmx_endpoint/>
@@ -370,20 +759,20 @@ Eugene Bobkov 12/2018</description>
             <httptests/>
             <macros>
                 <macro>
-                    <macro>{$FS_AVERAGE}</macro>
+                    <macro>{$FS_HIGH}</macro>
                     <value>90</value>
                 </macro>
                 <macro>
                     <macro>{$FS_WARNING}</macro>
-                    <value>85</value>
+                    <value>80</value>
                 </macro>
                 <macro>
-                    <macro>{$SWAP_AVERAGE}</macro>
-                    <value>50</value>
+                    <macro>{$SWAP_HIGH}</macro>
+                    <value>90</value>
                 </macro>
                 <macro>
                     <macro>{$SWAP_WARNING}</macro>
-                    <value>30</value>
+                    <value>80</value>
                 </macro>
             </macros>
             <templates/>
@@ -392,7 +781,7 @@ Eugene Bobkov 12/2018</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template OS Windows Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_AVERAGE}</expression>
+            <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Swap usage above {$SWAP_AVERAGE}%</name>
@@ -408,7 +797,7 @@ Eugene Bobkov 12/2018</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template OS Windows Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_WARNING}</expression>
+            <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Swap usage above {$SWAP_WARNING}%</name>

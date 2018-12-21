@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-21T03:17:41Z</date>
+    <date>2018-12-21T08:04:01Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -43,6 +43,74 @@ Eugene Bobkov 10/2018</description>
                 </application>
             </applications>
             <items>
+                <item>
+                    <name>Filesystems data (json)</name>
+                    <type>13</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>ssh.run[fs_data,{$HOSTNAME},{$SSH_PORT}]</key>
+                    <delay>15m</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params>df -Pk | awk 'BEGIN{line = &quot;true&quot;; print &quot;{&quot; } \&#13;
+                    /^\// {if (line)&#13;
+                                 {line = &quot;&quot;} &#13;
+                           else {printf &quot;,&quot;}; &#13;
+                           sub(/%$/,&quot;&quot;,$5)&#13;
+                           print &quot;\&quot;&quot; $6 &quot;\&quot;:{\&quot;used_pct\&quot;:&quot; $5 &quot;,\&quot;total\&quot;:&quot; $3+$4 &quot;,\&quot;used_bytes\&quot;:&quot; $3 &quot;,\&quot;free_bytes\&quot;:&quot; $4 &quot;}&quot;} \&#13;
+              END {print &quot;}&quot;}'</params>
+                    <ipmi_sensor/>
+                    <authtype>1</authtype>
+                    <username>{$SSH_USERNAME}</username>
+                    <password/>
+                    <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
+                    <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Filesystem</name>
+                        </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
                 <item>
                     <name>System load (1m)</name>
                     <type>18</type>
@@ -440,7 +508,7 @@ Eugene Bobkov 10/2018</description>
             </items>
             <discovery_rules>
                 <discovery_rule>
-                    <name>Mounted filesystem discovery</name>
+                    <name>Filesystems</name>
                     <type>13</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -475,11 +543,11 @@ END {print &quot;]\n}&quot;}'</params>
                     <item_prototypes>
                         <item_prototype>
                             <name>Free space on {#FSNAME}</name>
-                            <type>13</type>
+                            <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>ssh.run[free_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
-                            <delay>60m</delay>
+                            <delay>0</delay>
                             <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
@@ -493,13 +561,13 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmpv3_authpassphrase/>
                             <snmpv3_privprotocol>0</snmpv3_privprotocol>
                             <snmpv3_privpassphrase/>
-                            <params>df -Pk {#FSNAME} | tail -1 | awk '{print $4}'</params>
+                            <params/>
                             <ipmi_sensor/>
-                            <authtype>1</authtype>
-                            <username>{$SSH_USERNAME}</username>
+                            <authtype>0</authtype>
+                            <username/>
                             <password/>
-                            <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
-                            <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
+                            <publickey/>
+                            <privatekey/>
                             <port/>
                             <description/>
                             <inventory_link>0</inventory_link>
@@ -513,7 +581,12 @@ END {print &quot;]\n}&quot;}'</params>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <preprocessing/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].total</params>
+                                </step>
+                            </preprocessing>
                             <jmx_endpoint/>
                             <timeout>3s</timeout>
                             <url/>
@@ -534,15 +607,17 @@ END {print &quot;]\n}&quot;}'</params>
                             <verify_peer>0</verify_peer>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
-                            <master_item/>
+                            <master_item>
+                                <key>ssh.run[fs_data,{$HOSTNAME},{$SSH_PORT}]</key>
+                            </master_item>
                         </item_prototype>
                         <item_prototype>
                             <name>Total space on {#FSNAME}</name>
-                            <type>13</type>
+                            <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>ssh.run[total_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
-                            <delay>60m</delay>
+                            <delay>0</delay>
                             <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
@@ -556,13 +631,13 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmpv3_authpassphrase/>
                             <snmpv3_privprotocol>0</snmpv3_privprotocol>
                             <snmpv3_privpassphrase/>
-                            <params>df -Pk {#FSNAME} | tail -1 | awk '{print $3+$4}'</params>
+                            <params/>
                             <ipmi_sensor/>
-                            <authtype>1</authtype>
-                            <username>{$SSH_USERNAME}</username>
+                            <authtype>0</authtype>
+                            <username/>
                             <password/>
-                            <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
-                            <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
+                            <publickey/>
+                            <privatekey/>
                             <port/>
                             <description/>
                             <inventory_link>0</inventory_link>
@@ -576,7 +651,12 @@ END {print &quot;]\n}&quot;}'</params>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <preprocessing/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].total</params>
+                                </step>
+                            </preprocessing>
                             <jmx_endpoint/>
                             <timeout>3s</timeout>
                             <url/>
@@ -597,15 +677,17 @@ END {print &quot;]\n}&quot;}'</params>
                             <verify_peer>0</verify_peer>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
-                            <master_item/>
+                            <master_item>
+                                <key>ssh.run[fs_data,{$HOSTNAME},{$SSH_PORT}]</key>
+                            </master_item>
                         </item_prototype>
                         <item_prototype>
                             <name>Used space on {#FSNAME} (%)</name>
-                            <type>13</type>
+                            <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
-                            <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
+                            <delay>0</delay>
                             <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
@@ -619,13 +701,13 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmpv3_authpassphrase/>
                             <snmpv3_privprotocol>0</snmpv3_privprotocol>
                             <snmpv3_privpassphrase/>
-                            <params>df -Pk {#FSNAME} | tail -1 | awk '{sub(/%$/,&quot;&quot;,$5); print $5}'</params>
+                            <params/>
                             <ipmi_sensor/>
-                            <authtype>1</authtype>
-                            <username>{$SSH_USERNAME}</username>
+                            <authtype>0</authtype>
+                            <username/>
                             <password/>
-                            <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
-                            <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
+                            <publickey/>
+                            <privatekey/>
                             <port/>
                             <description/>
                             <inventory_link>0</inventory_link>
@@ -639,7 +721,12 @@ END {print &quot;]\n}&quot;}'</params>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <preprocessing/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].used_pct</params>
+                                </step>
+                            </preprocessing>
                             <jmx_endpoint/>
                             <timeout>3s</timeout>
                             <url/>
@@ -660,15 +747,17 @@ END {print &quot;]\n}&quot;}'</params>
                             <verify_peer>0</verify_peer>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
-                            <master_item/>
+                            <master_item>
+                                <key>ssh.run[fs_data,{$HOSTNAME},{$SSH_PORT}]</key>
+                            </master_item>
                         </item_prototype>
                         <item_prototype>
                             <name>Used space on {#FSNAME} (bytes)</name>
-                            <type>13</type>
+                            <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
                             <key>ssh.run[used_{#FSNAME},{$HOSTNAME},{$SSH_PORT}]</key>
-                            <delay>60m</delay>
+                            <delay>0</delay>
                             <history>1w</history>
                             <trends>365d</trends>
                             <status>0</status>
@@ -682,13 +771,13 @@ END {print &quot;]\n}&quot;}'</params>
                             <snmpv3_authpassphrase/>
                             <snmpv3_privprotocol>0</snmpv3_privprotocol>
                             <snmpv3_privpassphrase/>
-                            <params>df -Pk {#FSNAME} | tail -1 | awk '{print $3}'</params>
+                            <params/>
                             <ipmi_sensor/>
-                            <authtype>1</authtype>
-                            <username>{$SSH_USERNAME}</username>
+                            <authtype>0</authtype>
+                            <username/>
                             <password/>
-                            <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
-                            <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
+                            <publickey/>
+                            <privatekey/>
                             <port/>
                             <description/>
                             <inventory_link>0</inventory_link>
@@ -702,7 +791,12 @@ END {print &quot;]\n}&quot;}'</params>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
-                            <preprocessing/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#FSNAME}'].used_bytes</params>
+                                </step>
+                            </preprocessing>
                             <jmx_endpoint/>
                             <timeout>3s</timeout>
                             <url/>
@@ -723,7 +817,9 @@ END {print &quot;]\n}&quot;}'</params>
                             <verify_peer>0</verify_peer>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
-                            <master_item/>
+                            <master_item>
+                                <key>ssh.run[fs_data,{$HOSTNAME},{$SSH_PORT}]</key>
+                            </master_item>
                         </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
@@ -731,23 +827,28 @@ END {print &quot;]\n}&quot;}'</params>
                             <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_AVERAGE} % {ITEM.VALUE} for {#FSNAME}</name>
+                            <name>Space usage exceeded {$FS_HIGH} % {ITEM.VALUE} for {#FSNAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
                             <status>0</status>
-                            <priority>3</priority>
+                            <priority>4</priority>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
                             <dependencies/>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
                             <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING} and {Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_WARNING} % {ITEM.VALUE} on {#FSNAME}</name>
+                            <name>Space usage exceeded {$FS_WARNING} % {ITEM.VALUE} for {#FSNAME}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -757,7 +858,12 @@ END {print &quot;]\n}&quot;}'</params>
                             <type>0</type>
                             <manual_close>0</manual_close>
                             <dependencies/>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -794,7 +900,7 @@ END {print &quot;]\n}&quot;}'</params>
                 </macro>
                 <macro>
                     <macro>{$FS_WARNING}</macro>
-                    <value>85</value>
+                    <value>80</value>
                 </macro>
                 <macro>
                     <macro>{$SSH_PORT}</macro>
@@ -806,11 +912,11 @@ END {print &quot;]\n}&quot;}'</params>
                 </macro>
                 <macro>
                     <macro>{$SWAP_HIGH}</macro>
-                    <value>50</value>
+                    <value>90</value>
                 </macro>
                 <macro>
                     <macro>{$SWAP_WARNING}</macro>
-                    <value>30</value>
+                    <value>80</value>
                 </macro>
             </macros>
             <templates/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-19T01:56:19Z</date>
+    <date>2018-12-21T07:59:17Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -671,7 +671,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Size of  &quot;{#DATABASE}&quot; database (bytes)</name>
+                            <name>Size of  {#DATABASE} database (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -801,7 +801,7 @@ Hostname and port have to be updated in MACROS section</description>
             <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
+            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH}% ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
