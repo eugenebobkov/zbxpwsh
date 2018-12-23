@@ -20,7 +20,7 @@ Linux OS checks are running bash commands
 
 - MS SQL Server (zbx_templates/zbxmssql.xml, module zbxmssql.ps1, ADO.NET)
 - Oracle Database (zbx_templates/zbxoracle.xml, module zbxoracle.ps1, ADO.NET)
-- IBM DB2 Database (zbx_templates/zbxdb2.xml, module zbxdb2.ps1, ADO.NET)
+- IBM DB2 LUW Database (zbx_templates/zbxdb2.xml, module zbxdb2.ps1, ADO.NET)
 - PostgreSQL (zbx_templates/zbxpgsql.xml, module zbxpgsql.ps1, psql as connection agent
   
   TODO: Npsql not implemented yet)
