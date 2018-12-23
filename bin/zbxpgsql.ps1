@@ -100,7 +100,8 @@ function run_sql() {
 Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'SELECT count(*) FROM pg_database').Trim()
+    $result = (run_sql -Query 'SELECT count(*) 
+                                 FROM pg_database').Trim()
 
     # Check if expected object has been recieved
     if ($result -NotMatch '^ERROR:') {
@@ -143,7 +144,9 @@ function get_startup_time() {
 
 function list_databases() {
 
-    $result = @(run_sql -Query "SELECT datname FROM pg_database WHERE datistemplate = false").Trim()
+    $result = @(run_sql -Query 'SELECT datname 
+                                  FROM pg_database 
+                                 WHERE datistemplate = false').Trim()
 
     if ($result -Match '^ERROR:') {
         # Instance is not available
@@ -182,9 +185,9 @@ function get_databases_size() {
 
 function get_connections_data() {
 
-    $result = (run_sql -Query "SELECT  current_setting('max_connections')::integer   max_connections
-                                     , count(pid)::float current_connections  
-                                     , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) pct_used
+    $result = (run_sql -Query "SELECT current_setting('max_connections')::integer max_connections
+                                    , count(pid)::float current_connections  
+                                    , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) pct_used
                                  FROM pg_stat_activity").Trim()
 
     # Check if expected object has been recieved
@@ -212,6 +215,75 @@ function get_standby_instances() {
         return $result
     }
 }
+
+<#
+    Function to provide time of last successeful database backup
+    As PostgreSQL doesn't have build in mechanism to track backups - additional modifications for backup scripts has to be done
+    Script which running pg_basebackup after completion will update postgres.pg_basebackups table with result of completed (failed or success) backup
+    postgres.pg_basebackups:
+    CREATE TABLE pg_basebackups
+          seq_id SERIAL PRIMARY KEY
+        , begin_time DATE NOT NULL
+        , end_time DATE
+        , parameters varchar
+        , status VARCHAR  [ 'COMPLETED'
+                            'COMPLETED WITH WARNINGS'
+                            'FAILED'
+                          ]
+        CREATE INDEX ON pg_basebackups (end_time);
+
+#>
+function get_last_db_backup() {
+    $result = (run_sql -Query "SELECT to_char(max(end_time),'DD/MM/YYYY HH24:MI:SS')
+                                    , trunc(((EXTRACT(EPOCH FROM now()::timestamp) - EXTRACT(EPOCH FROM max(end_time)::timestamp))/60/60)::numeric, 4) hours_since
+					             FROM postgres.pg_basebackups
+							    WHERE status like 'COMPLETED%'" `
+                       -CommandTimeout 30
+                )
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{
+                    date = $result.Split('|')[0].Trim()
+                    hours_since = $result.Split('|')[1].Trim()
+                } | ConvertTo-Json -Compress)
+    }
+    else {
+        return $result
+    }
+}
+
+<#
+    Function to provide time of last succeseful archived log backup
+    
+    As PostgreSQL doesn't have build in mechanism to track archived logs - additional modifications for archival script has to be done
+    Archival script has to update postgres.pg_archived_logs table with result of completed (failed or success) archiving operation
+    postgres.pg_archived_logs:
+        SEQ_ID SERIAL PRIMARY KEY
+        name VARCHAR
+        completed DATE 
+
+        CREATE INDEX ON pg_archived_logs (pg_archived_logs)
+#>
+function get_last_log_backup() {
+    $result = (run_sql -Query "SELECT to_char(max(end_time),'DD/MM/YYYY HH24:MI:SS')
+                                    , trunc(((EXTRACT(EPOCH FROM now()::timestamp) - EXTRACT(EPOCH FROM max(completed)::timestamp))/60/60)::numeric, 4) hours_since
+					             FROM postgres.pg_archived_logs"  `
+                       -CommandTimeout 25
+                )
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{
+                    date = $result.Split('|')[0].Trim()
+                    hours_since = $result.Split('|')[1].Trim()
+                } | ConvertTo-Json -Compress)
+    }
+    else {
+        return $result
+    }
+}
+
 
 <#
     Function to get data about roles who have privilegies above normal (SUPERUSER)
