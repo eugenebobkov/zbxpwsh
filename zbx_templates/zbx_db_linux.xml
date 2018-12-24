@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-21T08:04:01Z</date>
+    <date>2018-12-24T03:51:56Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -542,7 +542,7 @@ END {print &quot;]\n}&quot;}'</params>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Free space on {#FSNAME}</name>
+                            <name>Free space on {#FSNAME} (kb)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -612,7 +612,7 @@ END {print &quot;]\n}&quot;}'</params>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Total space on {#FSNAME}</name>
+                            <name>Total space on {#FSNAME} (kb)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -752,7 +752,7 @@ END {print &quot;]\n}&quot;}'</params>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Used space on {#FSNAME} (bytes)</name>
+                            <name>Used space on {#FSNAME} (kb)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -827,7 +827,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_HIGH} % {ITEM.VALUE} for {#FSNAME}</name>
+                            <name>Space usage exceeded {$FS_HIGH} % ({ITEM.VALUE}) for {#FSNAME} filesystem</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -848,7 +848,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING} and {Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_WARNING} % {ITEM.VALUE} for {#FSNAME}</name>
+                            <name>Space usage exceeded {$FS_WARNING} % ({ITEM.VALUE}) for {#FSNAME} filesystem</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
