@@ -297,19 +297,20 @@ function get_databases_waits() {
 
    $result = (run_sql -Query "SELECT
 	                                 sd.name
-                                   , case 
-		                                  when A.NumBlocking > 0 then A.NumBlocking
-                                     else 0
-	                                 end as numblocking
+                                   , CASE 
+		                                 WHEN A.NumBlocking > 0 THEN A.NumBlocking
+                                     ELSE 
+                                         0
+	                                 END AS numblocking
                                 FROM sys.databases sd
-                                     left join (
+                                     LEFT JOIN (
                                                  SELECT
 		                                                R.database_id
                                                       , count(*) as NumBlocking
 	                                               FROM sys.dm_os_waiting_tasks WT
-	                                                    Inner Join sys.dm_exec_sessions S on WT.session_id = S.session_id
-	                                                    Inner Join sys.dm_exec_requests R on R.session_id = WT.session_id
-	                                                    Left Join sys.dm_exec_requests RBlocker on RBlocker.session_id = WT.blocking_session_id
+	                                                    INNER JOIN sys.dm_exec_sessions S ON WT.session_id = S.session_id
+	                                                    INNER JOIN sys.dm_exec_requests R ON R.session_id = WT.session_id
+	                                                    LEFT JOIN sys.dm_exec_requests RBlocker ON RBlocker.session_id = WT.blocking_session_id
 	                                              WHERE R.status = 'suspended' -- Waiting on a resource
 		                                            AND S.is_user_process = 1 -- Is a used process
                                                     AND R.session_id <> @@spid -- Filter out this session
@@ -336,7 +337,7 @@ function get_databases_waits() {
                                                                               'BROKER_RECEIVE_WAITFOR'
                                                                             )
 	                                              GROUP BY R.database_id
-                                               ) A on A.database_id = sd.database_id"
+                                               ) A ON A.database_id = sd.database_id"
              )
     
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -357,15 +358,24 @@ function get_databases_waits() {
     Returns date of last database backup and hours since it for each database
 #>
 function get_databases_backup() {
-   # if backup hasn't been done - it will return create date for the database
-   $result = (run_sql -Query 'SELECT sdb.name
-                                   , CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) AS last_date
-                                   , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+   # if backup hasn't been ever done - it will return create date for the database
+   $result = (run_sql -Query "SELECT sdb.name
+                                   , sdb.recovery_model_desc
+                                   , CASE 
+                                         WHEN sdb.name = 'tempdb' THEN 'NOT APPLICABLE'
+                                     ELSE
+                                         CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) 
+                                     END AS last_date
+                                   , CASE 
+                                         WHEN sdb.name = 'tempdb' THEN 0
+                                     ELSE
+                                         ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4)
+                                     END AS hours_since 
                                 FROM master.sys.databases sdb
                                      LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
                                GROUP BY 
                                      sdb.Name
-                                   , sdb.recovery_model_desc'
+                                   , sdb.recovery_model_desc"
              )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -376,7 +386,7 @@ function get_databases_backup() {
     $dict = @{}
 
     foreach ($row in $result) {
-        $dict.Add($row[0], @{date = $row[1]; hours_since = $row[2]})
+        $dict.Add($row[0], @{recovery_model = $row[1]; date = $row[2]; hours_since = $row[3]})
     }
 
     return ($dict | ConvertTo-Json -Compress)
@@ -385,19 +395,27 @@ function get_databases_backup() {
 <#
     Returns date of last transaction log backup and hours since it for each database
 #>
-
 function get_databases_log_backup() {
-  
-   # if backup hasn't been done - it will return create date for the database
+   # if backup hasn't been ever done - it will return create date for the database
    $result = (run_sql -Query "SELECT sdb.name
                                    , sdb.recovery_model_desc
-                                   , CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) AS last_date
-                                   , ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                   , CASE 
+                                         WHEN sdb.recovery_model_desc = 'SIMPLE' OR sdb.name = 'tempdb' THEN 'NOT APPLICABLE'
+                                     ELSE
+                                         CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) 
+                                     END AS last_date
+                                   , CASE 
+		                                 WHEN sdb.recovery_model_desc = 'SIMPLE' OR sdb.name = 'tempdb' THEN 0
+                                     ELSE                                      
+                                         ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) 
+                                     END AS hours_since
                                 FROM master.sys.databases sdb
                                      LEFT OUTER JOIN msdb..backupset bus
                                           ON bus.database_name = sdb.name
                                           AND bus.type = 'L'
-                               GROUP BY sdb.name, sdb.recovery_model_desc"
+                               GROUP BY 
+                                     sdb.name
+                                   , sdb.recovery_model_desc"
              )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
