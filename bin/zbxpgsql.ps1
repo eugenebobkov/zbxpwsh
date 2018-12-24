@@ -97,7 +97,7 @@ function run_sql() {
 } 
 
 <#
-Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     $result = (run_sql -Query 'SELECT count(*) 
@@ -128,7 +128,7 @@ function get_version() {
 }
 
 <#
-    Function to get instance startup timestamp
+    Function to get instance startup time
 #>
 function get_startup_time() {
     $result = (run_sql -Query "SELECT to_char(pg_postmaster_start_time(),'DD/MM/YYYY HH24:MI:SS')").Trim()
@@ -142,6 +142,9 @@ function get_startup_time() {
     }
 }
 
+<#
+    Provide list of databases
+#>
 function list_databases() {
 
     $result = @(run_sql -Query 'SELECT datname 
@@ -162,6 +165,9 @@ function list_databases() {
     return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
+<#
+    Get information databases' size
+#>
 function get_databases_size() {
 
     $result = @(run_sql -Query "SELECT datname
@@ -183,6 +189,9 @@ function get_databases_size() {
     return ($dict | ConvertTo-Json -Compress)
 }
 
+<#
+    Get information about connections and utilization
+#>
 function get_connections_data() {
 
     $result = (run_sql -Query "SELECT current_setting('max_connections')::integer max_connections
@@ -201,6 +210,7 @@ function get_connections_data() {
                 pct = $result.Split('|')[2].Trim()
              } | ConvertTo-Json -Compress)
 }
+
 <#
     Not implemented yet, JSON expected
 #>
@@ -242,7 +252,7 @@ function get_last_db_backup() {
                 )
 
     # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable]) {
+    if ($result -NotMatch '^ERROR:') {
         return (@{
                     date = $result.Split('|')[0].Trim()
                     hours_since = $result.Split('|')[1].Trim()
@@ -256,27 +266,20 @@ function get_last_db_backup() {
 <#
     Function to provide time of last succeseful archived log backup
     
-    As PostgreSQL doesn't have build in mechanism to track archived logs - additional modifications for archival script has to be done
-    Archival script has to update postgres.pg_archived_logs table with result of completed (failed or success) archiving operation
-    postgres.pg_archived_logs:
-        SEQ_ID SERIAL PRIMARY KEY
-        name VARCHAR
-        completed DATE 
-
-        CREATE INDEX ON pg_archived_logs (pg_archived_logs)
+    pg_stat_archiver was introduced in 9.4 
 #>
 function get_last_log_backup() {
-    $result = (run_sql -Query "SELECT to_char(max(end_time),'DD/MM/YYYY HH24:MI:SS')
-                                    , trunc(((EXTRACT(EPOCH FROM now()::timestamp) - EXTRACT(EPOCH FROM max(completed)::timestamp))/60/60)::numeric, 4) hours_since
-					             FROM postgres.pg_archived_logs"  `
-                       -CommandTimeout 25
-                )
+    $result = (run_sql -Query "SELECT to_char(last_archived_time,'DD/MM/YYYY HH24:MI:SS')
+                                    , trunc(((EXTRACT(EPOCH FROM now()::timestamp) - EXTRACT(EPOCH FROM last_archived_time::timestamp))/60/60)::numeric, 4) hours_since
+                                    , failed_count
+					             FROM pg_stat_archiver")
 
     # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable]) {
+    if ($result -NotMatch '^ERROR:') {
         return (@{
                     date = $result.Split('|')[0].Trim()
                     hours_since = $result.Split('|')[1].Trim()
+                    failed_count = $result.Split('|')[2].Trim()
                 } | ConvertTo-Json -Compress)
     }
     else {
