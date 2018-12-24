@@ -159,7 +159,7 @@ function list_databases() {
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-       $list.Add(@{'{#DATABASE}' = $row})
+        $list.Add(@{'{#DATABASE}' = $row})
     }
 
     return (@{data = $list} | ConvertTo-Json -Compress)
@@ -183,7 +183,7 @@ function get_databases_size() {
     $dict = @{}
 
     foreach ($row in $result) {
-        $dict.Add($row.Split('|')[0].Trim(), @{bytes = $row.Split('|')[1].Trim()})
+        $dict.Add($row.Split('|')[0].Trim(), @{bytes = [int]$row.Split('|')[1].Trim()})
     }
 
     return ($dict | ConvertTo-Json -Compress)
@@ -205,9 +205,9 @@ function get_connections_data() {
     }
 
     return ( @{
-                max = $result.Split('|')[0].Trim()
-                current = $result.Split('|')[1].Trim()
-                pct = $result.Split('|')[2].Trim()
+                max = [int]$result.Split('|')[0].Trim()
+                current = [int]$result.Split('|')[1].Trim()
+                pct = [float]$result.Split('|')[2].Trim()
              } | ConvertTo-Json -Compress)
 }
 
@@ -232,10 +232,10 @@ function get_standby_instances() {
     Script which running pg_basebackup after completion will update postgres.pg_basebackups table with result of completed (failed or success) backup
     postgres.pg_basebackups:
     CREATE TABLE pg_basebackups
-          seq_id SERIAL PRIMARY KEY
+          id SERIAL PRIMARY KEY
+        , parameters VARCHAR NOT NULL
         , begin_time DATE NOT NULL
         , end_time DATE
-        , parameters varchar
         , status VARCHAR  [ 'COMPLETED'
                             'COMPLETED WITH WARNINGS'
                             'FAILED'
@@ -255,7 +255,7 @@ function get_last_db_backup() {
     if ($result -NotMatch '^ERROR:') {
         return (@{
                     date = $result.Split('|')[0].Trim()
-                    hours_since = $result.Split('|')[1].Trim()
+                    hours_since = [float]$result.Split('|')[1].Trim()
                 } | ConvertTo-Json -Compress)
     }
     else {
@@ -268,7 +268,7 @@ function get_last_db_backup() {
     
     pg_stat_archiver was introduced in 9.4 
 #>
-function get_last_log_backup() {
+function get_archiver_stat_data() {
     $result = (run_sql -Query "SELECT to_char(last_archived_time,'DD/MM/YYYY HH24:MI:SS')
                                     , trunc(((EXTRACT(EPOCH FROM now()::timestamp) - EXTRACT(EPOCH FROM last_archived_time::timestamp))/60/60)::numeric, 4) hours_since
                                     , failed_count
@@ -278,15 +278,14 @@ function get_last_log_backup() {
     if ($result -NotMatch '^ERROR:') {
         return (@{
                     date = $result.Split('|')[0].Trim()
-                    hours_since = $result.Split('|')[1].Trim()
-                    failed_count = $result.Split('|')[2].Trim()
+                    hours_since = [float]$result.Split('|')[1].Trim()
+                    failed_count = [int]$result.Split('|')[2].Trim()
                 } | ConvertTo-Json -Compress)
     }
     else {
         return $result
     }
 }
-
 
 <#
     Function to get data about roles who have privilegies above normal (SUPERUSER)

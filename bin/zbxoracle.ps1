@@ -600,7 +600,7 @@ function get_tbs_state(){
                                                THEN 'NOT ACTIVE'
                                           ELSE 'ACTIVE'
                                       END backup_mode
-                                    , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
+                                    , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 4)
                                          FROM v`$backup b
                                             , dba_data_files d
                                         WHERE d.tablespace_name  = t.tablespace_name
@@ -643,7 +643,7 @@ function get_pdbs_tbs_state(){
                                                THEN 'NOT ACTIVE'
                                           ELSE 'ACTIVE'
                                       END backup_mode
-                                    , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 6)
+                                    , (SELECT round((sysdate - nvl(min(b.time), sysdate)) * 24, 4)
                                          FROM v`$backup b
                                             , dba_data_files d
                                         WHERE d.tablespace_name  = t.tablespace_name
@@ -736,7 +736,7 @@ function get_fra_used_pct() {
 #>
 function get_last_db_backup() {
     $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , round((sysdate - max(end_time)) * 24, 6) hours_since
+                                    , round((sysdate - max(end_time)) * 24, 4) hours_since
 					             FROM v`$rman_status
 							    WHERE object_type in ('DB FULL', 'DB INCR')
 							      AND status like 'COMPLETED%'" `
@@ -766,7 +766,7 @@ function get_last_db_backup() {
 #>
 function get_last_log_backup() {
     $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , round((sysdate - max(end_time)) * 24, 6) hours_since
+                                    , round((sysdate - max(end_time)) * 24, 4) hours_since
 					             FROM v`$rman_status
 							    WHERE object_type in ('ARCHIVELOG')
 							      AND status like 'COMPLETED%'"  `
