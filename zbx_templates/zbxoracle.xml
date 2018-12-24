@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-21T08:30:43Z</date>
+    <date>2018-12-24T06:46:57Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -3634,7 +3634,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
             <expression>{Template App Oracle Database:zbxoracle[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No database backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <name>No database backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -3655,7 +3655,7 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
             <expression>{Template App Oracle Database:zbxoracle[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No logs backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_LOG_BACKUP} hours)</name>
+            <name>No logs backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_LOG_BACKUP} hours)</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
