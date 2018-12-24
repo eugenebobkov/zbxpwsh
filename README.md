@@ -23,7 +23,7 @@ Linux OS checks are running bash commands
 - IBM DB2 LUW Database (zbx_templates/zbxdb2.xml, module zbxdb2.ps1, ADO.NET)
 - PostgreSQL (zbx_templates/zbxpgsql.xml, module zbxpgsql.ps1, psql as connection agent
   
-  TODO: Npsql not implemented yet)
+  TODO: Npgsql not implemented yet https://www.npgsql.org)
 
 *OS Monitoring (mainly database related check, CPU/System load, memory consumption and filesystems' usage)*
 - Linux (zbx_templates/zbx_db_linux.xml, no modules required, Zabbix SSH Agent, each host expected to have user with public key populated.
