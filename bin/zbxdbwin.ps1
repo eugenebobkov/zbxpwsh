@@ -62,7 +62,7 @@ function get_fs_data() {
 #>
 function get_cpu_data() {
 
-    return (@{used_pct = (Get-WmiObject win32_processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average }| ConvertTo-Json -Compress)
+    return (@{used_pct = (Get-WmiObject win32_processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average}| ConvertTo-Json -Compress)
 
 }
 
