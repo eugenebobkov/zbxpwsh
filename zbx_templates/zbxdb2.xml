@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-21T07:59:46Z</date>
+    <date>2018-12-27T03:52:04Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1608,7 +1608,7 @@ Instance details has to be updated in MACROS section</description>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags/>
                         </trigger_prototype>
@@ -1624,7 +1624,7 @@ Instance details has to be updated in MACROS section</description>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags/>
                         </trigger_prototype>
@@ -1963,7 +1963,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_state,{#TABLESPACE_NAME}].str(NORMAL)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Tablespace &quot;{#TABLESPACE_NAME}&quot; is in an invalid state {ITEM.VALUE}</name>
+                            <name>Tablespace {#TABLESPACE_NAME} is in an invalid state {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1971,7 +1971,7 @@ Instance details has to be updated in MACROS section</description>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -1984,7 +1984,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_HIGH}%( {ITEM.VALUE}) of available space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_HIGH} % ({ITEM.VALUE}) of available space of {#TABLESPACE_NAME} tablespace</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1992,7 +1992,7 @@ Instance details has to be updated in MACROS section</description>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -2005,7 +2005,7 @@ Instance details has to be updated in MACROS section</description>
                             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App IBM DB2 LUW Database:zbxdb2[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Used more than {$TBS_WARNING}%({ITEM.VALUE}) of available space on {#TABLESPACE_NAME}</name>
+                            <name>Used more than {$TBS_WARNING} % ({ITEM.VALUE}) of available space of {#TABLESPACE_NAME} tablespace</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2013,7 +2013,7 @@ Instance details has to be updated in MACROS section</description>
                             <priority>2</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -2109,7 +2109,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH}% ({ITEM.VALUE})</name>
+            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2117,7 +2117,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Amount of current processes exceeded threshold</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -2149,7 +2149,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Instance is not available</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -2170,7 +2170,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Instance is not available</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -2183,7 +2183,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_logs_utilization_data,used_pct].last()}&gt;{$LOGS_UTLIZATION_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Log utilization exceeded threshold {$LOGS_UTLIZATION_WARNING} (ITEM.VALUE)</name>
+            <name>Log utilization exceeded threshold {$LOGS_UTLIZATION_WARNING} % (ITEM.VALUE)</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2191,7 +2191,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>2</priority>
             <description>Log utilization</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -2204,7 +2204,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No database backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <name>No database backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2212,7 +2212,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>2</priority>
             <description/>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -2225,7 +2225,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No log backups for the last {ITEM.VALUE} hours (treshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <name>No log backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2233,7 +2233,7 @@ Instance details has to be updated in MACROS section</description>
             <priority>2</priority>
             <description/>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>

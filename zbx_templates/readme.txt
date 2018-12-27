@@ -1,2 +1,9 @@
-Agent installed on remote host (Management host) and IP address/Hostname of monitored instance/listener is provided 
-as parameter for monitoring script(UserParameter), which connects to the instance remotly
+Templates:
+
+zbxdb2.xml - IBM DB2 LUW (Zabbix Agent on Management host)
+zbxmssql.xml - Microsoft SQL Server (Zabbix Agent on Management host)
+zbxoracle.xml - Oracle Database Server (Zabbix Agent on Management host)
+zbxpgsql.xml - PosgreSQL database (Zabbix Agent on Management host)
+
+zbx_db_linux.xml - Lunux checks (SSH Agent)
+zbx_db_windows.xml Windows checks (Zabbix Agent on Management host)

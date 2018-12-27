@@ -484,7 +484,9 @@ function list_pdbs_tablespaces() {
 #>
 function get_tbs_space_data() {
 
-<#    $result = (run_sql -Query "SELECT d.tablespace_name 
+<#
+    # This query cannot be used if there are tablespaces defined as not ASSM (user). In future it can be reviewed again
+    $result = (run_sql -Query "SELECT d.tablespace_name 
                                     , trunc(used_percent,2) used_pct
                                     , used_space * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) used_bytes
                                     , tablespace_size * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) max_bytes
@@ -681,7 +683,6 @@ function get_pdbs_tbs_state(){
 
     return ($dict | ConvertTo-Json -Compress)
 } 
-
 
 <#
     Function to provide percentage of current processes to maximum available

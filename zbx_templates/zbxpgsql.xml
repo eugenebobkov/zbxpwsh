@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-24T03:50:43Z</date>
+    <date>2018-12-27T03:52:30Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -932,7 +932,7 @@ Hostname and port have to be updated in MACROS section</description>
             <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded treashold {$PROCESSES_HIGH}% ({ITEM.VALUE})</name>
+            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -940,7 +940,7 @@ Hostname and port have to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Amount of current processes exceeded threshold</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -956,7 +956,7 @@ Hostname and port have to be updated in MACROS section</description>
             <priority>2</priority>
             <description>Instance has been restarted</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -972,7 +972,7 @@ Hostname and port have to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Instance is not available</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -993,7 +993,7 @@ Hostname and port have to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Instance is not available</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -1014,7 +1014,7 @@ Hostname and port have to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Archiver process failed to archive log file</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
