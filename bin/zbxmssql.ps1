@@ -363,11 +363,12 @@ function get_databases_backup() {
                                    , sdb.recovery_model_desc
                                    , CASE 
                                          WHEN sdb.name = 'tempdb' THEN 'NOT APPLICABLE'
+                                         WHEN sys.fn_hadr_backup_is_preferred_replica(sdb.name) = 0 THEN 'AOAG REPLICA'
                                      ELSE
                                          CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) 
                                      END AS last_date
                                    , CASE 
-                                         WHEN sdb.name = 'tempdb' THEN 0
+                                         WHEN sdb.name = 'tempdb' OR sys.fn_hadr_backup_is_preferred_replica(sdb.name) = 0 THEN 0
                                      ELSE
                                          ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4)
                                      END AS hours_since 
@@ -401,11 +402,12 @@ function get_databases_log_backup() {
                                    , sdb.recovery_model_desc
                                    , CASE 
                                          WHEN sdb.recovery_model_desc = 'SIMPLE' OR sdb.name = 'tempdb' THEN 'NOT APPLICABLE'
+                                         WHEN sys.fn_hadr_backup_is_preferred_replica(sdb.name) = 0 THEN 'AOAG REPLICA'
                                      ELSE
                                          CONVERT(CHAR(19), COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), 120) 
                                      END AS last_date
                                    , CASE 
-		                                 WHEN sdb.recovery_model_desc = 'SIMPLE' OR sdb.name = 'tempdb' THEN 0
+		                                 WHEN sdb.recovery_model_desc = 'SIMPLE' OR sdb.name = 'tempdb' OR sys.fn_hadr_backup_is_preferred_replica(sdb.name) = 0 THEN 0
                                      ELSE                                      
                                          ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) 
                                      END AS hours_since
