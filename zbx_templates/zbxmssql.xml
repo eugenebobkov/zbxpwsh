@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-24T06:40:33Z</date>
+    <date>2018-12-27T03:53:18Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -1097,7 +1097,7 @@ Instance name has to be updated in MACROS section</description>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags/>
                         </trigger_prototype>
@@ -1113,7 +1113,7 @@ Instance name has to be updated in MACROS section</description>
                             <priority>2</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -1134,7 +1134,7 @@ Instance name has to be updated in MACROS section</description>
                             <priority>2</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -1222,7 +1222,7 @@ Instance name has to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Agent for instance is not running</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -1238,7 +1238,7 @@ Instance name has to be updated in MACROS section</description>
             <priority>2</priority>
             <description>Instance has been restarted</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -1254,7 +1254,7 @@ Instance name has to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Instance {$INSTANCE} is not available</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>
@@ -1275,7 +1275,7 @@ Instance name has to be updated in MACROS section</description>
             <priority>4</priority>
             <description>Instance {$INSTANCE} is not available</description>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags>
                 <tag>

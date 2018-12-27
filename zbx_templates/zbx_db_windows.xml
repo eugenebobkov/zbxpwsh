@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-24T03:52:08Z</date>
+    <date>2018-12-27T03:53:02Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -703,7 +703,7 @@ Eugene Bobkov 12/2018</description>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -724,7 +724,7 @@ Eugene Bobkov 12/2018</description>
                             <priority>2</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -784,7 +784,7 @@ Eugene Bobkov 12/2018</description>
             <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Swap usage above {$SWAP_AVERAGE}%</name>
+            <name>Swap usage above {$SWAP_AVERAGE} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -792,7 +792,7 @@ Eugene Bobkov 12/2018</description>
             <priority>3</priority>
             <description/>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -800,7 +800,7 @@ Eugene Bobkov 12/2018</description>
             <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Swap usage above {$SWAP_WARNING}%</name>
+            <name>Swap usage above {$SWAP_WARNING} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -808,7 +808,7 @@ Eugene Bobkov 12/2018</description>
             <priority>2</priority>
             <description/>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>

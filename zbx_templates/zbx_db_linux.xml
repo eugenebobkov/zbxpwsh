@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-24T03:51:56Z</date>
+    <date>2018-12-27T03:52:52Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -835,7 +835,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <priority>4</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -856,7 +856,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <priority>2</priority>
                             <description/>
                             <type>0</type>
-                            <manual_close>0</manual_close>
+                            <manual_close>1</manual_close>
                             <dependencies/>
                             <tags>
                                 <tag>
@@ -928,7 +928,7 @@ END {print &quot;]\n}&quot;}'</params>
             <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Swap usage above {$SWAP_AVERAGE}%</name>
+            <name>Swap usage above {$SWAP_AVERAGE} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -936,7 +936,7 @@ END {print &quot;]\n}&quot;}'</params>
             <priority>3</priority>
             <description/>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -944,7 +944,7 @@ END {print &quot;]\n}&quot;}'</params>
             <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Swap usage above {$SWAP_WARNING}%</name>
+            <name>Swap usage above {$SWAP_WARNING} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -952,7 +952,7 @@ END {print &quot;]\n}&quot;}'</params>
             <priority>2</priority>
             <description/>
             <type>0</type>
-            <manual_close>0</manual_close>
+            <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
         </trigger>

@@ -62,7 +62,7 @@ function get_fs_data() {
 #>
 function get_cpu_data() {
 
-    return (@{used_pct = (Get-WmiObject win32_processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average}| ConvertTo-Json -Compress)
+    return (@{used_pct = (Get-WmiObject win32_processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average} | ConvertTo-Json -Compress)
 
 }
 
@@ -74,8 +74,8 @@ function get_memory_data() {
     $os = Get-WmiObject win32_operatingsystem -ComputerName $Hostname
 
     return (@{ 
-                 memory_used_pct = ("{0:N2}" -f ((($os.TotalVisibleMemorySize - $os.FreePhysicalMemory)*100) / $os.TotalVisibleMemorySize))
-                 swap_used_pct = ("{0:N2}" -f ((($os.TotalVirtualMemorySize - $os.FreeVirtualMemory)*100) / $os.TotalVirtualMemorySize))
+                 memory_used_pct = [math]::round(($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) * 100 / $os.TotalVisibleMemorySize, 4)
+                 swap_used_pct = [math]::round(($os.TotalVirtualMemorySize - $os.FreeVirtualMemory) * 100 / $os.TotalVirtualMemorySize, 4)
              } | ConvertTo-Json -Compress)
 }
 
