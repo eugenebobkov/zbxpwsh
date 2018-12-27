@@ -139,6 +139,10 @@ function list_tablespaces() {
         # Instance is not available
         return $result
     }
+    # if there are no DMS tablespaces - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{`n`t`"data`": [`n`t]`n}"
+    }
 
     $list = New-Object System.Collections.Generic.List[System.Object]
 
@@ -164,6 +168,10 @@ function get_tbs_state(){
         # Instance is not available
         return $result
     }
+    # if there are no DMS tablespaces - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return '{}'
+    }
 
     $dict = @{}
 
@@ -185,7 +193,7 @@ function list_hadr_hosts() {
     }
     # if there are no standby databases - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return "{`n`t`"data`": [`n`t]`n}"
     }
 
     $list = New-Object System.Collections.Generic.List[System.Object]
@@ -210,7 +218,7 @@ function get_hadr_data(){
     }
     # if there are no standby databases - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -272,6 +280,10 @@ function get_tbs_used_space() {
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
+    }
+    # if there are no DMS tablespaces - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return '{}'
     }
 
     $dict = @{}
@@ -418,7 +430,7 @@ function get_elevated_users_data(){
     }
     # if there are no such users - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $idx = 1
