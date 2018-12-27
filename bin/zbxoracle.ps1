@@ -40,6 +40,9 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
       v$ostat
 #>
 
+<#
+    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
+#>
 function run_sql() {
     param (
         [Parameter(Mandatory=$true)][string]$Query,
@@ -79,7 +82,7 @@ function run_sql() {
     catch {
         # report error, sanitize it to remove IPs if there are any
         $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $CheckType + '] ' + $error)
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
         return "ERROR: CONNECTION REFUSED: $error"
     }
 
@@ -99,7 +102,7 @@ function run_sql() {
     catch {
         # report error, sanitize it to remove IPs if there are any
         $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $CheckType + '] ' + $error)
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
         $result = "ERROR: QUERY FAILED: $error"
     } 
     finally {
@@ -109,6 +112,41 @@ function run_sql() {
     # Comma in front is essential as without it return provides object's value, not object itselt
     return ,$result
 } 
+
+<#
+    Internal function to check if instance is available and has container datababase functionality
+#>
+function is_available_and_cdb() {
+
+    # check database version, cdb was implemented for version 12
+    $result = (run_sql -Query 'SELECT version 
+                                 FROM v$instance')
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available 
+        return $false
+    } 
+    elseif ([int]$result.Rows[0][0].Split('.')[0] -le 11) {
+        # return $false, this version doesn't have CDB functionality
+        return $false
+    }
+
+    # Check if database is container
+    $result = (run_sql -Query 'SELECT cdb 
+                                 FROM v$database')
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available or it's not a container database
+        return $false
+    } 
+    elseif ($result.Rows[0][0] -eq 'NO') {
+        # return empty json
+        return $false
+    } elseif ($result.Rows[0][0] -eq 'YES') {
+        # this instance has container database
+        return $true
+    }
+}
 
 <#
     Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
@@ -170,7 +208,9 @@ function get_startup_time() {
 #>
 function list_tablespaces() {
 
-    $result = (run_sql -Query "SELECT tablespace_name FROM dba_tablespaces WHERE contents = 'PERMANENT'")
+    $result = (run_sql -Query "SELECT tablespace_name 
+                                 FROM dba_tablespaces 
+                                WHERE contents = 'PERMANENT'")
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
@@ -218,7 +258,8 @@ function list_asm_diskgroups() {
 #>
 function list_guarantee_restore_points() {
 
-    $result = (run_sql -Query "SELECT name FROM v`$restore_point 
+    $result = (run_sql -Query "SELECT name 
+                                 FROM v`$restore_point 
                                 WHERE guarantee_flashback_database = 'YES'")
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -255,7 +296,7 @@ function get_guarantee_restore_points_data(){
     }
     # if there are no restore points - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -281,7 +322,7 @@ function get_asm_diskgroups_state(){
     }
     # if there are no asm diskgroups - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -309,7 +350,7 @@ function get_asm_diskgroups_data(){
     }
     # if there are no asm diskgroups - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -326,21 +367,23 @@ function get_asm_diskgroups_data(){
 #>
 function list_pdbs() {
 
-    $result = (run_sql -Query 'SELECT cdb 
-                                 FROM v$database')
-
-    if ($result.GetType() -ne [System.Data.DataTable]) {
-        # Instance is not available or not container database
-        return $result
-    } 
-    elseif ($result.Rows[0][0] -eq 'NO') {
-        # return empty json
-        return "{ `n`t`"data`":[`n`t]`n}"
+    # check if instance is available and represents container database
+    if (-Not (is_available_and_cdb)) {
+        return "{`n`t`"data`":[`n`t]`n}"
     }
 
     $result = (run_sql -Query "SELECT name 
                                  FROM v`$pdbs 
                                 WHERE name != 'PDB`$SEED'")
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+    # if there are no PDBs - return empty JSON
+    elseif ($result.Rows.Count -eq 0) {
+        return "{`n`t`"data`": [`n`t]`n}"
+    }
 
     $list = New-Object System.Collections.Generic.List[System.Object]
 
@@ -366,7 +409,7 @@ function list_standby_databases() {
     }
     # if there are no standby databases - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return "{`n`t`"data`": [`n`t]`n}"
     }
 
     $list = New-Object System.Collections.Generic.List[System.Object]
@@ -395,7 +438,7 @@ function get_standby_data(){
     } 
     # if there are no standby databases - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -412,6 +455,12 @@ function get_standby_data(){
 #>
 function get_pdb_state() {
 
+    # check if instance is available and represents container database
+    if (-Not (is_available_and_cdb)) {
+        # there are no PDB databases in this instance
+        return "{}"
+    }
+
     $result = (run_sql -Query "SELECT name
                                     , open_mode 
                                  FROM v`$pdbs 
@@ -420,10 +469,6 @@ function get_pdb_state() {
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # Instance is not available
         return $result
-    }
-    # if there are no PDB databases - return empty JSON
-    elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
     }
 
     $dict = @{}
@@ -439,17 +484,11 @@ function get_pdb_state() {
     Function to provide list of tablespaces in pluggable databases
 #>
 function list_pdbs_tablespaces() {
-    # Check if database is container
-    $result = (run_sql -Query 'SELECT cdb 
-                                 FROM v$database')
 
-    if ($result.GetType() -ne [System.Data.DataTable]) {
-        # Instance is not available or it's not a container database
-        return $result
-    } 
-    elseif ($result.Rows[0][0] -eq 'NO') {
-        # return empty json
-        return "{ `n`t`"data`": [`n`t]`n}"
+    # check if instance is available and represents container database
+    if (-Not (is_available_and_cdb)) {
+        # there are no PDB databases in this instance
+        return '{}'
     }
 
     $result = (run_sql -Query "SELECT p.name
@@ -466,7 +505,7 @@ function list_pdbs_tablespaces() {
     }
     # if there are no PDB - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $list = New-Object System.Collections.Generic.List[System.Object]
@@ -538,6 +577,13 @@ function get_tbs_space_data() {
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_used_space() {
+
+    # check if instance is available and represents container database
+    if (-Not (is_available_and_cdb)) {
+        # there are no PDB databases in this instance
+        return '{}'
+    }
+
     $result = (run_sql -Query "SELECT p.name
                                     , d.tablespace_name
                                     , trunc(used_percent,2) used_pct
@@ -564,7 +610,7 @@ function get_pdbs_tbs_used_space() {
     }
     # if there are no PDB - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -632,6 +678,12 @@ function get_tbs_state(){
 #>
 function get_pdbs_tbs_state(){
 
+    # check if instance is available and represents container database
+    if (-Not (is_available_and_cdb)) {
+        # there are no PDB databases in this instance
+        return '{}'
+    }
+
     $result = (run_sql -Query "SELECT p.name
                                     , t.tablespace_name
                                     , t.status
@@ -665,7 +717,7 @@ function get_pdbs_tbs_state(){
     }
     # if there are no PDB - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $dict = @{}
@@ -691,7 +743,7 @@ function get_processes_data() {
 
     $result = (run_sql -Query "SELECT max(value) max_processes
                                     , count(p.pid) current_processes
-                                    , trunc((count(p.pid) / max(v.value))*100, 2) pct_used
+                                    , trunc((count(p.pid) / max(v.value)) * 100, 2) pct_used
                                  FROM (SELECT value 
                                          FROM v`$parameter 
                                         WHERE name = 'processes') v  
@@ -715,7 +767,7 @@ function get_processes_data() {
 #>
 function get_fra_used_pct() {
 
-    $result = (run_sql -Query 'SELECT trunc(sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE), 2) used_pct 
+    $result = (run_sql -Query 'SELECT trunc(sum(PERCENT_SPACE_USED) - sum(PERCENT_SPACE_RECLAIMABLE), 2) used_pct 
                                  FROM v$flash_recovery_area_usage')
 
     # Check if expected object has been recieved
@@ -814,7 +866,7 @@ function get_elevated_users_data(){
     }
     # if there are no such users - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
-        return "{ `n`t`"data`": [`n`t]`n}"
+        return '{}'
     }
 
     $idx = 1
