@@ -51,56 +51,56 @@ function run_sql() {
     }
                
     if ($Username -eq '') {
-        $sqlConnectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
+        $connectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
     } else {
         If ("$Password") {
             $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
         }
-        $sqlConnectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $DBPassword;"
+        $connectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $DBPassword;"
     }
 
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
-    $sqlConnectionString += "Connect Timeout = $ConnectTimeout;"
+    $connectionString += "Connect Timeout = $ConnectTimeout;"
 
     # Create the connection object
-    $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $sqlConnectionString
+    $connection = New-Object System.Data.SqlClient.SqlConnection $connectionString
 
     # TODO: try to open connection here
     try {
-        [void]$sqlConnection.Open()
+        [void]$connection.Open()
     } 
     catch {
         # report error, sanitize it to remove IPs if there are any
-        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message $sqlError
-        return "ERROR: CONNECTION REFUSED: $sqlError"
+        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $CheckType + '] ' + $error)
+        return "ERROR: CONNECTION REFUSED: $error"
     }
 
     # Build the SQL command
-    $sqlCommand = New-Object System.Data.SqlClient.SqlCommand $Query
-    $sqlCommand.Connection = $sqlConnection
+    $command = New-Object System.Data.SqlClient.SqlCommand $Query
+    $command.Connection = $connection
     # If query running for more then specified parameter - it will be terminated and error code posted
-    $sqlCommand.CommandTimeout = $CommandTimeout
+    $command.CommandTimeout = $CommandTimeout
 
     # Prepare command execution
-    $sqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter $sqlCommand
+    $adapter = New-Object System.Data.SqlClient.SqlDataAdapter $command
     $dataTable = New-Object System.Data.DataTable
 
     # The following command opens connection and executes required statement
     try {
          # [void] simitair to | Out-Null, prevents posting output of Fill function (amount of rows returned), which will be picked up as function output
-         [void]$sqlAdapter.Fill($dataTable)
+         [void]$adapter.Fill($dataTable)
          $result = $dataTable
     } 
     catch {
         # report error, sanitize it to remove IPs if there are any
-        $sqlError = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message $sqlError
-        $result = "ERROR: QUERY FAILED: $sqlError"
+        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $CheckType + '] ' + $error)
+        $result = "ERROR: QUERY FAILED: $error"
     } 
     finally {
-        [void]$sqlConnection.Close()
+        [void]$connection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt

@@ -79,7 +79,7 @@ function run_sql() {
     catch {
         # report error, sanitize it to remove IPs if there are any
         $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message $error
+        Write-Log -Message ('[' + $CheckType + '] ' + $error)
         return "ERROR: CONNECTION REFUSED: $error"
     }
 
@@ -99,7 +99,7 @@ function run_sql() {
     catch {
         # report error, sanitize it to remove IPs if there are any
         $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message $error
+        Write-Log -Message ('[' + $CheckType + '] ' + $error)
         $result = "ERROR: QUERY FAILED: $error"
     } 
     finally {
