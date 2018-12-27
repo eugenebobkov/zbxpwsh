@@ -90,8 +90,8 @@ function run_sql() {
     } 
     # issues during execution
     else {
-        Write-Log -Message "$output"
-        error = $output.Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        $error = $output.Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $CheckType + '] ' + $error)
         return "ERROR: CONNECTION REFUSED: $error"
     }
 } 
