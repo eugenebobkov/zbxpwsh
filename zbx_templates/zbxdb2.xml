@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-27T03:52:04Z</date>
+    <date>2018-12-28T03:02:17Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -898,7 +898,7 @@ Instance details has to be updated in MACROS section</description>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
-                    <units/>
+                    <units>KB</units>
                     <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -967,7 +967,7 @@ Instance details has to be updated in MACROS section</description>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
-                    <units/>
+                    <units>KB</units>
                     <snmpv3_contextname/>
                     <snmpv3_securityname/>
                     <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -1690,7 +1690,7 @@ Instance details has to be updated in MACROS section</description>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Max space for  {#TABLESPACE_NAME} tablespace (GB)</name>
+                            <name>Max space for  {#TABLESPACE_NAME} tablespace (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -1701,7 +1701,7 @@ Instance details has to be updated in MACROS section</description>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -1729,7 +1729,7 @@ Instance details has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#TABLESPACE_NAME}.max_gb</params>
+                                    <params>$.{#TABLESPACE_NAME}.max_bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1824,7 +1824,7 @@ Instance details has to be updated in MACROS section</description>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Used space for  {#TABLESPACE_NAME} tablespace (KB)</name>
+                            <name>Used space for  {#TABLESPACE_NAME} tablespace (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -1835,7 +1835,7 @@ Instance details has to be updated in MACROS section</description>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -1863,7 +1863,7 @@ Instance details has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#TABLESPACE_NAME}.used_kb</params>
+                                    <params>$.{#TABLESPACE_NAME}.used_bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>

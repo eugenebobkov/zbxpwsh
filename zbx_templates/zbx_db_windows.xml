@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-27T03:53:02Z</date>
+    <date>2018-12-28T02:50:59Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -421,7 +421,7 @@ Eugene Bobkov 12/2018</description>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -491,7 +491,7 @@ Eugene Bobkov 12/2018</description>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -522,7 +522,7 @@ Eugene Bobkov 12/2018</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#FSNAME}'].used_pct</params>
+                                    <params>$['{#FSNAME}'].total</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -561,7 +561,7 @@ Eugene Bobkov 12/2018</description>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>

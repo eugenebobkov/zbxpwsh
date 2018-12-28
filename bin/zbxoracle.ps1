@@ -335,13 +335,13 @@ function get_asm_diskgroups_state(){
 }
 
 <#
-    Function to get data for asm diskgroups (used_pct, used_mb, max etc.)
+    Function to get data for asm diskgroups (used_pct, used_bytes, max etc.)
 #>
 function get_asm_diskgroups_data(){
     $result = (run_sql -Query 'SELECT name
-                                    , total_mb - free_mb used_mb
+                                    , (total_mb - free_mb) * 1024 * 1024 used_bytes
                                     , round((total_mb - free_mb)/total_mb * 100, 4) used_pct
-                                    , total_mb
+                                    , total_mb * 1024 * 1024 total_bytes
                                  FROM v$asm_diskgroup')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -356,7 +356,7 @@ function get_asm_diskgroups_data(){
     $dict = @{}
 
     foreach ($row in $result) {
-        $dict.Add($row[0], @{used_mb = $row[1]; used_pct = $row[2]; total_mb = $row[3]})
+        $dict.Add($row[0], @{used_bytes = $row[1]; used_pct = $row[2]; total = $row[3]})
     }
 
     return ($dict | ConvertTo-Json -Compress)
