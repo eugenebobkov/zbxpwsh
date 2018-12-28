@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-27T03:52:52Z</date>
+    <date>2018-12-28T02:50:46Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -68,7 +68,7 @@ Eugene Bobkov 10/2018</description>
                                  {line = &quot;&quot;} &#13;
                            else {printf &quot;,&quot;}; &#13;
                            sub(/%$/,&quot;&quot;,$5)&#13;
-                           print &quot;\&quot;&quot; $6 &quot;\&quot;:{\&quot;used_pct\&quot;:&quot; $5 &quot;,\&quot;total\&quot;:&quot; $3+$4 &quot;,\&quot;used_bytes\&quot;:&quot; $3 &quot;,\&quot;free_bytes\&quot;:&quot; $4 &quot;}&quot;} \&#13;
+                           print &quot;\&quot;&quot; $6 &quot;\&quot;:{\&quot;used_pct\&quot;:&quot; $5 &quot;,\&quot;total\&quot;:&quot; ($3+$4)*1024 &quot;,\&quot;used_bytes\&quot;:&quot; $3*1024 &quot;,\&quot;free_bytes\&quot;:&quot; $4*1024 &quot;}&quot;} \&#13;
               END {print &quot;}&quot;}'</params>
                     <ipmi_sensor/>
                     <authtype>1</authtype>
@@ -542,7 +542,7 @@ END {print &quot;]\n}&quot;}'</params>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Free space on {#FSNAME} (kb)</name>
+                            <name>Free space on {#FSNAME} (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -553,7 +553,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -584,7 +584,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#FSNAME}'].total</params>
+                                    <params>$['{#FSNAME}'].free_bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -612,7 +612,7 @@ END {print &quot;]\n}&quot;}'</params>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Total space on {#FSNAME} (kb)</name>
+                            <name>Total space on {#FSNAME} (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -623,7 +623,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>
@@ -752,7 +752,7 @@ END {print &quot;]\n}&quot;}'</params>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Used space on {#FSNAME} (kb)</name>
+                            <name>Used space on {#FSNAME} (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -763,7 +763,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units/>
+                            <units>B</units>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
                             <snmpv3_securitylevel>0</snmpv3_securitylevel>

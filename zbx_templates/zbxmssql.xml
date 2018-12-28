@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-27T03:53:18Z</date>
+    <date>2018-12-28T03:03:46Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -734,7 +734,7 @@ Instance name has to be updated in MACROS section</description>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Amount of sessions for &quot;{#DATABASE}&quot; database</name>
+                            <name>Amount of sessions for {#DATABASE} database</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -804,7 +804,7 @@ Instance name has to be updated in MACROS section</description>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>State of &quot;{#DATABASE}&quot; database</name>
+                            <name>State of {#DATABASE} database</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -874,7 +874,7 @@ Instance name has to be updated in MACROS section</description>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Waits in &quot;{#DATABASE}&quot; database</name>
+                            <name>Waits in {#DATABASE} database</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>

@@ -234,9 +234,9 @@ function get_hadr_data(){
 function get_tbs_used_space() {
 
     $result = (run_sql -Query "SELECT ru.tbsp_name
-                                    , int(ru.real_max_size) max_gb
+                                    , int(ru.real_max_size * 1024 * 1024 * 1024) max_bytes
                                     , dec(dbu.tbsp_used_size_kb)/dec(ru.real_max_size*1024*1024)*100 used_pct
-                                    , dec(dbu.tbsp_used_size_kb) used_kb
+                                    , dec(dbu.tbsp_used_size_kb * 1024) used_bytes
                                  FROM 
 									( SELECT tbsp_id 
 										   , tbsp_name as tbsp_name 
@@ -289,7 +289,7 @@ function get_tbs_used_space() {
     $dict = @{}
 
     foreach ($row in $result) {
-        $dict.Add($row[0], @{max_gb = $row[1]; used_pct = $row[2]; used_kb = $row[3]})
+        $dict.Add($row[0], @{max_bytes = $row[1]; used_pct = $row[2]; used_bytes = $row[3]})
     }
 
     return ($dict | ConvertTo-Json -Compress)
