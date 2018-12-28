@@ -234,9 +234,9 @@ function get_hadr_data(){
 function get_tbs_used_space() {
 
     $result = (run_sql -Query "SELECT ru.tbsp_name
-                                    , int(ru.real_max_size * 1024 * 1024 * 1024) max_bytes
-                                    , dec(dbu.tbsp_used_size_kb)/dec(ru.real_max_size*1024*1024)*100 used_pct
-                                    , dec(dbu.tbsp_used_size_kb * 1024) used_bytes
+                                    , ru.real_max_size * 1024 * 1024 * 1024 max_bytes
+                                    , QUANTIZE(dbu.tbsp_used_size_kb/(ru.real_max_size * 1024 * 1024) * 100, decfloat(0.0001)) used_pct
+                                    , dbu.tbsp_used_size_kb * 1024 used_bytes
                                  FROM 
 									( SELECT tbsp_id 
 										   , tbsp_name as tbsp_name 
@@ -321,7 +321,7 @@ function get_appls_data() {
     # TODO: check if maxappls set to -1
     $result = (run_sql -Query "SELECT p.value max_appls
                                     , c.cnt current_appls
-                                    , QUANTIZE((c.cnt/p.value)*100, decfloat(0.01)) pct_used
+                                    , QUANTIZE((c.cnt/p.value)*100, decfloat(0.0001)) pct_used
                                  FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
                                     , (SELECT count(*) cnt FROM sysibmadm.applications) c"
               )
@@ -344,9 +344,9 @@ function get_appls_data() {
     Function to provide percentage of utilized logs
 #>
 function get_logs_utilization_data() {
-    $result = (run_sql -Query ('SELECT log_utilization_percent
-                                      , total_log_used_kb 
-                                      , total_log_available_kb
+    $result = (run_sql -Query ('SELECT log_utilization_percent used_pct
+                                      , total_log_used_kb * 1024 used_bytes
+                                      , total_log_available_kb * 1024 total
                                   FROM sysibmadm.log_utilization'
                               )
               )
@@ -356,8 +356,8 @@ function get_logs_utilization_data() {
         # Return datata in JSON format
         return ( @{
                      used_pct = $result.Rows[0][0]
-                     used_kb = $result.Rows[0][1]
-                     available_kb = $result.Rows[0][2]
+                     used_bytes = $result.Rows[0][1]
+                     total = $result.Rows[0][2]
                  } | ConvertTo-Json -Compress)
     }
     else {
