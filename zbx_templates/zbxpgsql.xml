@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-28T02:58:00Z</date>
+    <date>2018-12-28T03:17:36Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -28,6 +28,9 @@ Hostname and port have to be updated in MACROS section</description>
                 </application>
                 <application>
                     <name>Configuration</name>
+                </application>
+                <application>
+                    <name>Database</name>
                 </application>
                 <application>
                     <name>JSON</name>
@@ -834,6 +837,9 @@ Hostname and port have to be updated in MACROS section</description>
                             <applications>
                                 <application>
                                     <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Database</name>
                                 </application>
                             </applications>
                             <valuemap/>
