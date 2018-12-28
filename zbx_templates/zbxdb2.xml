@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-28T03:49:06Z</date>
+    <date>2018-12-28T04:02:17Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -40,6 +40,9 @@ Instance details has to be updated in MACROS section</description>
                 </application>
                 <application>
                     <name>Security</name>
+                </application>
+                <application>
+                    <name>Tablespace</name>
                 </application>
             </applications>
             <items>
@@ -1723,6 +1726,9 @@ Instance details has to be updated in MACROS section</description>
                                 <application>
                                     <name>Capacity</name>
                                 </application>
+                                <application>
+                                    <name>Tablespace</name>
+                                </application>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
@@ -1789,6 +1795,9 @@ Instance details has to be updated in MACROS section</description>
                             <applications>
                                 <application>
                                     <name>Availability</name>
+                                </application>
+                                <application>
+                                    <name>Tablespace</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -1857,6 +1866,9 @@ Instance details has to be updated in MACROS section</description>
                                 <application>
                                     <name>Capacity</name>
                                 </application>
+                                <application>
+                                    <name>Tablespace</name>
+                                </application>
                             </applications>
                             <valuemap/>
                             <logtimefmt/>
@@ -1923,6 +1935,9 @@ Instance details has to be updated in MACROS section</description>
                             <applications>
                                 <application>
                                     <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Tablespace</name>
                                 </application>
                             </applications>
                             <valuemap/>
