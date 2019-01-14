@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-28T04:02:17Z</date>
+    <date>2019-01-14T02:38:17Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1570,7 +1570,7 @@ Instance details has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#HADR_HOST}.state </params>
+                                    <params>$.{#HADR_HOST}.state</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1600,10 +1600,10 @@ Instance details has to be updated in MACROS section</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, connect_status)].str(CONNECTED)}=0</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, connect_status)].str(PEER)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Connect status of HADR host {$HADR_HOST} is invalid ({ITEM.VALUE})</name>
+                            <name>Connect status of HADR host {#HADR_HOST} is invalid ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1613,13 +1613,18 @@ Instance details has to be updated in MACROS section</description>
                             <type>0</type>
                             <manual_close>1</manual_close>
                             <dependencies/>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>HADR</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, state)].str(PEER)}=0</expression>
+                            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_hadr_data({#HADR_HOST}, state)].str(CONNECTED)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>HADR host {$HADR_HOST} is in an invalid state ({ITEM.VALUE})</name>
+                            <name>State of HADR host {#HADR_HOST} is invalid ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1629,7 +1634,12 @@ Instance details has to be updated in MACROS section</description>
                             <type>0</type>
                             <manual_close>1</manual_close>
                             <dependencies/>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>HADR</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>

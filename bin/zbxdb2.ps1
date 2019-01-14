@@ -228,7 +228,6 @@ function get_hadr_data(){
     }
 
     return ($dict | ConvertTo-Json -Compress)
-
 }
 
 function get_tbs_used_space() {
