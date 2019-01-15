@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-15T01:13:17Z</date>
+    <date>2019-01-15T04:27:24Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -2086,7 +2086,7 @@ Instance details has to be updated in MACROS section</description>
                 </macro>
                 <macro>
                     <macro>{$HOURS_SINCE_LAST_DB_BACKUP}</macro>
-                    <value>24</value>
+                    <value>25</value>
                 </macro>
                 <macro>
                     <macro>{$HOURS_SINCE_LAST_LOG_BACKUP}</macro>
