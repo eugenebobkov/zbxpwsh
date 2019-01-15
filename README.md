@@ -30,3 +30,5 @@ Linux OS checks are running bash commands
   
   TODO: If PowerShell based checks will be required and checks has to be done from Windows Management hosts - it will be, probably, done by using ```plink```)
 - Windows (zbx_templates/zbx_db_windows.xml, module zbxdbwin.ps1, WMI remote calls)
+
+Please check Wiki for installation procedure 
