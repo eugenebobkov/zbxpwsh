@@ -15,6 +15,8 @@ Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <# Notes:
+    PSQL> create role zabbix with password 'password';
+
     Checkpint interval
       pg_stat_bgwriter
       pg_stat_replication - function with security definer has to be created to view full information about replication
@@ -183,7 +185,7 @@ function get_databases_size() {
     $dict = @{}
 
     foreach ($row in $result) {
-        $dict.Add($row.Split('|')[0].Trim(), @{bytes = [int]$row.Split('|')[1].Trim()})
+        $dict.Add($row.Split('|')[0].Trim(), @{bytes = [int64]$row.Split('|')[1].Trim()})
     }
 
     return ($dict | ConvertTo-Json -Compress)
@@ -279,7 +281,7 @@ function get_archiver_stat_data() {
         return (@{
                     date = $result.Split('|')[0].Trim()
                     hours_since = [float]$result.Split('|')[1].Trim()
-                    failed_count = [int]$result.Split('|')[2].Trim()
+                    failed_count = [int64]$result.Split('|')[2].Trim()
                 } | ConvertTo-Json -Compress)
     }
     else {

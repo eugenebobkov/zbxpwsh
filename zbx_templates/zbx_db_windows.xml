@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-28T02:50:59Z</date>
+    <date>2019-01-14T08:35:45Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -419,7 +419,7 @@ Eugene Bobkov 12/2018</description>
                             <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
-                            <value_type>0</value_type>
+                            <value_type>3</value_type>
                             <allowed_hosts/>
                             <units>B</units>
                             <snmpv3_contextname/>
@@ -489,7 +489,7 @@ Eugene Bobkov 12/2018</description>
                             <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
-                            <value_type>0</value_type>
+                            <value_type>3</value_type>
                             <allowed_hosts/>
                             <units>B</units>
                             <snmpv3_contextname/>
@@ -559,7 +559,7 @@ Eugene Bobkov 12/2018</description>
                             <history>7d</history>
                             <trends>365d</trends>
                             <status>0</status>
-                            <value_type>0</value_type>
+                            <value_type>3</value_type>
                             <allowed_hosts/>
                             <units>B</units>
                             <snmpv3_contextname/>
@@ -695,7 +695,7 @@ Eugene Bobkov 12/2018</description>
                             <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_HIGH} % ({ITEM.VALUE}) for {#FSNAME} filesystem</name>
+                            <name>Space usage exceeded {$FS_HIGH} % for {#FSNAME} filesystem</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -716,7 +716,7 @@ Eugene Bobkov 12/2018</description>
                             <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_WARNING} and {Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&lt;={$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_HIGH} % ({ITEM.VALUE}) for {#FSNAME} filesystem</name>
+                            <name>Space usage exceeded {$FS_WARNING} % for {#FSNAME} filesystem</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>

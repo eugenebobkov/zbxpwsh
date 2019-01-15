@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-28T02:50:46Z</date>
+    <date>2019-01-14T07:05:15Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -827,7 +827,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_HIGH} % ({ITEM.VALUE}) for {#FSNAME} filesystem</name>
+                            <name>Space usage exceeded {$FS_HIGH} % for {#FSNAME} filesystem</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -848,7 +848,7 @@ END {print &quot;]\n}&quot;}'</params>
                             <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING} and {Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$FS_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$FS_WARNING} % ({ITEM.VALUE}) for {#FSNAME} filesystem</name>
+                            <name>Space usage exceeded {$FS_WARNING} % for {#FSNAME} filesystem</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>

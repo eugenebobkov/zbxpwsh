@@ -228,7 +228,6 @@ function get_hadr_data(){
     }
 
     return ($dict | ConvertTo-Json -Compress)
-
 }
 
 function get_tbs_used_space() {
@@ -322,8 +321,8 @@ function get_appls_data() {
     $result = (run_sql -Query "SELECT p.value max_appls
                                     , c.cnt current_appls
                                     , QUANTIZE((c.cnt/p.value)*100, decfloat(0.0001)) pct_used
-                                 FROM (SELECT value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
-                                    , (SELECT count(*) cnt FROM sysibmadm.applications) c"
+                                 FROM (SELECT cast(cast(value as int) as float) value FROM sysibmadm.dbcfg WHERE name = 'maxappls') p
+                                    , (SELECT cast(count(*) as float) cnt FROM sysibmadm.applications) c"
               )
 
     # Check if expected object has been recieved
