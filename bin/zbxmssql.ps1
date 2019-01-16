@@ -14,9 +14,9 @@
 
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,      # Name of check function
-    [Parameter(Mandatory=$true, Position=2)][string]$Hostname,       # Hostname, required for instance related checks, <HOSTNAME>\<SERVICE>
+    [Parameter(Mandatory=$true, Position=2)][string]$Hostname,       # Hostname
     [Parameter(Mandatory=$true, Position=3)][string]$Service,        # Service name like SQL001
-    [Parameter(Mandatory=$false, Position=4)][int]$Port = 1433,      # Port number, if required for non standart configuration, by default 1433
+    [Parameter(Mandatory=$true, Position=4)][int]$Port,              # Port number
     [Parameter(Mandatory=$false, Position=5)][string]$Username = '', # User name, required for SQL server authentication
     [Parameter(Mandatory=$false, Position=6)][string]$Password = ''  # Password, required for SQL server authentication
 )
@@ -37,7 +37,7 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 function run_sql() {
     param (
         [Parameter(Mandatory=$true)][string]$Query,
-        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
+        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent (4.0) before its connection timed out by server
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
@@ -53,10 +53,12 @@ function run_sql() {
     if ($Username -eq '') {
         $connectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
     } else {
-        If ("$Password") {
-            $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+        if ($Password -ne '') {
+            $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+        } else {
+            $dbPassword = ''
         }
-        $connectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $DBPassword;"
+        $connectionString = "Server = $serverInstance; database = master; Integrated Security=false; User ID = $Username; Password = $dbPassword;"
     }
 
     # How long scripts attempts to connect to instance

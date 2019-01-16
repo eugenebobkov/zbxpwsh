@@ -16,9 +16,9 @@ Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
     [Parameter(Mandatory=$true, Position=3)][string]$Service,          # Database name
-    [Parameter(Mandatory=$true, Position=4)][int]$Port = 50000,        # Port number if required
-    [Parameter(Mandatory=$false, Position=5)][string]$Username,         # User name
-    [Parameter(Mandatory=$false, Position=6)][string]$Password          # Password
+    [Parameter(Mandatory=$true, Position=4)][int]$Port = 50000,        # Port number, default is 50000
+    [Parameter(Mandatory=$true, Position=5)][string]$Username,         # User name
+    [Parameter(Mandatory=$true, Position=6)][string]$Password          # Password
 )
 
 $global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
@@ -35,18 +35,21 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 function run_sql() {
     param (
         [Parameter(Mandatory=$true)][string]$Query,
-        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
+        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent (4.0) before its connection timed out by server
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
 
     # Decrypy password
-    If ($Password) {
-        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    # As for 11.1 DB2 client doesn't support Integrated Security (https://www.ibm.com/support/knowledgecenter/en/SSEPGG_11.1.0/com.ibm.swg.im.dbclient.adonet.ref.doc/doc/DB2ConnectionClassConnectionStringProperty.html)
+    if ($Password -ne '' ) {
+        $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    } else {
+        $dbPassword = ''
     }
  
     # Column symbol after variable name raises error
-    $connectionString = "Database = $Service; User ID = $Username; Password = $DBPassword; Server = $Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
+    $connectionString = "Database = $Service; User ID = $Username; Password = $dbPassword; Server = $Hostname`:$Port; Connect Timeout = $ConnectTimeout;"
 
     $factory = [System.Data.Common.DbProviderFactories]::GetFactory(“IBM.Data.DB2”)
    
