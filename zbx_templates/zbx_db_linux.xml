@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-14T07:05:15Z</date>
+    <date>2019-01-16T07:18:18Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -49,7 +49,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ssh.run[fs_data,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -119,7 +119,7 @@ Eugene Bobkov 10/2018</description>
                     <key>ssh.run[load1m]</key>
                     <delay>0</delay>
                     <history>1w</history>
-                    <trends>365d</trends>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -185,7 +185,7 @@ Eugene Bobkov 10/2018</description>
                     <key>ssh.run[load5m]</key>
                     <delay>0</delay>
                     <history>1w</history>
-                    <trends>365d</trends>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -251,7 +251,7 @@ Eugene Bobkov 10/2018</description>
                     <key>ssh.run[load15m]</key>
                     <delay>0</delay>
                     <history>1w</history>
-                    <trends>365d</trends>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -315,7 +315,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ssh.run[memory_free,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1w</history>
                     <trends>90d</trends>
                     <status>0</status>
@@ -377,12 +377,12 @@ Eugene Bobkov 10/2018</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Swap space usage (%)</name>
+                    <name>Swap usage (%)</name>
                     <type>13</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1w</history>
                     <trends>90d</trends>
                     <status>0</status>
@@ -449,7 +449,7 @@ Eugene Bobkov 10/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ssh.run[sysload,{$HOSTNAME},{$SSH_PORT}]</key>
-                    <delay>1m</delay>
+                    <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
