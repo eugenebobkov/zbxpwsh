@@ -102,7 +102,7 @@ function run_sql() {
     Function to check database availability
 #>
 function get_database_state() {
-    # get database response, fact of recieving data is considered to be good sign of the database availability
+    # get database response, fact of recieving data itself can be considered as good sign of the database availability
     $result = (run_sql -Query 'SELECT ibmreqd 
                                  FROM sysibm.sysdummy1')
 

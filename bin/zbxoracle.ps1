@@ -119,8 +119,7 @@ function run_sql() {
     Internal function to check if instance is available and has container datababase functionality
 #>
 function is_available_and_cdb() {
-
-    # check database version, cdb was implemented for version 12
+    # check database version, cdb was implemented starting from version 12
     $result = (run_sql -Query 'SELECT version 
                                  FROM v$instance')
 
@@ -154,7 +153,7 @@ function is_available_and_cdb() {
     Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    
+    # get database response, fact of recieving data itself can be considered as good sign of the database availability
     $result = (run_sql -Query 'SELECT status 
                                  FROM v$instance')
 
@@ -173,7 +172,7 @@ function get_instance_state() {
     Function to get software version
 #>
 function get_version() {
-    
+    # get software version
     $result = (run_sql -Query 'SELECT banner version 
                                  FROM v$version')
 
@@ -191,7 +190,7 @@ function get_version() {
     Function to get instance startup timestamp
 #>
 function get_startup_time() {
-    
+    # get instance startup time
     $result = (run_sql -Query "SELECT to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') startup_time
                                  FROM v`$instance")
 
@@ -206,10 +205,10 @@ function get_startup_time() {
 }
 
 <#
-    Function to list database tablespaces
+    Function to list database tablespaces, used by discovery
 #>
 function list_tablespaces() {
-
+    # get list of tablespaces
     $result = (run_sql -Query "SELECT tablespace_name 
                                  FROM dba_tablespaces 
                                 WHERE contents = 'PERMANENT'")
@@ -230,10 +229,10 @@ function list_tablespaces() {
 
 
 <#
-    Function to list ASM diskgroups
+    Function to list ASM diskgroups, used by discovery
 #>
 function list_asm_diskgroups() {
-
+    # get list of ASM diskgroups
     $result = (run_sql -Query 'SELECT name 
                                  FROM v$asm_diskgroup')
 
@@ -256,10 +255,10 @@ function list_asm_diskgroups() {
 }
 
 <#
-    Function to list guarantee restore points
+    Function to list guarantee restore points, used by discovery
 #>
 function list_guarantee_restore_points() {
-
+    # get list of guarantee restore points
     $result = (run_sql -Query "SELECT name 
                                  FROM v`$restore_point 
                                 WHERE guarantee_flashback_database = 'YES'")
@@ -286,6 +285,7 @@ function list_guarantee_restore_points() {
     Function to get data for guarantee restore points
 #>
 function get_guarantee_restore_points_data() {
+    # get information about current status of guarantee restore points
     $result = (run_sql -Query "SELECT name
                                     , to_char(time, 'DD/MM/YYYY HH24:MI:SS') date_created
                                     , storage_size
@@ -314,6 +314,7 @@ function get_guarantee_restore_points_data() {
     Function to get state of ASM diskgroups in the database
 #>
 function get_asm_diskgroups_state() {
+    # get state of ASM diskgroups
     $result = (run_sql -Query 'SELECT name 
                                     , state
                                  FROM v$asm_diskgroup')
@@ -340,6 +341,7 @@ function get_asm_diskgroups_state() {
     Function to get data for asm diskgroups (used_pct, used_bytes, max etc.)
 #>
 function get_asm_diskgroups_data() {
+    # get space utilization in ASM disk groups
     $result = (run_sql -Query 'SELECT name
                                     , (total_mb - free_mb) * 1024 * 1024 used_bytes
                                     , round((total_mb - free_mb)/total_mb * 100, 4) used_pct
@@ -350,7 +352,7 @@ function get_asm_diskgroups_data() {
         # Instance is not available
         return $result
     }
-    # if there are no asm diskgroups - return empty JSON
+    # if there are no ASM diskgroups - return empty JSON
     elseif ($result.Rows.Count -eq 0) {
         return '{}'
     }
@@ -368,7 +370,6 @@ function get_asm_diskgroups_data() {
     Function to list pluggable databases
 #>
 function list_pdbs() {
-
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
         return "{`n`t`"data`":[`n`t]`n}"
@@ -397,10 +398,10 @@ function list_pdbs() {
 }
 
 <#
-    Function to list standby destinations
+    Function to list standby destinations, used by discovery
 #>
 function list_standby_databases() {
-
+    # get list of standby destinations
     $result = (run_sql -Query "SELECT destination
                                  FROM v`$archive_dest
                                 WHERE target = 'STANDBY'")
@@ -427,7 +428,7 @@ function list_standby_databases() {
     Function to get data about standby destinations
 #>
 function get_standby_data() {
-
+    # get current status of standby destinations
     $result = (run_sql -Query "SELECT destination
                                     , status
                                     , valid_now
@@ -456,7 +457,6 @@ function get_standby_data() {
     Function to get instance status, OPEN stands for OK, any other results are equalent to FAIL
 #>
 function get_pdb_state() {
-
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
         # there are no PDB databases in this instance
@@ -486,7 +486,6 @@ function get_pdb_state() {
     Function to provide list of tablespaces in pluggable databases
 #>
 function list_pdbs_tablespaces() {
-
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
         # there are no PDB databases in this instance
@@ -524,9 +523,9 @@ function list_pdbs_tablespaces() {
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_space_data() {
-
+    # get space utilizatoin for tablespaces (not pdb)
 <#
-    # This query cannot be used if there are tablespaces defined as not ASSM (user). In future it can be reviewed again
+    # The query bellow cannot be used if there are tablespaces defined as not ASSM (user). In future it should be reviewed again
     $result = (run_sql -Query "SELECT d.tablespace_name 
                                     , trunc(used_percent,2) used_pct
                                     , used_space * (SELECT block_size FROM dba_tablespaces t WHERE tablespace_name = d.tablespace_name) used_bytes
@@ -579,7 +578,6 @@ function get_tbs_space_data() {
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_used_space() {
-
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
         # there are no PDB databases in this instance
@@ -637,7 +635,7 @@ function get_pdbs_tbs_used_space() {
     Time in backup mode in hours
 #>
 function get_tbs_state() {
-
+    # get current state for all tablespaces
     $result = (run_sql -Query "SELECT t.tablespace_name
                                     , t.status
                                     , CASE
@@ -679,13 +677,13 @@ function get_tbs_state() {
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_state() {
-
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
         # there are no PDB databases in this instance
         return '{}'
     }
 
+    # get status for all pdb' tablespaces
     $result = (run_sql -Query "SELECT p.name
                                     , t.tablespace_name
                                     , t.status
@@ -742,7 +740,7 @@ function get_pdbs_tbs_state() {
     Function to provide percentage of current processes to maximum available
 #>
 function get_processes_data() {
-
+    # get current utilization of database processes
     $result = (run_sql -Query "SELECT max(value) max_processes
                                     , count(p.pid) current_processes
                                     , trunc((count(p.pid) / max(v.value)) * 100, 2) pct_used
@@ -768,7 +766,7 @@ function get_processes_data() {
     Function to provide used FRA space
 #>
 function get_fra_used_pct() {
-
+    # get FRA utlilization
     $result = (run_sql -Query 'SELECT trunc(sum(PERCENT_SPACE_USED) - sum(PERCENT_SPACE_RECLAIMABLE), 2) used_pct 
                                  FROM v$flash_recovery_area_usage')
 
@@ -790,6 +788,7 @@ function get_fra_used_pct() {
               SQL> exec dbms_stats.DELETE_TABLE_STATS('SYS','X$KCCRSR')
 #>
 function get_last_db_backup() {
+    # get information about last successfull backup
     $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
                                     , round((sysdate - max(end_time)) * 24, 4) hours_since
 					             FROM v`$rman_status
@@ -820,6 +819,8 @@ function get_last_db_backup() {
 
 #>
 function get_last_log_backup() {
+    # get information about last successfull archive log backup
+    # TODO: add check for archive mode
     $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
                                     , round((sysdate - max(end_time)) * 24, 4) hours_since
 					             FROM v`$rman_status
@@ -844,6 +845,7 @@ function get_last_log_backup() {
     Function to get data about users who have privilegies above normal (DBA, SYSDBA)
 #>
 function get_elevated_users_data() {
+    # get users with DBA and SYSDBA privilegies
     $result = (run_sql -Query "SELECT u.username
                                     , 'DBA'
                                     , u.account_status
