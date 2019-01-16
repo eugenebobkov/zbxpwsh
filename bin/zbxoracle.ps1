@@ -23,10 +23,10 @@
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
-    [Parameter(Mandatory=$true, Position=6)][string]$Service = '',     # Service name
+    [Parameter(Mandatory=$true, Position=6)][string]$Service ,         # Service name
     [Parameter(Mandatory=$true, Position=3)][int]$Port = 1521,         # Port number, if required for non standart configuration, by default 1521
-    [Parameter(Mandatory=$true, Position=4)][string]$Username = '',    # User name
-    [Parameter(Mandatory=$true, Position=5)][string]$Password = ''     # Password
+    [Parameter(Mandatory=$true, Position=4)][string]$Username,         # User name
+    [Parameter(Mandatory=$true, Position=5)][string]$Password          # Password
 )
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
@@ -46,7 +46,7 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 function run_sql() {
     param (
         [Parameter(Mandatory=$true)][string]$Query,
-        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent befort its connection timed out by server
+        # Sum of $ConnectTimeout and $CommandTimeout must not be more than 30, as 30 is maximum timeout allowed for Zabbix agent (4.0) before its connection timed out by server
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
@@ -61,12 +61,14 @@ function run_sql() {
                        (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = $Service))
                    )"
  
-    If ($Password) {
-        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    if ($Password -ne '') {
+        $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    } else {
+        $dbPassword = ''
     }
 
     # Create connection string
-    $connectionString = "User Id=$Username; Password=$DBPassword; Data Source=$dataSource;"
+    $connectionString = "User Id=$Username; Password=$dbPassword; Data Source=$dataSource;"
 
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
@@ -283,7 +285,7 @@ function list_guarantee_restore_points() {
 <#
     Function to get data for guarantee restore points
 #>
-function get_guarantee_restore_points_data(){
+function get_guarantee_restore_points_data() {
     $result = (run_sql -Query "SELECT name
                                     , to_char(time, 'DD/MM/YYYY HH24:MI:SS') date_created
                                     , storage_size
@@ -311,7 +313,7 @@ function get_guarantee_restore_points_data(){
 <#
     Function to get state of ASM diskgroups in the database
 #>
-function get_asm_diskgroups_state(){
+function get_asm_diskgroups_state() {
     $result = (run_sql -Query 'SELECT name 
                                     , state
                                  FROM v$asm_diskgroup')
@@ -337,7 +339,7 @@ function get_asm_diskgroups_state(){
 <#
     Function to get data for asm diskgroups (used_pct, used_bytes, max etc.)
 #>
-function get_asm_diskgroups_data(){
+function get_asm_diskgroups_data() {
     $result = (run_sql -Query 'SELECT name
                                     , (total_mb - free_mb) * 1024 * 1024 used_bytes
                                     , round((total_mb - free_mb)/total_mb * 100, 4) used_pct
@@ -424,7 +426,7 @@ function list_standby_databases() {
 <#
     Function to get data about standby destinations
 #>
-function get_standby_data(){
+function get_standby_data() {
 
     $result = (run_sql -Query "SELECT destination
                                     , status
@@ -634,7 +636,7 @@ function get_pdbs_tbs_used_space() {
     Checks/Triggers for individual tablespaces are done by dependant items
     Time in backup mode in hours
 #>
-function get_tbs_state(){
+function get_tbs_state() {
 
     $result = (run_sql -Query "SELECT t.tablespace_name
                                     , t.status
@@ -676,7 +678,7 @@ function get_tbs_state(){
     Function to provide state for tablespaces of pluggable databases, excluding tablespaces in root container
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
-function get_pdbs_tbs_state(){
+function get_pdbs_tbs_state() {
 
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
@@ -841,7 +843,7 @@ function get_last_log_backup() {
 <#
     Function to get data about users who have privilegies above normal (DBA, SYSDBA)
 #>
-function get_elevated_users_data(){
+function get_elevated_users_data() {
     $result = (run_sql -Query "SELECT u.username
                                     , 'DBA'
                                     , u.account_status
