@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-15T04:27:24Z</date>
+    <date>2019-01-16T23:28:27Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -2077,6 +2077,10 @@ Instance details has to be updated in MACROS section</description>
                     <value>1-7,00:00-24:00</value>
                 </macro>
                 <macro>
+                    <macro>{$CONNECT_ATTAMPTS}</macro>
+                    <value>#2</value>
+                </macro>
+                <macro>
                     <macro>{$CONNECT_TIMEOUT}</macro>
                     <value>300</value>
                 </macro>
@@ -2163,10 +2167,10 @@ Instance details has to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance is not available (State: {ITEM.VALUE})</name>
+            <name>Instance is not available (Reason: {ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
