@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2018-12-28T03:17:36Z</date>
+    <date>2019-01-16T23:49:04Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -905,6 +905,10 @@ Hostname and port have to be updated in MACROS section</description>
                     <value>1-7,00:00-24:00</value>
                 </macro>
                 <macro>
+                    <macro>{$CONNECT_ATTAMPTS}</macro>
+                    <value>#2</value>
+                </macro>
+                <macro>
                     <macro>{$CONNECT_TIMEOUT}</macro>
                     <value>300</value>
                 </macro>
@@ -967,10 +971,10 @@ Hostname and port have to be updated in MACROS section</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance is not available (State: {ITEM.VALUE})</name>
+            <name>Instance is not available (Reason: {ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>

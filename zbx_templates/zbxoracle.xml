@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-15T04:26:58Z</date>
+    <date>2019-01-16T23:28:38Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -3589,10 +3589,10 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,#2)}=0</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance is not available (State: {ITEM.VALUE})</name>
+            <name>Instance is not available (Reason: {ITEM.VALUE})</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
