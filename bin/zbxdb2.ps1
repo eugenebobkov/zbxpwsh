@@ -7,7 +7,7 @@
     # it will allow \ symbol to be used as part of InstanceName variable
     UnsafeUserParameters=1 
     
-    UserParameter provided as part of oracle.conf file which has to be places in zabbix_agentd.d directory
+    UserParameter provided as part of db2.conf file which has to be places in zabbix_agentd.d directory
 
     Create user for monitoring 
 #>
@@ -32,6 +32,9 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
       v$ostat
 #>
 
+<#
+    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
+#>
 function run_sql() {
     param (
         [Parameter(Mandatory=$true)][string]$Query,
@@ -99,7 +102,7 @@ function run_sql() {
     Function to check database availability
 #>
 function get_database_state() {
-    
+    # get database response, fact of recieving data is considered to be good sign of the database availability
     $result = (run_sql -Query 'SELECT ibmreqd 
                                  FROM sysibm.sysdummy1')
 
@@ -116,7 +119,7 @@ function get_database_state() {
     Function to get software version
 #>
 function get_version() {
-    
+    # get software version
     $result = (run_sql -Query 'SELECT service_level version 
                                  FROM table(sysproc.env_get_inst_info())')
 
@@ -132,8 +135,11 @@ function get_version() {
     }    
 }
 
+<#
+    Function to provide list of all DMS tablespaces, used by discovery
+#>
 function list_tablespaces() {
-
+    # get list of all DMS tablespaces
     $result = (run_sql -Query "SELECT tbsp_name 
                                  FROM sysibmadm.tbsp_utilization  
 								WHERE tbsp_type='DMS'") 
@@ -157,11 +163,11 @@ function list_tablespaces() {
 }
 
 <#
-    Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
+    Function to provide state for tablespaces (DMS only)
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_state(){
-
+    # get state for all DMS tablespaces
     $result = (run_sql -Query "SELECT tbsp_name
                                     , tbsp_state 
                                  FROM sysibmadm.tbsp_utilization  
@@ -185,6 +191,9 @@ function get_tbs_state(){
     return ($dict | ConvertTo-Json -Compress)
 }
 
+<#
+    Function to provide all HADR destinations
+#>
 function list_hadr_hosts() {
 
     $result = (run_sql -Query 'SELECT hadr_remote_host
@@ -208,6 +217,9 @@ function list_hadr_hosts() {
     return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
+<#
+    Function to provide status and state of HADR destinations
+#>
 function get_hadr_data(){
 
     $result = (run_sql -Query 'SELECT hadr_remote_host
@@ -233,8 +245,11 @@ function get_hadr_data(){
     return ($dict | ConvertTo-Json -Compress)
 }
 
+<#
+    Function to provide information about tablespaces' utilization
+#>
 function get_tbs_used_space() {
-
+    # get information about used space in all tablespaces, DMS only
     $result = (run_sql -Query "SELECT ru.tbsp_name
                                     , ru.real_max_size * 1024 * 1024 * 1024 max_bytes
                                     , QUANTIZE(dbu.tbsp_used_size_kb/(ru.real_max_size * 1024 * 1024) * 100, decfloat(0.0001)) used_pct
@@ -302,7 +317,7 @@ function get_tbs_used_space() {
     Function to get instance startup timestamp
 #>
 function get_startup_time() {
-    
+    # get startup time
     $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time 
                                  FROM sysibmadm.snapdbm")
 
@@ -320,6 +335,7 @@ function get_startup_time() {
     Function to provide percentage of utilized applications
 #>
 function get_appls_data() {
+    # get data about current applications' utilization
     # TODO: check if maxappls set to -1
     $result = (run_sql -Query "SELECT p.value max_appls
                                     , c.cnt current_appls
@@ -346,6 +362,7 @@ function get_appls_data() {
     Function to provide percentage of utilized logs
 #>
 function get_logs_utilization_data() {
+    # get data about current log utilization
     $result = (run_sql -Query ('SELECT log_utilization_percent used_pct
                                       , total_log_used_kb * 1024 used_bytes
                                       , total_log_available_kb * 1024 total
@@ -371,6 +388,7 @@ function get_logs_utilization_data() {
     Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
+    # get date and hours since the last successfull backup
     $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'), 'DD/MM/YYYY HH24:MI:SS') backup_date
                                     , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time), 'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
 					             FROM sysibmadm.db_history
@@ -438,6 +456,7 @@ function get_last_log_backup() {
     Function to get data about users who have privilegies above normal (DBADM)
 #>
 function get_elevated_users_data(){
+    # get users with dbadm priviligies
     $result = (run_sql -Query "SELECT grantee
                                     , 'DBADM'
                                  FROM syscat.dbauth

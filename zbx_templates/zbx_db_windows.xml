@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-14T08:35:45Z</date>
+    <date>2019-01-16T07:18:08Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -44,14 +44,14 @@ Eugene Bobkov 12/2018</description>
             </applications>
             <items>
                 <item>
-                    <name>System load (%)</name>
+                    <name>CPU usage (%)</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdbwin[get_cpu_data,{$HOSTNAME}]</key>
-                    <delay>1m</delay>
+                    <delay>0;1m/{$CHECK_TIMEFRAME}</delay>
                     <history>1w</history>
-                    <trends>365d</trends>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -116,7 +116,7 @@ Eugene Bobkov 12/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdbwin[get_fs_data,{$HOSTNAME}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -181,7 +181,7 @@ Eugene Bobkov 12/2018</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxdbwin[get_memory_data,{$HOSTNAME}]</key>
-                    <delay>15m</delay>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -245,7 +245,7 @@ Eugene Bobkov 12/2018</description>
                     <key>zbxdbwin[memory_used,{$HOSTNAME}]</key>
                     <delay>0</delay>
                     <history>1w</history>
-                    <trends>365d</trends>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -314,7 +314,7 @@ Eugene Bobkov 12/2018</description>
                     <key>zbxdbwin[swap_used,{$HOSTNAME}]</key>
                     <delay>0</delay>
                     <history>1w</history>
-                    <trends>365d</trends>
+                    <trends>90d</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
