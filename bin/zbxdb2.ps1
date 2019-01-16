@@ -371,11 +371,11 @@ function get_logs_utilization_data() {
     Function to provide time of last successeful database backup
 #>
 function get_last_db_backup() {
-    $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
-					             FROM SYSIBMADM.DB_HISTORY 
-							    WHERE OPERATION = 'B' 
-							   AND SQLCODE IS NULL"  `
+    $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time), 'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
+					             FROM sysibmadm.db_history
+							    WHERE operation = 'B' 
+							   AND sqlcode IS NULL"  `
                        -CommandTimeout 25
                 )
 
@@ -396,11 +396,28 @@ function get_last_db_backup() {
     Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
-    $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'),'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time),'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
-					             FROM SYSIBMADM.DB_HISTORY 
-							    WHERE OPERATION = 'X' 
-							      AND SQLCODE IS NULL"  `
+    # Check log archive mode of the database 
+    $result = (run_sql -Query "SELECT value 
+                                 FROM sysibmadm.dbcfg 
+                                WHERE name = 'logarchmeth1'")
+
+    # Check if data in expected format has been recieved
+    # If database has no archival mode enabled or it's in LOGRETAIN mode - this check is not applicable
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        if ($result.Rows[0][0] -eq 'LOGRETAIN' -or $result.Rows[0][0] -eq '') {
+            return (@{date = 'NOT APPLICABLE'; hours_since = 0} | ConvertTo-Json -Compress)
+        } 
+    }
+    else {
+        return $result
+    }
+
+    # The database has archival process enabled
+    $result = (run_sql -Query "SELECT to_char(timestamp_format(max(end_time), 'yyyymmddhh24miss'), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time), 'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
+					             FROM sysibmadm.db_history
+							    WHERE operation = 'X' 
+							   AND sqlcode IS NULL"  `
                        -CommandTimeout 25
                 )
 
