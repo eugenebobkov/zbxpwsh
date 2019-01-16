@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-16T07:18:08Z</date>
+    <date>2019-01-16T07:59:32Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -758,6 +758,10 @@ Eugene Bobkov 12/2018</description>
             </discovery_rules>
             <httptests/>
             <macros>
+                <macro>
+                    <macro>{$CHECK_TIMEFRAME}</macro>
+                    <value>1-7,00:00-24:00</value>
+                </macro>
                 <macro>
                     <macro>{$FS_HIGH}</macro>
                     <value>90</value>
