@@ -187,21 +187,49 @@ function get_version() {
 }
 
 <#
-    Function to get instance startup timestamp
+    Function to get instances for the database. More than one instance is relevant for RAC configuration
 #>
-function get_startup_time() {
+function list_instances() {
     # get instance startup time
-    $result = (run_sql -Query "SELECT to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') startup_time
-                                 FROM v`$instance")
+    $result = (run_sql -Query 'SELECT instance_name
+                                 FROM gv$instance')
 
-    # Check if expected object has been recieved
-    if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
-    }
-    # data is not in [System.Data.DataTable] format
-    else {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
         return $result
-    } 
+    }
+
+    $list = New-Object System.Collections.Generic.List[System.Object]
+
+    foreach ($row in $result) {
+        $list.Add(@{'{#INSTANCE_NAME}' = $row[0]})
+    }
+
+    return (@{data = $list} | ConvertTo-Json -Compress)
+}
+
+<#
+    Function to get instance(s) data
+#>
+function get_instances_data() {
+    # get instance startup time
+    $result = (run_sql -Query "SELECT instance_name
+                                    , to_char(startup_time,'DD/MM/YYYY HH24:MI:SS') startup_time
+                                    , host_name
+                                 FROM gv`$instance")
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    $dict = @{}
+
+    foreach ($row in $result) {
+        $dict.Add($row[0], @{startup_time = $row[1]; host_name = $row[2]})
+    }
+
+    return ($dict | ConvertTo-Json -Compress)
 }
 
 <#
