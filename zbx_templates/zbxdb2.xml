@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-16T23:28:27Z</date>
+    <date>2019-01-17T03:20:19Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -2183,7 +2183,7 @@ Instance details has to be updated in MACROS section</description>
             <tags>
                 <tag>
                     <tag>Scope</tag>
-                    <value>Availabitlity</value>
+                    <value>Availability</value>
                 </tag>
             </tags>
         </trigger>
