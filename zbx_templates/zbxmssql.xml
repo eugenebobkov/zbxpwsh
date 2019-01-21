@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-16T23:49:18Z</date>
+    <date>2019-01-21T23:00:21Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -1105,7 +1105,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_last_db_backup,{#DATABASE},hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>No database backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_DB_BACKUP} hours) for {#DATABASE}</name>
+                            <name>No database backups for more than {$HOURS_SINCE_LAST_DB_BACKUP} hours for {#DATABASE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1126,7 +1126,7 @@ Instance name has to be updated in MACROS section</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_last_log_backup,{#DATABASE},hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>No logs backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_LOG_BACKUP} hours) for {#DATABASE}</name>
+                            <name>No logs backups for more {$HOURS_SINCE_LAST_LOG_BACKUP} than hours for {#DATABASE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
