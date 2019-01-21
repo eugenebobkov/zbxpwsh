@@ -15,7 +15,8 @@ Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <# Notes:
-    PSQL> create role zabbix with password 'password';
+    PSQL> create role svc_zabbix with password 'password';
+    PSQL> alter role svc_zabbix with login;
 
     Checkpint interval
       pg_stat_bgwriter

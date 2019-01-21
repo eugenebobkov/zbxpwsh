@@ -38,6 +38,7 @@ Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 <# Notes:
    OS statistics:
       v$ostat
+      V$SYSTEM_WAIT_CLASS
 #>
 
 <#
