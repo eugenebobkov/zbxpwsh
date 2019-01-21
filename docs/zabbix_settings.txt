@@ -1,0 +1,31 @@
+zabbix_server.conf
+------------------
+
+#Database authentication
+DBPassword=<dbpassword>
+
+# General rule - keep value of this parameter as low as possible. Every additional instance of zabbix_server adds known overhead, in the same time, parallelism is increased. 
+# Optimal number of instances is achieved when queue, on average, contains minimum number of parameters (ideally, 0 at any given moment). This value can be monitored by using 
+# internal check zabbix[queue].
+
+StartPollers=50
+
+# CacheSize, size of configuration cache,shared memory size for stringhost, item and trigger data
+CacheSize = 128M
+
+HistoryCacheSize=64M
+
+HistoryIndexCache=32M
+
+ValueCacheSize=128M
+
+# Specifies how long we wait for agent, SNMP device or external check (in seconds)
+Timeout=30
+
+# Location of public andprivate keys for SSH checks and actions
+SSHKeyLocation=
+
+
+zabbix_agent.conf (on Windows management hosts)
+-----------------------------------------------
+Include=D:\DBA\zbxpwsh\include\azbbix_agent.conf.d\*.conf
