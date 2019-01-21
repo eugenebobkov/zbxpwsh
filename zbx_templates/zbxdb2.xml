@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-17T03:20:19Z</date>
+    <date>2019-01-21T22:51:50Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -2138,7 +2138,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} % ({ITEM.VALUE})</name>
+            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2212,7 +2212,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_logs_utilization_data,used_pct].last()}&gt;{$LOGS_UTLIZATION_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Log utilization exceeded threshold {$LOGS_UTLIZATION_WARNING} % (ITEM.VALUE)</name>
+            <name>Log utilization exceeded threshold {$LOGS_UTLIZATION_WARNING} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2233,7 +2233,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No database backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <name>No database backups for more than {$HOURS_SINCE_LAST_DB_BACKUP} hours</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -2254,7 +2254,7 @@ Instance details has to be updated in MACROS section</description>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_last_log_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_LOG_BACKUP}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>No log backups for the last {ITEM.VALUE} hours (threshold {$HOURS_SINCE_LAST_DB_BACKUP} hours)</name>
+            <name>No log backups for more than {$HOURS_SINCE_LAST_DB_BACKUP} hours</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
