@@ -12,10 +12,10 @@
     Create new profile with unlimited expire_time (or modify default)
     Create oracle user with the following privilegies
  
-    SQL> create user zabbix identified by '<password>' profile service_profie;
-    SQL> grant create session, select any dictionary to zabbix;
+    SQL> create user svc_zabbix identified by '<password>' profile service_profie;
+    SQL> grant create session, select any dictionary to svc_zabbix;
     (for PDB monitoring)
-    SQL> alter user c##zabbix set container_data=all container=current;
+    SQL> alter user c##svc_zabbix set container_data=all container=current;
 
     Change user's profile settings to ulimited life_time
 #>
@@ -98,7 +98,7 @@ function run_sql() {
     $dataTable = New-Object System.Data.DataTable
 
     try {
-        # [void] simitair to | Out-Null, prevents posting output of Fill function (amount of rows returned), which will be picked up as function output
+        # [void] similair to | Out-Null, prevents posting output of Fill function (amount of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
@@ -231,6 +231,23 @@ function get_instances_data() {
     }
 
     return ($dict | ConvertTo-Json -Compress)
+}
+
+<#
+    Function to get current amount of instances
+#>
+function get_instances_amount() {
+    # get instance startup time
+    $result = (run_sql -Query 'SELECT count(1) instances_amount
+                                 FROM gv$instance')
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{instances_amount = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+    }
+    else {
+        return $result
+    }
 }
 
 <#
