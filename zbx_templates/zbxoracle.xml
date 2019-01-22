@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-22T02:27:37Z</date>
+    <date>2019-01-22T04:31:48Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -2528,7 +2528,7 @@ percentage of utilization</description>
                             <correlation_tag/>
                             <url/>
                             <status>0</status>
-                            <priority>4</priority>
+                            <priority>3</priority>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
@@ -2544,7 +2544,7 @@ percentage of utilization</description>
                             <correlation_tag/>
                             <url/>
                             <status>0</status>
-                            <priority>4</priority>
+                            <priority>3</priority>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
@@ -4061,8 +4061,8 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
             <correlation_tag/>
             <url/>
             <status>0</status>
-            <priority>4</priority>
-            <description/>
+            <priority>3</priority>
+            <description>Applicable for RAC One node, when database is available under different instance name and on different host, but service is up and running</description>
             <type>0</type>
             <manual_close>0</manual_close>
             <dependencies/>
