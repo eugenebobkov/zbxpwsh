@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-21T22:56:08Z</date>
+    <date>2019-01-22T02:27:37Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -344,6 +344,266 @@ Instance name has to be updated in MACROS section</description>
                         </application>
                         <application>
                             <name>Recoverability</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
+                <item>
+                    <name>Current amount of instances</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[get_instances_amount,instances_amount]</key>
+                    <delay>0</delay>
+                    <history>1w</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.instances_amount</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxoracle[get_instances_amount,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Current names of instances</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[get_instances_amount,instances_names]</key>
+                    <delay>0</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.instances_names</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxoracle[get_instances_amount,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Instances amount (json)</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[get_instances_amount,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Information about instances in JSON format:&#13;
+current total amount&#13;
+string of instances names, semicolon separated</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
+                <item>
+                    <name>Instances data (json)</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[get_instances_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <delay>0;15m/{$CHECK_TIMEFRAME}</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Information about instances in JSON format:&#13;
+startup time&#13;
+host name</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
+                        <application>
+                            <name>JSON</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -1350,73 +1610,6 @@ percentage of utilization</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Startup time</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>zbxoracle[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>0;1h/{$CHECK_TIMEFRAME}</delay>
-                    <history>90d</history>
-                    <trends>0</trends>
-                    <status>0</status>
-                    <value_type>1</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>Startup time</description>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Availability</name>
-                        </application>
-                        <application>
-                            <name>JSON</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing>
-                        <step>
-                            <type>12</type>
-                            <params>$.startup_time</params>
-                        </step>
-                    </preprocessing>
-                    <jmx_endpoint/>
-                    <timeout>3s</timeout>
-                    <url/>
-                    <query_fields/>
-                    <posts/>
-                    <status_codes>200</status_codes>
-                    <follow_redirects>1</follow_redirects>
-                    <post_type>0</post_type>
-                    <http_proxy/>
-                    <headers/>
-                    <retrieve_mode>0</retrieve_mode>
-                    <request_method>0</request_method>
-                    <output_format>0</output_format>
-                    <allow_traps>0</allow_traps>
-                    <ssl_cert_file/>
-                    <ssl_key_file/>
-                    <ssl_key_password/>
-                    <verify_peer>0</verify_peer>
-                    <verify_host>0</verify_host>
-                    <master_item/>
-                </item>
-                <item>
                     <name>Space allocation for tablespaces (json)</name>
                     <type>0</type>
                     <snmp_community/>
@@ -2126,6 +2319,235 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
+                            <dependencies/>
+                            <tags/>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes/>
+                    <host_prototypes/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Instances</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[list_instances,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <delay>1h</delay>
+                    <status>0</status>
+                    <allowed_hosts/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <filter>
+                        <evaltype>0</evaltype>
+                        <formula/>
+                        <conditions>
+                            <condition>
+                                <macro>{#INSTANCE_NAME}</macro>
+                                <value/>
+                                <operator>8</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>30d</lifetime>
+                    <description>List PDBs</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Instance {#INSTANCE_NAME} host name</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[list_instances,{#INSTANCE_NAME},host_name]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#INSTANCE_NAME}.host_name</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxoracle[get_instances_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Instance {#INSTANCE_NAME} startup time</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxoracle[list_instances,{#INSTANCE_NAME},startup_time]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$.{#INSTANCE_NAME}.startup_time</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxoracle[get_instances_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[list_instances,{#INSTANCE_NAME},host_name].diff()}=1</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Instance {#INSTANCE_NAME} host name has been changed</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
+                            <dependencies/>
+                            <tags/>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Oracle Database:zbxoracle[list_instances,{#INSTANCE_NAME},startup_time].diff()}=1</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Instance {#INSTANCE_NAME} startup time has been changed</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>0</manual_close>
                             <dependencies/>
                             <tags/>
                         </trigger_prototype>
@@ -3514,6 +3936,22 @@ percentage of utilization</description>
     </templates>
     <triggers>
         <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instances_amount,instances_amount].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Amount of instances has been changed</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_processes_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
@@ -3573,22 +4011,6 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_startup_time,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance has been restarted at {ITEM.VALUE}</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>2</priority>
-            <description>Instance has been restarted</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
@@ -3629,6 +4051,22 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
                     <value>Availability</value>
                 </tag>
             </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instances_amount,instances_names].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Names of instances has been changed</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>
