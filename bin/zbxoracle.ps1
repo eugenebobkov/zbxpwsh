@@ -542,7 +542,7 @@ function list_pdbs_tablespaces() {
     # check if instance is available and represents container database
     if (-Not (is_available_and_cdb)) {
         # there are no PDB databases in this instance
-        return '{}'
+        return "{`"data`": []}"
     }
 
     $result = (run_sql -Query "SELECT p.name
