@@ -238,12 +238,19 @@ function get_instances_data() {
 #>
 function get_instances_amount() {
     # get instance startup time
-    $result = (run_sql -Query 'SELECT count(1) instances_amount
-                                 FROM gv$instance')
+    $result = (run_sql -Query 'SELECT instance_name
+                                 FROM gv$instance
+                                ORDER BY 
+                                      instance_name')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{instances_amount = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+        # generate string of instances names
+        foreach ($row in $result) {
+            $instances_names += ($row[0] + ';')
+        }
+
+        return (@{instances_amount = $result.Rows.Count; instances_names = $instances_names} | ConvertTo-Json -Compress)
     }
     else {
         return $result
