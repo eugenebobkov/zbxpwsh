@@ -316,14 +316,16 @@ function get_tbs_used_space() {
 <#
     Function to get instance startup timestamp
 #>
-function get_startup_time() {
+function get_instance_data() {
     # get startup time
-    $result = (run_sql -Query "SELECT to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time 
-                                 FROM sysibmadm.snapdbm")
+    $result = (run_sql -Query "SELECT s.startup_time 
+                                    , e.host_name
+                                 FROM (select to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time from sysibmadm.snapdbm) s
+                                    , (select host_name from sysibmadm.env_sys_info) e")
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+        return (@{startup_time = $result.Rows[0][0]; host_name = $result.Rows[0][1]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -435,7 +437,7 @@ function get_last_log_backup() {
                                     , trunc(cast(timestampdiff(4, CURRENT TIMESTAMP - TIMESTAMP_FORMAT(max(end_time), 'YYYYMMDDHH24MISS')) as float)/60, 4) hours_since
 					             FROM sysibmadm.db_history
 							    WHERE operation = 'X' 
-							   AND sqlcode IS NULL"  `
+							      AND sqlcode IS NULL"  `
                        -CommandTimeout 25
                 )
 
