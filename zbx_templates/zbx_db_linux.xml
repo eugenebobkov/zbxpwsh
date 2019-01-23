@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-16T07:18:18Z</date>
+    <date>2019-01-23T06:37:16Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -536,7 +536,14 @@ END {print &quot;]\n}&quot;}'</params>
                     <filter>
                         <evaltype>0</evaltype>
                         <formula/>
-                        <conditions/>
+                        <conditions>
+                            <condition>
+                                <macro>{#FSNAME}</macro>
+                                <value>^(/home|/boot|/boot/efi|/var/log/audit|/var/crash)$</value>
+                                <operator>9</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
                     </filter>
                     <lifetime>30d</lifetime>
                     <description/>
@@ -900,7 +907,7 @@ END {print &quot;]\n}&quot;}'</params>
                 </macro>
                 <macro>
                     <macro>{$FS_WARNING}</macro>
-                    <value>80</value>
+                    <value>85</value>
                 </macro>
                 <macro>
                     <macro>{$SSH_PORT}</macro>
@@ -916,7 +923,7 @@ END {print &quot;]\n}&quot;}'</params>
                 </macro>
                 <macro>
                     <macro>{$SWAP_WARNING}</macro>
-                    <value>80</value>
+                    <value>85</value>
                 </macro>
             </macros>
             <templates/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-22T04:31:48Z</date>
+    <date>2019-01-23T07:19:15Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -150,6 +150,9 @@ Instance name has to be updated in MACROS section</description>
                     <applications>
                         <application>
                             <name>Availability</name>
+                        </application>
+                        <application>
+                            <name>Diskgroup</name>
                         </application>
                         <application>
                             <name>JSON</name>
@@ -1174,9 +1177,6 @@ host name</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
-                            <name>Availability</name>
-                        </application>
-                        <application>
                             <name>Capacity</name>
                         </application>
                         <application>
@@ -2124,7 +2124,7 @@ percentage of utilization</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_state,{#ASM_DISKGROUP_NAME},state].str(NORMAL)}=0</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_state,{#ASM_DISKGROUP_NAME},state].regexp(&quot;^(CONNECTED|MOUNTED)$&quot;)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>ASM diskgroup {#ASM_DISKGROUP_NAME} is in an invalid state</name>
@@ -3294,7 +3294,7 @@ percentage of utilization</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#STANDBY_DEST}.state</params>
+                                    <params>$.{#STANDBY_DEST}.status</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3340,7 +3340,7 @@ percentage of utilization</description>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
-                                    <value>HA/DR</value>
+                                    <value>HADR</value>
                                 </tag>
                             </tags>
                         </trigger_prototype>
@@ -3878,6 +3878,10 @@ percentage of utilization</description>
                     <value>1-7,00:00-24:00</value>
                 </macro>
                 <macro>
+                    <macro>{$CONNECT_ATTAMPTS}</macro>
+                    <value>#2</value>
+                </macro>
+                <macro>
                     <macro>{$CONNECT_TIMEOUT}</macro>
                     <value>300</value>
                 </macro>
@@ -3927,7 +3931,7 @@ percentage of utilization</description>
                 </macro>
                 <macro>
                     <macro>{$USERNAME}</macro>
-                    <value>zabbix</value>
+                    <value>svc_zabbix</value>
                 </macro>
             </macros>
             <templates/>
