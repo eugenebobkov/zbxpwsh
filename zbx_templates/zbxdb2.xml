@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-22T04:32:00Z</date>
+    <date>2019-01-24T03:47:41Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -1826,7 +1826,7 @@ Instance details has to be updated in MACROS section</description>
                             </condition>
                         </conditions>
                     </filter>
-                    <lifetime>30d</lifetime>
+                    <lifetime>7d</lifetime>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
@@ -2253,7 +2253,7 @@ Instance details has to be updated in MACROS section</description>
                 </macro>
                 <macro>
                     <macro>{$USERNAME}</macro>
-                    <value>zabbix</value>
+                    <value>svc_zabbix</value>
                 </macro>
             </macros>
             <templates/>

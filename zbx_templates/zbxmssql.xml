@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-21T23:00:21Z</date>
+    <date>2019-01-24T03:47:04Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -730,7 +730,7 @@ Instance name has to be updated in MACROS section</description>
                         <formula/>
                         <conditions/>
                     </filter>
-                    <lifetime>30d</lifetime>
+                    <lifetime>7d</lifetime>
                     <description/>
                     <item_prototypes>
                         <item_prototype>

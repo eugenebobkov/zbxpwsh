@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-23T07:19:15Z</date>
+    <date>2019-01-24T03:47:30Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -3402,7 +3402,7 @@ percentage of utilization</description>
                             </condition>
                         </conditions>
                     </filter>
-                    <lifetime>30d</lifetime>
+                    <lifetime>7d</lifetime>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
