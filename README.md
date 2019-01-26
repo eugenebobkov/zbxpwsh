@@ -1,18 +1,18 @@
-### Zabbix templates and modules for database monitoring 
+###Zabbix templates and Powershell scripts for database monitoring 
 
 **Purpose:**
 
-This configuration was created for multidomain environment with limited resources, where central Zabbix Server(s) located in Management Domain only and managed(databases) hosts accessible by using Windows based management hosts in each domain. Scripted schecks are run by agent installed on each management host and each check connects to database (or WMI for OS Windows checks) remotely, based on parameters provided to the script. 
+This configuration (scripts and templates) was created for multidomain environment with limited resources, where central Zabbix Server(s) located in Management Domain only and managed(databases) hosts accessible by using Windows based management hosts in each domain. Scripted schecks are run by agent installed on each management host and each check connects to a database (or WMI for OS Windows checks) remotely, based on parameters provided to the script. 
 
 Firewall configuration required only for communication between Zabbix server and its agents on management hosts as Zabbix agents are installed only on Management hosts.
 
-Scripts' aliaces in templates based on UserParameter, see .conf files in zabbix_agentd.conf.d
+Scripts' aliaces in templates based on UserParameter, see .conf files in ${ZBXPWSH_ROOT}/zabbix_agentd.conf.d
 
 **Implementation:**
 
 Modules are written in PowerShell and expected to be run on Windows, but partially they were tested on Linux as well
 
-Linux OS checks are running bash commands
+Linux OS checks are running shell commands using SSH agent directly from Zabbix server 
 
 **Templates:**
 
@@ -31,4 +31,4 @@ Linux OS checks are running bash commands
   TODO: If PowerShell based checks will be required and checks has to be done from Windows Management hosts - it will be, probably, done by using ```plink```)
 - Windows (zbx_templates/zbx_db_windows.xml, module zbxdbwin.ps1, WMI remote calls)
 
-Please check Wiki for installation procedure 
+Please check Wiki for installation procedure  
