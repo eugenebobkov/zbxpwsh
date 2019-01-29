@@ -375,7 +375,9 @@ function get_databases_backup() {
                                          ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4)
                                      END AS hours_since 
                                 FROM master.sys.databases sdb
-                                     LEFT OUTER JOIN msdb.dbo.backupset bus ON bus.database_name = sdb.name
+                                     LEFT OUTER JOIN msdb.dbo.backupset bus 
+                                     ON bus.database_name = sdb.name
+                                     AND bus.type = 'D'
                                GROUP BY 
                                      sdb.Name
                                    , sdb.recovery_model_desc"
@@ -393,6 +395,30 @@ function get_databases_backup() {
     }
 
     return ($dict | ConvertTo-Json -Compress)
+}
+
+<#
+    Returns hource since the oldest database backup
+    It will be used for one trigger per instance instead of multiple trigger per database
+    It will allow to avoid flood of incidents, if we have faulure of backup system
+#>
+function get_max_hours_since_db_backup() {
+   # if backup hasn't been ever done - it will return create date for the database
+   $result = (run_sql -Query "SELECT ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since 
+                                FROM master.sys.databases sdb
+                                     LEFT OUTER JOIN msdb.dbo.backupset bus 
+                                     ON bus.database_name = sdb.name
+                                     AND bus.type = 'D'
+                               WHERE sdb.name <> 'tempdb'
+                                 AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0"
+             )
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    return (@{max_hours_since = $result.Rows[0][0]} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -414,7 +440,7 @@ function get_databases_log_backup() {
                                          ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) 
                                      END AS hours_since
                                 FROM master.sys.databases sdb
-                                     LEFT OUTER JOIN msdb..backupset bus
+                                     LEFT OUTER JOIN msdb.dbo.backupset bus
                                           ON bus.database_name = sdb.name
                                           AND bus.type = 'L'
                                GROUP BY 
@@ -435,6 +461,32 @@ function get_databases_log_backup() {
 
     return ($dict | ConvertTo-Json -Compress)
 }
+
+<#
+    Returns hource since the oldest log backup
+    It will be used for one trigger per instance instead of multiple trigger per database
+    It will allow to avoid flood of incidents, if we have faulure of backup system
+#>
+function get_max_hours_since_log_backup() {
+   # if backup hasn't been ever done - it will return create date for the database
+   $result = (run_sql -Query "SELECT ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since 
+                                FROM master.sys.databases sdb
+                                     LEFT OUTER JOIN msdb.dbo.backupset bus
+                                          ON bus.database_name = sdb.name
+                                          AND bus.type = 'L'
+                               WHERE sdb.name <> 'tempdb'
+                                 AND sdb.recovery_model_desc <> 'SIMPLE'
+                                 AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0"
+             )
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    return (@{max_hours_since = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+}
+
 
 <#
     Function to get data about users who have privilegies above normal (SYSADMIN)
