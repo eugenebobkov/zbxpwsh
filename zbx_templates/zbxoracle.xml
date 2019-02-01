@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-01-29T01:50:21Z</date>
+    <date>2019-02-01T02:18:56Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -3943,22 +3943,6 @@ percentage of utilization</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instances_amount,instances_amount].diff()}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Amount of instances has been changed</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description/>
-            <type>0</type>
-            <manual_close>0</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_processes_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
@@ -3971,6 +3955,22 @@ percentage of utilization</description>
             <description>Utilization of current processes exceeded threshold percentage</description>
             <type>0</type>
             <manual_close>1</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instances_amount,instances_amount].diff()}=1 or {Template App Oracle Database:zbxoracle[get_instances_amount,instances_names].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Cluster reconfiguration detected (Change of instances names or amount of instances)</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <manual_close>0</manual_close>
             <dependencies/>
             <tags/>
         </trigger>
@@ -4058,22 +4058,6 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
                     <value>Availability</value>
                 </tag>
             </tags>
-        </trigger>
-        <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instances_amount,instances_names].diff()}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Names of instances has been changed</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>3</priority>
-            <description>Applicable for RAC One node, when database is available under different instance name and on different host, but service is up and running</description>
-            <type>0</type>
-            <manual_close>0</manual_close>
-            <dependencies/>
-            <tags/>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_last_db_backup,hours_since].last()}&gt;{$HOURS_SINCE_LAST_DB_BACKUP}</expression>

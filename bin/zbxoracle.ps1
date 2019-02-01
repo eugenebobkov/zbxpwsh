@@ -842,11 +842,13 @@ function get_fra_used_pct() {
 #>
 function get_last_db_backup() {
     # get information about last successfull backup
-    $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , round((sysdate - max(end_time)) * 24, 4) hours_since
-					             FROM v`$rman_status
-							    WHERE object_type in ('DB FULL', 'DB INCR')
-							      AND status like 'COMPLETED%'" `
+    $result = (run_sql -Query "SELECT to_char(nvl(s.end_time, d.created), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , round((sysdate - nvl(s.end_time, d.created)) * 24, 4) hours_since
+                                 FROM (SELECT max(end_time) end_time
+                                         FROM v`$rman_status
+                                        WHERE object_type in ('DB FULL', 'DB INCR')
+                                          AND status like 'COMPLETED%') s
+                                    , (SELECT created FROM v`$database) d" `
                        -CommandTimeout 30
                 )
 
@@ -874,11 +876,13 @@ function get_last_db_backup() {
 function get_last_log_backup() {
     # get information about last successfull archive log backup
     # TODO: add check for archive mode
-    $result = (run_sql -Query "SELECT to_char(max(end_time), 'DD/MM/YYYY HH24:MI:SS') backup_date
-                                    , round((sysdate - max(end_time)) * 24, 4) hours_since
-					             FROM v`$rman_status
-							    WHERE object_type in ('ARCHIVELOG')
-							      AND status like 'COMPLETED%'"  `
+    $result = (run_sql -Query "SELECT to_char(nvl(s.end_time, d.created), 'DD/MM/YYYY HH24:MI:SS') backup_date
+                                    , round((sysdate - nvl(s.end_time, d.created)) * 24, 4) hours_since
+                                 FROM (SELECT max(end_time) end_time
+                                         FROM v`$rman_status
+                                        WHERE object_type = 'ARCHIVELOG'
+                                          AND status like 'COMPLETED%') s
+                                    , (SELECT created FROM v`$database) d"  `
                        -CommandTimeout 25
                 )
 
