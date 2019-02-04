@@ -974,7 +974,7 @@ function get_elevated_users_data() {
 function get_block_corruption_number() {
     # get FRA utlilization
     $result = (run_sql -Query 'SELECT count(*)
-                                 FROM v`$database_block_corruption')
+                                 FROM v$database_block_corruption')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
