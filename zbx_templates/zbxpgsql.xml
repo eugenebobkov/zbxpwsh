@@ -939,84 +939,10 @@ Hostname and port have to be updated in MACROS section</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} %</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description>Amount of current processes exceeded threshold</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance has been restarted at {ITEM.VALUE}</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>2</priority>
-            <description>Instance has been restarted</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance is not available (Reason: {ITEM.VALUE})</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description>Instance is not available</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags>
-                <tag>
-                    <tag>Scope</tag>
-                    <value>Availability</value>
-                </tag>
-            </tags>
-        </trigger>
-        <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>1</status>
-            <priority>4</priority>
-            <description>Instance is not available</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags>
-                <tag>
-                    <tag>Scope</tag>
-                    <value>Availability</value>
-                </tag>
-            </tags>
-        </trigger>
-        <trigger>
             <expression>{Template App PostgreSQL Database:zbxpgsql[get_archiver_stat_data,failed_count].change()}&gt;0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Log archiver failed</name>
+            <name>Log archiver process failure has been detected</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -1032,6 +958,80 @@ Hostname and port have to be updated in MACROS section</description>
                     <value>Recoverability</value>
                 </tag>
             </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_startup_time,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance has been restarted at {ITEM.VALUE}</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>1</priority>
+            <description>The instance has been restarted</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance is not available (Reason: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>The instance is not available</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_instance_state,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>1</status>
+            <priority>4</priority>
+            <description>The instance is not available, no data</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The number of processes exceeded the threshold {$PROCESSES_HIGH} %</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>The number of current processes exceeded the threshold</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags/>
         </trigger>
     </triggers>
 </zabbix_export>

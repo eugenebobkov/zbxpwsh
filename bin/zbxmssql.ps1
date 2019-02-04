@@ -91,7 +91,7 @@ function run_sql() {
 
     # The following command opens connection and executes required statement
     try {
-         # [void] simitair to | Out-Null, prevents posting output of Fill function (amount of rows returned), which will be picked up as function output
+         # [void] simitair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
          [void]$adapter.Fill($dataTable)
          $result = $dataTable
     } 
@@ -176,15 +176,16 @@ function get_version() {
 <#
     Function to provide time of instance startup
 #>
-function get_startup_time() {
+function get_instance_data() {
     # applicable for 2008 and higher
-    $result = (run_sql -Query 'SELECT CONVERT(CHAR(19), sqlserver_start_time, 120) 
+    $result = (run_sql -Query 'SELECT CONVERT(CHAR(19), sqlserver_start_time, 120) startup_time
+                                    , HOST_NAME()
                                  FROM sys.dm_os_sys_info')
 
     # TODO: add check for versions below 2008 if required for some reason
     if ($result.GetType() -eq [System.Data.DataTable]) {
         # Results
-        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+        return (@{startup_time = $result.Rows[0][0]; host_name = $result.Rows[0][1]} | ConvertTo-Json -Compress)
     } 
     else {
         return $result
@@ -267,7 +268,7 @@ function get_databases_state() {
 }
 
 <#
-    Returns amount of sessions for each database
+    Returns count of sessions for each database
 #>
 function get_databases_connections() {
 
@@ -293,7 +294,34 @@ function get_databases_connections() {
 }
 
 <#
-    Returns amount of sessions for each database
+    Returns size for all databases
+    STUB, not implemented yet, no template
+#>
+function get_databases_size() {
+
+   $result = (run_sql -Query 'SELECT name
+                                   , count(status)
+                                FROM sys.databases sd
+                                     LEFT JOIN master.dbo.sysprocesses sp ON sd.database_id = sp.dbid
+                               GROUP BY name'
+             )
+    
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    $dict = @{}
+
+    foreach ($row in $result) {
+        $dict.Add($row[0], @{connections = $row[1]})
+    }
+
+    return ($dict | ConvertTo-Json -Compress)
+}
+
+<#
+    Returns number of waits for each database
 #>
 function get_databases_waits() {
 
@@ -398,19 +426,23 @@ function get_databases_backup() {
 }
 
 <#
-    Returns hource since the oldest database backup
+    Returns hource since the least recent database backup
     It will be used for one trigger per instance instead of multiple trigger per database
     It will allow to avoid flood of incidents, if we have faulure of backup system
 #>
 function get_max_hours_since_db_backup() {
    # if backup hasn't been ever done - it will return create date for the database
-   $result = (run_sql -Query "SELECT ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since 
-                                FROM master.sys.databases sdb
-                                     LEFT OUTER JOIN msdb.dbo.backupset bus 
-                                     ON bus.database_name = sdb.name
-                                     AND bus.type = 'D'
-                               WHERE sdb.name <> 'tempdb'
-                                 AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0"
+   $result = (run_sql -Query "SELECT min(hours_since) hours_since 
+                                FROM (SELECT ROUND(CAST(DATEDIFF(second, COALESCE(max(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since 
+                                        FROM master.sys.databases sdb
+                                             LEFT OUTER JOIN msdb.dbo.backupset bus 
+                                             ON bus.database_name = sdb.name
+                                             AND bus.type = 'D'
+                                       WHERE sdb.name <> 'tempdb'
+                                         AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0
+                                       GROUP BY 
+                                             sdb.Name
+                                     )"
              )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -463,20 +495,24 @@ function get_databases_log_backup() {
 }
 
 <#
-    Returns hource since the oldest log backup
+    Returns hource since the least recent log backup
     It will be used for one trigger per instance instead of multiple trigger per database
     It will allow to avoid flood of incidents, if we have faulure of backup system
 #>
 function get_max_hours_since_log_backup() {
    # if backup hasn't been ever done - it will return create date for the database
-   $result = (run_sql -Query "SELECT ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since 
-                                FROM master.sys.databases sdb
-                                     LEFT OUTER JOIN msdb.dbo.backupset bus
-                                          ON bus.database_name = sdb.name
-                                          AND bus.type = 'L'
-                               WHERE sdb.name <> 'tempdb'
-                                 AND sdb.recovery_model_desc <> 'SIMPLE'
-                                 AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0"
+   $result = (run_sql -Query "SELECT min(hours_since)
+                                FROM (SELECT ROUND(CAST(DATEDIFF(second, COALESCE(MAX(bus.backup_finish_date), max(sdb.create_date)), GETDATE()) AS FLOAT)/60/60, 4) hours_since
+                                        FROM master.sys.databases sdb
+                                             LEFT OUTER JOIN msdb.dbo.backupset bus
+                                                  ON bus.database_name = sdb.name
+                                                  AND bus.type = 'L'
+                                       WHERE sdb.name <> 'tempdb'
+                                         AND sdb.recovery_model_desc <> 'SIMPLE'
+                                         AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0
+                                       GROUP BY 
+                                             sdb.Name
+                                     )"
              )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {

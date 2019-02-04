@@ -136,6 +136,23 @@ function get_version() {
 }
 
 <#
+    Function to get overall database size
+#>
+function get_database_size() {
+    # get software version
+    $result = (run_sql -Query 'SELECT sum(DATA_OBJECT_P_SIZE + INDEX_OBJECT_P_SIZE + LONG_OBJECT_P_SIZE + LOB_OBJECT_P_SIZE + XML_OBJECT_P_SIZE) 
+                                 FROM sysibmadm.admintabinfo')
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{database_size = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+    }
+    else {
+        return $result
+    }    
+}
+
+<#
     Function to provide list of all DMS tablespaces, used by discovery
 #>
 function list_tablespaces() {

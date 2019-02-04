@@ -377,11 +377,77 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Current amount of instances</name>
+                    <name>Current names of instances</name>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_instances_amount,instances_amount]</key>
+                    <key>zbxoracle[get_instances,names]</key>
+                    <delay>0</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.names</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxoracle[get_instances,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Current number of instances</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxoracle[get_instances,number]</key>
                     <delay>0</delay>
                     <history>1w</history>
                     <trends>365d</trends>
@@ -416,7 +482,7 @@ Instance name has to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.instances_amount</params>
+                            <params>$.number</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -439,81 +505,15 @@ Instance name has to be updated in MACROS section</description>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
                     <master_item>
-                        <key>zbxoracle[get_instances_amount,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                        <key>zbxoracle[get_instances,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     </master_item>
                 </item>
                 <item>
-                    <name>Current names of instances</name>
-                    <type>18</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>zbxoracle[get_instances_amount,instances_names]</key>
-                    <delay>0</delay>
-                    <history>1w</history>
-                    <trends>0</trends>
-                    <status>0</status>
-                    <value_type>4</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description/>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Availability</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing>
-                        <step>
-                            <type>12</type>
-                            <params>$.instances_names</params>
-                        </step>
-                    </preprocessing>
-                    <jmx_endpoint/>
-                    <timeout>3s</timeout>
-                    <url/>
-                    <query_fields/>
-                    <posts/>
-                    <status_codes>200</status_codes>
-                    <follow_redirects>1</follow_redirects>
-                    <post_type>0</post_type>
-                    <http_proxy/>
-                    <headers/>
-                    <retrieve_mode>0</retrieve_mode>
-                    <request_method>0</request_method>
-                    <output_format>0</output_format>
-                    <allow_traps>0</allow_traps>
-                    <ssl_cert_file/>
-                    <ssl_key_file/>
-                    <ssl_key_password/>
-                    <verify_peer>0</verify_peer>
-                    <verify_host>0</verify_host>
-                    <master_item>
-                        <key>zbxoracle[get_instances_amount,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    </master_item>
-                </item>
-                <item>
-                    <name>Instances amount (json)</name>
+                    <name>Names and number of instances (json)</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxoracle[get_instances_amount,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxoracle[get_instances,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -537,7 +537,7 @@ Instance name has to be updated in MACROS section</description>
                     <privatekey/>
                     <port/>
                     <description>Information about instances in JSON format:&#13;
-current total amount&#13;
+current total number&#13;
 string of instances names, semicolon separated</description>
                     <inventory_link>0</inventory_link>
                     <applications>
@@ -1276,7 +1276,7 @@ host name</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Current amount of processes</name>
+                    <name>Current number of processes</name>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -2387,7 +2387,7 @@ percentage of utilization</description>
                     <description>List PDBs</description>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Instance {#INSTANCE_NAME} host name</name>
+                            <name>Hostname of the instance {#INSTANCE_NAME}</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -2454,7 +2454,7 @@ percentage of utilization</description>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Instance {#INSTANCE_NAME} startup time</name>
+                            <name>Startup time of the instance {#INSTANCE_NAME}</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -2523,10 +2523,10 @@ percentage of utilization</description>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[list_instances,{#INSTANCE_NAME},startup_time].diff()}=1</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[list_instances,{#INSTANCE_NAME},host_name].diff()}=1</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Instance {#INSTANCE_NAME} has been restarted at {ITEM.VALUE}</name>
+                            <name>Hostname for the instance {#INSTANCE_NAME} has been changed</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2539,15 +2539,15 @@ percentage of utilization</description>
                             <tags/>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[list_instances,{#INSTANCE_NAME},host_name].diff()}=1</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[list_instances,{#INSTANCE_NAME},startup_time].diff()}=1</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Instance {#INSTANCE_NAME} host name has been changed</name>
+                            <name>The instance {#INSTANCE_NAME} has been restarted at {ITEM.VALUE}</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
                             <status>0</status>
-                            <priority>3</priority>
+                            <priority>1</priority>
                             <description/>
                             <type>0</type>
                             <manual_close>0</manual_close>
@@ -3330,7 +3330,7 @@ percentage of utilization</description>
                             <expression>{Template App Oracle Database:zbxoracle[get_standby_data({#STANDBY_DEST},status)].str(VALID)}=0</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Status of standby database {#STANDBY_DEST} is invalid ({ITEM.VALUE})</name>
+                            <name>Status of the standby database {#STANDBY_DEST} is invalid ({ITEM.VALUE})</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -3943,38 +3943,6 @@ percentage of utilization</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_processes_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} %</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description>Utilization of current processes exceeded threshold percentage</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instances_amount,instances_amount].diff()}=1 or {Template App Oracle Database:zbxoracle[get_instances_amount,instances_names].diff()}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Cluster reconfiguration detected (Change of instances names or amount of instances)</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description/>
-            <type>0</type>
-            <manual_close>0</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].last()}&gt;{$FRA_USAGE_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
@@ -4014,48 +3982,6 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
                 <tag>
                     <tag>Scope</tag>
                     <value>Capacity</value>
-                </tag>
-            </tags>
-        </trigger>
-        <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance is not available (Reason: {ITEM.VALUE})</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description>Instance is not available</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags>
-                <tag>
-                    <tag>Scope</tag>
-                    <value>Availability</value>
-                </tag>
-            </tags>
-        </trigger>
-        <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>1</status>
-            <priority>4</priority>
-            <description>Instance is not available</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags>
-                <tag>
-                    <tag>Scope</tag>
-                    <value>Availability</value>
                 </tag>
             </tags>
         </trigger>
@@ -4100,6 +4026,80 @@ and {Template App Oracle Database:zbxoracle[get_fra_used_pct,{$HOSTNAME},{$SERVI
                     <value>Recoverability</value>
                 </tag>
             </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance is not available (Reason: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>The instance is not available</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>1</status>
+            <priority>4</priority>
+            <description>The instance is not available</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_instances,number].prev()}-{Template App Oracle Database:zbxoracle[get_instances,number].last()} &gt; 0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The number of instances in the cluster ({ITEM.VALUE}) is less than it was in past</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>The number of instances is less than it was previous check</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_processes_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The number of processes exceeded the threshold {$PROCESSES_HIGH} %</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Utilization of current processes exceeded threshold percentage</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags/>
         </trigger>
     </triggers>
 </zabbix_export>
