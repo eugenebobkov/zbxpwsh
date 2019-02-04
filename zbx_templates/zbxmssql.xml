@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-04T08:45:28Z</date>
+    <date>2019-02-04T08:55:35Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -605,9 +605,6 @@ Instance name has to be updated in MACROS section</description>
                     <applications>
                         <application>
                             <name>Availability</name>
-                        </application>
-                        <application>
-                            <name>JSON</name>
                         </application>
                         <application>
                             <name>Microsoft SQL Server Instance</name>
