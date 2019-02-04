@@ -234,6 +234,23 @@ function get_instances_data() {
 }
 
 <#
+    Function to get overall database size
+#>
+function get_database_size() {
+    # get instance startup time
+    $result = (run_sql -Query 'select sum(bytes) database_size
+                                 from dba_segments')
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{database_size = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+    }
+    else {
+        return $result
+    }  
+}
+
+<#
     Function to get current number and names of instances
 #>
 function get_instances() {
@@ -948,6 +965,24 @@ function get_elevated_users_data() {
     $json += "`t]`n}"
 
     return $json
+}
+
+<#
+    Function to provide number of detected corrupted blocks
+    Corrupted block detected automaticaly by RMAN, so this function should work in conjunction with backup policy
+#>
+function get_block_corruption_number() {
+    # get FRA utlilization
+    $result = (run_sql -Query 'SELECT count(*)
+                                 FROM v`$database_block_corruption')
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{number = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+    }
+    else {
+        return $result
+    }    
 }
 
 # execute required check
