@@ -442,7 +442,7 @@ function get_max_hours_since_db_backup() {
                                          AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0
                                        GROUP BY 
                                              sdb.Name
-                                     )"
+                                     ) tbl"
              )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -512,7 +512,7 @@ function get_max_hours_since_log_backup() {
                                          AND sys.fn_hadr_backup_is_preferred_replica(sdb.name) <> 0
                                        GROUP BY 
                                              sdb.Name
-                                     )"
+                                     ) tbl"
              )
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
