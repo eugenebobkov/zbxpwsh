@@ -2262,94 +2262,20 @@ Instance details has to be updated in MACROS section</description>
     </templates>
     <triggers>
         <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Amount of processes exceeded threshold {$PROCESSES_HIGH} %</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description>Amount of current processes exceeded threshold</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_instance_data,startup_time].diff()}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance has been restarted at {ITEM.VALUE}</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>3</priority>
-            <description>Instance has been restarted</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags/>
-        </trigger>
-        <trigger>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_instance_data,host_name].diff()}=1</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Instance host name has been changed</name>
+            <name>Hostname for the instance has been changed</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
             <status>0</status>
-            <priority>3</priority>
+            <priority>2</priority>
             <description>Instance has been moved to another host (in case of failover cluster)</description>
             <type>0</type>
             <manual_close>1</manual_close>
             <dependencies/>
             <tags/>
-        </trigger>
-        <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance is not available (Reason: {ITEM.VALUE})</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>0</status>
-            <priority>4</priority>
-            <description>Instance is not available</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags>
-                <tag>
-                    <tag>Scope</tag>
-                    <value>Availability</value>
-                </tag>
-            </tags>
-        </trigger>
-        <trigger>
-            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
-            <recovery_mode>0</recovery_mode>
-            <recovery_expression/>
-            <name>Instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
-            <correlation_mode>0</correlation_mode>
-            <correlation_tag/>
-            <url/>
-            <status>1</status>
-            <priority>4</priority>
-            <description>Instance is not available</description>
-            <type>0</type>
-            <manual_close>1</manual_close>
-            <dependencies/>
-            <tags>
-                <tag>
-                    <tag>Scope</tag>
-                    <value>Availability</value>
-                </tag>
-            </tags>
         </trigger>
         <trigger>
             <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_logs_utilization_data,used_pct].last()}&gt;{$LOGS_UTLIZATION_WARNING}</expression>
@@ -2413,6 +2339,80 @@ Instance details has to be updated in MACROS section</description>
                     <value>Recoverability</value>
                 </tag>
             </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_instance_data,startup_time].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance has been restarted at {ITEM.VALUE}</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>1</priority>
+            <description>The instance has been restarted</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags/>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance is not available (Reason: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Instance is not available</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_database_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].nodata({$CONNECT_TIMEOUT})}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The instance is not available (Timeout: {$CONNECT_TIMEOUT})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>1</status>
+            <priority>4</priority>
+            <description>The instance is not available</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags>
+                <tag>
+                    <tag>Scope</tag>
+                    <value>Availability</value>
+                </tag>
+            </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App IBM DB2 LUW Database:zbxdb2[get_appls_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>The number of processes exceeded the threshold {$PROCESSES_HIGH} %</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>The number of current processes exceeded pre-defined threshold</description>
+            <type>0</type>
+            <manual_close>1</manual_close>
+            <dependencies/>
+            <tags/>
         </trigger>
     </triggers>
 </zabbix_export>

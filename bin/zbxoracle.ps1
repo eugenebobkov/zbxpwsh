@@ -98,7 +98,7 @@ function run_sql() {
     $dataTable = New-Object System.Data.DataTable
 
     try {
-        # [void] similair to | Out-Null, prevents posting output of Fill function (amount of rows returned), which will be picked up as function output
+        # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
@@ -234,9 +234,9 @@ function get_instances_data() {
 }
 
 <#
-    Function to get current amount of instances
+    Function to get current number and names of instances
 #>
-function get_instances_amount() {
+function get_instances() {
     # get instance startup time
     $result = (run_sql -Query 'SELECT instance_name
                                  FROM gv$instance
@@ -250,7 +250,7 @@ function get_instances_amount() {
             $instances_names += ($row[0] + ';')
         }
 
-        return (@{instances_amount = $result.Rows.Count; instances_names = $instances_names} | ConvertTo-Json -Compress)
+        return (@{number = $result.Rows.Count; names = $instances_names} | ConvertTo-Json -Compress)
     }
     else {
         return $result
