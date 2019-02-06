@@ -640,12 +640,7 @@ Instance name has to be updated in MACROS section</description>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
-                    <preprocessing>
-                        <step>
-                            <type>12</type>
-                            <params>$.used_pct</params>
-                        </step>
-                    </preprocessing>
+                    <preprocessing/>
                     <jmx_endpoint/>
                     <timeout>3s</timeout>
                     <url/>
