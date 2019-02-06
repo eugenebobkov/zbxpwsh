@@ -297,7 +297,6 @@ function list_tablespaces() {
     return (@{data = $list} | ConvertTo-Json -Compress)
 } 
 
-
 <#
     Function to list ASM diskgroups, used by discovery
 #>
@@ -821,11 +820,7 @@ function get_processes_data() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return ( @{
-                     max = $result.Rows[0][0]
-                     current = $result.Rows[0][1]
-                     pct = $result.Rows[0][2]
-                 } | ConvertTo-Json -Compress)
+        return (@{max = $result.Rows[0][0]; current = $result.Rows[0][1]; pct = $result.Rows[0][2]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -835,14 +830,27 @@ function get_processes_data() {
 <#
     Function to provide used FRA space
 #>
-function get_fra_used_pct() {
+function get_fra_data() {
     # get FRA utlilization
-    $result = (run_sql -Query 'SELECT trunc(sum(PERCENT_SPACE_USED) - sum(PERCENT_SPACE_RECLAIMABLE), 2) used_pct 
-                                 FROM v$flash_recovery_area_usage')
-
+    $result = (run_sql -Query "SELECT trunc(fra_usage.FRA_USED_PCT, 4) used_pct
+                                    , trunc(fra_usage.FRA_USED_PCT * fra_size.FRA_SIZE_BYTES/100, 4) used_bytes
+                                    , fra_size.FRA_SIZE_BYTES fra_size
+                                 FROM (SELECT DECODE( SUBSTR(upper(value),length(value)-1,length(value))
+                                                    , 'K', to_number(replace(upper(value),'K','')) * 1024
+                                                    , 'M', to_number(replace(upper(value),'M','')) * (1024*1024)
+                                                    , 'G', to_number(replace(upper(value),'G','')) * (1024*1024*1024)
+                                                    , value                                                                                  
+                                                    ) FRA_SIZE_BYTES
+                                         FROM v`$parameter
+                                        WHERE name='db_recovery_file_dest_size'
+                                      ) fra_size
+                                   , (SELECT sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE) FRA_USED_PCT
+                                        FROM v`$flash_recovery_area_usage
+                                     ) fra_usage")
+    
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{used_pct = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+        return (@{used_pct = $result.Rows[0][0]; used_bytes = $result.Rows[0][1]; fra_size = $result.Rows[0][2]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -871,10 +879,7 @@ function get_last_db_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return ( @{
-                     date = $result.Rows[0][0]
-                     hours_since = $result.Rows[0][1]
-                 } | ConvertTo-Json -Compress)
+        return (@{date = $result.Rows[0][0]; hours_since = $result.Rows[0][1]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -905,10 +910,7 @@ function get_last_log_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return ( @{
-                     date = $result.Rows[0][0]
-                     hours_since = $result.Rows[0][1]
-                 } | ConvertTo-Json -Compress)
+        return ( @{date = $result.Rows[0][0]; hours_since = $result.Rows[0][1]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -974,7 +976,7 @@ function get_elevated_users_data() {
 function get_block_corruption_number() {
     # get FRA utlilization
     $result = (run_sql -Query 'SELECT count(*)
-                                 FROM v$database_block_corruption')
+                                 FROM v`$database_block_corruption')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
