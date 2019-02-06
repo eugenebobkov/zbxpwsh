@@ -418,9 +418,6 @@ Instance name has to be updated in MACROS section</description>
                         <application>
                             <name>Capacity</name>
                         </application>
-                        <application>
-                            <name>JSON</name>
-                        </application>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
@@ -490,9 +487,6 @@ Instance name has to be updated in MACROS section</description>
                         <application>
                             <name>Capacity</name>
                         </application>
-                        <application>
-                            <name>JSON</name>
-                        </application>
                     </applications>
                     <valuemap/>
                     <logtimefmt/>
@@ -561,9 +555,6 @@ Instance name has to be updated in MACROS section</description>
                         </application>
                         <application>
                             <name>Capacity</name>
-                        </application>
-                        <application>
-                            <name>JSON</name>
                         </application>
                     </applications>
                     <valuemap/>
