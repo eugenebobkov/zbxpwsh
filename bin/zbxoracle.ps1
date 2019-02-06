@@ -835,7 +835,7 @@ function get_fra_data() {
     $result = (run_sql -Query "SELECT trunc(fra_usage.fra_used_pct, 4) used_pct
                                     , trunc(fra_usage.fra_used_pct * fra_size.fra_size_bytes / 100) used_bytes
                                     , fra_size.fra_size_bytes fra_size
-                                 FROM (SELECT DECODE( SUBSTR(upper(),length(value)-1,length(value))
+                                 FROM (SELECT DECODE( SUBSTR(upper(value), length(value)-1, length(value))
                                                     , 'K', to_number(replace(upper(value), 'K', '')) * 1024
                                                     , 'M', to_number(replace(upper(value), 'M', '')) * power(1024, 2)
                                                     , 'G', to_number(replace(upper(value), 'G', '')) * power(1024, 3)
