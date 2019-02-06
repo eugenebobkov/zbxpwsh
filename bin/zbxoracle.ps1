@@ -832,19 +832,20 @@ function get_processes_data() {
 #>
 function get_fra_data() {
     # get FRA utlilization
-    $result = (run_sql -Query "SELECT trunc(fra_usage.FRA_USED_PCT, 4) used_pct
-                                    , trunc(fra_usage.FRA_USED_PCT * fra_size.FRA_SIZE_BYTES/100, 4) used_bytes
-                                    , fra_size.FRA_SIZE_BYTES fra_size
-                                 FROM (SELECT DECODE( SUBSTR(upper(value),length(value)-1,length(value))
-                                                    , 'K', to_number(replace(upper(value),'K','')) * 1024
-                                                    , 'M', to_number(replace(upper(value),'M','')) * (1024*1024)
-                                                    , 'G', to_number(replace(upper(value),'G','')) * (1024*1024*1024)
+    $result = (run_sql -Query "SELECT trunc(fra_usage.fra_used_pct, 4) used_pct
+                                    , trunc(fra_usage.fra_used_pct * fra_size.fra_size_bytes / 100) used_bytes
+                                    , fra_size.fra_size_bytes fra_size
+                                 FROM (SELECT DECODE( SUBSTR(upper(),length(value)-1,length(value))
+                                                    , 'K', to_number(replace(upper(value), 'K', '')) * 1024
+                                                    , 'M', to_number(replace(upper(value), 'M', '')) * power(1024, 2)
+                                                    , 'G', to_number(replace(upper(value), 'G', '')) * power(1024, 3)
+                                                    , 'T', to_number(replace(upper(value), 'T', '')) * power(1024, 4)
                                                     , value                                                                                  
-                                                    ) FRA_SIZE_BYTES
+                                                    ) fra_size_bytes
                                          FROM v`$parameter
                                         WHERE name='db_recovery_file_dest_size'
                                       ) fra_size
-                                   , (SELECT sum(PERCENT_SPACE_USED)-sum(PERCENT_SPACE_RECLAIMABLE) FRA_USED_PCT
+                                   , (SELECT sum(percent_space_used) - sum(percent_space_reclaimable) fra_used_pct
                                         FROM v`$flash_recovery_area_usage
                                      ) fra_usage")
     
