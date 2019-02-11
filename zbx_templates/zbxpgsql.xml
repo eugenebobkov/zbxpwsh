@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-01T02:18:22Z</date>
+    <date>2019-02-11T01:39:06Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -702,7 +702,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxpgsql[get_version,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>0;h6m0</delay>
+                    <delay>0;6h/{$CHECK_TIMEFRAME}</delay>
                     <history>1w</history>
                     <trends>0</trends>
                     <status>0</status>
