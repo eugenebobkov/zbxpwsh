@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-01T02:19:09Z</date>
+    <date>2019-02-11T01:42:02Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -1011,7 +1011,7 @@ Eugene Bobkov 12/2018</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_WARNING} and {Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&lt;={$FS_HIGH}</expression>
+                            <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Space usage exceeded {$FS_WARNING} % for {#FSNAME} filesystem</name>
@@ -1023,7 +1023,13 @@ Eugene Bobkov 12/2018</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies/>
+                            <dependencies>
+                                <dependency>
+                                    <name>Space usage exceeded {$FS_HIGH} % for {#FSNAME} filesystem</name>
+                                    <expression>{Template OS Windows Database checks:zbxdbwin[fs_data,{#FSNAME},used_pct].last()}&gt;{$FS_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -1112,7 +1118,7 @@ Eugene Bobkov 12/2018</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template OS Windows Database checks:zbxdbwin[os_fs_data,C:\,used_pct].last()}&gt;{$C_DRIVE_WARNING} and {Template OS Windows Database checks:zbxdbwin[os_fs_data,C:\,used_pct].last()}&lt;={$C_DRIVE_HIGH}</expression>
+            <expression>{Template OS Windows Database checks:zbxdbwin[os_fs_data,C:\,used_pct].last()}&gt;{$C_DRIVE_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Space usage exceeded {$C_DRIVE_WARNING} % for C:\ filesystem</name>
@@ -1124,7 +1130,13 @@ Eugene Bobkov 12/2018</description>
             <description/>
             <type>0</type>
             <manual_close>1</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Space usage exceeded {$C_DRIVE_HIGH} % for C:\ filesystem</name>
+                    <expression>{Template OS Windows Database checks:zbxdbwin[os_fs_data,C:\,used_pct].last()}&gt;{$C_DRIVE_HIGH}</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags>
                 <tag>
                     <tag>Scope</tag>
@@ -1136,7 +1148,7 @@ Eugene Bobkov 12/2018</description>
             <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Swap usage above {$SWAP_AVERAGE} %</name>
+            <name>Swap usage above {$SWAP_HIGH} %</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
@@ -1149,7 +1161,7 @@ Eugene Bobkov 12/2018</description>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_WARNING} and {Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&lt;={$SWAP_HIGH}</expression>
+            <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Swap usage above {$SWAP_WARNING} %</name>
@@ -1161,7 +1173,13 @@ Eugene Bobkov 12/2018</description>
             <description/>
             <type>0</type>
             <manual_close>1</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Swap usage above {$SWAP_HIGH} %</name>
+                    <expression>{Template OS Windows Database checks:zbxdbwin[swap_used,{$HOSTNAME}].last()}&gt;{$SWAP_HIGH}</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
     </triggers>

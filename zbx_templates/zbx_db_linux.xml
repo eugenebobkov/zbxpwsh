@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-06T04:49:03Z</date>
+    <date>2019-02-11T01:42:14Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -1210,7 +1210,7 @@ END {print &quot;]\n}&quot;}'</params>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING} and {Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$FS_HIGH}</expression>
+                            <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Space usage exceeded {$FS_WARNING} % for {#FSNAME} filesystem</name>
@@ -1222,7 +1222,13 @@ END {print &quot;]\n}&quot;}'</params>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies/>
+                            <dependencies>
+                                <dependency>
+                                    <name>Space usage exceeded {$FS_HIGH} % for {#FSNAME} filesystem</name>
+                                    <expression>{Template OS Linux Database checks:ssh.run[used%_{#FSNAME},{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$FS_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -1319,7 +1325,7 @@ END {print &quot;]\n}&quot;}'</params>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template OS Linux Database checks:ssh.run[os_used_pct_/,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$ROOT_FS_WARNING} and {Template OS Linux Database checks:ssh.run[os_used_pct_/,{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$ROOT_FS_HIGH}</expression>
+            <expression>{Template OS Linux Database checks:ssh.run[os_used_pct_/,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$ROOT_FS_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Space usage exceeded {$ROOT_FS_WARNING} % for / filesystem</name>
@@ -1331,7 +1337,13 @@ END {print &quot;]\n}&quot;}'</params>
             <description/>
             <type>0</type>
             <manual_close>1</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Space usage exceeded {$ROOT_FS_HIGH} % for / filesystem</name>
+                    <expression>{Template OS Linux Database checks:ssh.run[os_used_pct_/,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$ROOT_FS_HIGH}</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags>
                 <tag>
                     <tag>Scope</tag>
@@ -1356,7 +1368,7 @@ END {print &quot;]\n}&quot;}'</params>
             <tags/>
         </trigger>
         <trigger>
-            <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_WARNING} and {Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&lt;={$SWAP_HIGH}</expression>
+            <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>Swap usage above {$SWAP_WARNING} %</name>
@@ -1368,7 +1380,13 @@ END {print &quot;]\n}&quot;}'</params>
             <description/>
             <type>0</type>
             <manual_close>1</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>Swap usage above {$SWAP_HIGH} %</name>
+                    <expression>{Template OS Linux Database checks:ssh.run[swap_used,{$HOSTNAME},{$SSH_PORT}].last()}&gt;{$SWAP_HIGH}</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags/>
         </trigger>
     </triggers>

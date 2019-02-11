@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-06T01:22:47Z</date>
+    <date>2019-02-11T01:39:39Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -2081,7 +2081,7 @@ percentage of utilization</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxoracle[get_version,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>0;h6m0</delay>
+                    <delay>0;6h/{$CHECK_TIMEFRAME}</delay>
                     <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
@@ -2503,7 +2503,7 @@ percentage of utilization</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_WARNING} and {Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&lt;={$ASM_USAGE_HIGH}</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_WARNING} %</name>
@@ -2515,7 +2515,13 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies/>
+                            <dependencies>
+                                <dependency>
+                                    <name>ASM diskgroup {#ASM_DISKGROUP_NAME} used space exceeded {$ASM_USAGE_HIGH} %</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_asm_diskgroups_data,{#ASM_DISKGROUP_NAME},used_pct].last()}&gt;{$ASM_USAGE_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
                             <tags/>
                         </trigger_prototype>
                     </trigger_prototypes>
@@ -3515,7 +3521,7 @@ percentage of utilization</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Used more than {$TBS_WARNING} % of available space for {#TABLESPACE_NAME} tablespace, PDB {#PDB_NAME}</name>
@@ -3527,7 +3533,13 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies/>
+                            <dependencies>
+                                <dependency>
+                                    <name>Used more than {$TBS_HIGH} % of available space for {#TABLESPACE_NAME} tablespace, PDB {#PDB_NAME}</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#PDB_NAME},{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -4158,7 +4170,7 @@ percentage of utilization</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING} and {Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&lt;={$TBS_HIGH}</expression>
+                            <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
                             <name>Used more than {$TBS_WARNING} % of available space for {#TABLESPACE_NAME} tablespace</name>
@@ -4170,7 +4182,13 @@ percentage of utilization</description>
                             <description/>
                             <type>0</type>
                             <manual_close>1</manual_close>
-                            <dependencies/>
+                            <dependencies>
+                                <dependency>
+                                    <name>Used more than {$TBS_HIGH} % of available space for {#TABLESPACE_NAME} tablespace</name>
+                                    <expression>{Template App Oracle Database:zbxoracle[get_tbs_used_space_pct,{#TABLESPACE_NAME}].last()}&gt;{$TBS_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
                             <tags>
                                 <tag>
                                     <tag>Scope</tag>
@@ -4324,8 +4342,7 @@ percentage of utilization</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_fra_data,used_pct].last()}&gt;{$FRA_USAGE_WARNING}&#13;
-and {Template App Oracle Database:zbxoracle[get_fra_data,used_pct].last()}&lt;={$FRA_USAGE_HIGH}</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_fra_data,used_pct].last()}&gt;{$FRA_USAGE_WARNING}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>FRA used space exceeded {$FRA_USAGE_WARNING} %</name>
@@ -4337,7 +4354,13 @@ and {Template App Oracle Database:zbxoracle[get_fra_data,used_pct].last()}&lt;={
             <description>FRA used space exceeded WARNING threshold</description>
             <type>0</type>
             <manual_close>1</manual_close>
-            <dependencies/>
+            <dependencies>
+                <dependency>
+                    <name>FRA used space exceeded {$FRA_USAGE_HIGH} %</name>
+                    <expression>{Template App Oracle Database:zbxoracle[get_fra_data,used_pct].last()}&gt;{$FRA_USAGE_HIGH}</expression>
+                    <recovery_expression/>
+                </dependency>
+            </dependencies>
             <tags>
                 <tag>
                     <tag>Scope</tag>

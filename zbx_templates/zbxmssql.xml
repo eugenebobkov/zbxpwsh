@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-04T08:55:35Z</date>
+    <date>2019-02-11T01:38:55Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -535,9 +535,6 @@ Instance name has to be updated in MACROS section</description>
                             <name>Availability</name>
                         </application>
                         <application>
-                            <name>JSON</name>
-                        </application>
-                        <application>
                             <name>Microsoft SQL Server Instance</name>
                         </application>
                     </applications>
@@ -908,7 +905,7 @@ Instance name has to be updated in MACROS section</description>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>zbxmssql[get_version,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>0;h6m0</delay>
+                    <delay>0;6h/{$CHECK_TIMEFRAME}</delay>
                     <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
