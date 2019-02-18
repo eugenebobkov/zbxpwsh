@@ -153,4 +153,4 @@ return
 	}
 }
 
-Export-ModuleMember -Function Read-EncryptedString
+Export-ModuleMember -Function Read-EncryptedString, Write-EncryptedString
