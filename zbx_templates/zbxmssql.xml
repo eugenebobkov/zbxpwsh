@@ -713,7 +713,7 @@ Instance name has to be updated in MACROS section</description>
                     <history>365d</history>
                     <trends>0</trends>
                     <status>0</status>
-                    <value_type>1</value_type>
+                    <value_type>4</value_type>
                     <allowed_hosts/>
                     <units/>
                     <snmpv3_contextname/>
