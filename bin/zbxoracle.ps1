@@ -55,7 +55,7 @@ function run_sql() {
     # Add Oracle ODP.NET extention
     # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>
     # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
-    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\managed\common\Oracle.ManagedDataAccess.dll
+    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\bin\4\Oracle.DataAccess.dll
 
     $dataSource = "(DESCRIPTION =
                        (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
@@ -69,14 +69,25 @@ function run_sql() {
     }
 
     # Create connection string
-    $connectionString = "User Id=$Username; Password=$dbPassword; Data Source=$dataSource;"
+
+    # check for sysdba or equalent privilegies
+    if ($Username.Split().Count -gt 1) {
+        $dbUsername = $Username.Split()[0]
+        $dbDBAPrivilege = $Username.Split()[2].ToUpper()
+
+        # Assamble connection string
+        $connectionString = "User Id=$dbUsername; Password=$dbPassword; DBA Privilege=$dbDBAPrivilege; Data Source=$dataSource;"
+    }
+    else {
+        $connectionString = "User Id=$Username; Password=$dbPassword; Data Source=$dataSource;"
+    }
 
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
     $connectionString += "Connect Timeout = $ConnectTimeout;"
 
     # Create the connection object
-    $connection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$connectionString")
+    $connection = New-Object Oracle.DataAccess.Client.OracleConnection("$connectionString")
 
     # try to open connection
     try {
@@ -90,11 +101,11 @@ function run_sql() {
     }
 
     # Create command to run using connection
-    $command = New-Object Oracle.ManagedDataAccess.Client.OracleCommand($Query)
+    $command = New-Object Oracle.DataAccess.Client.OracleCommand($Query)
     $command.Connection = $connection
     $command.CommandTimeout = $CommandTimeout
 
-    $adapter = New-Object Oracle.ManagedDataAccess.Client.OracleDataAdapter($command)
+    $adapter = New-Object Oracle.DataAccess.Client.OracleDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
     try {
