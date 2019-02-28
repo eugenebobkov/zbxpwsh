@@ -166,16 +166,22 @@ function is_available_and_cdb() {
 #>
 function get_instance_state() {
     # get database response, fact of recieving data itself can be considered as good sign of the database availability
-    $result = (run_sql -Query 'SELECT status 
-                                 FROM v$instance')
+    $result = (run_sql -Query "SELECT i.status || DECODE ( d.controlfile_type
+                                                         , 'CURRENT', NULL
+                                                         , ':' || d.controlfile_type
+                                                  )
+                                 FROM v`$instance i
+                                    , v`$database d")
 
-    # Check if expected object has been recieved
+    #TODO: any other statuses to check?
+    # The instance in primary and accessible
     if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'OPEN') {
         return 'ONLINE'
-    }
-    #TODO: any other statuses to check?
-    # data is not in [System.Data.DataTable] format
-    else {
+    # The instance in standby mode primary and accessible
+    } elseif ($result.GetType() -eq [System.Data.DataTable] -And ($result.Rows[0][0] -eq 'MOUNTED:STANDBY' -Or $result.Rows[0][0] -eq 'OPEN:STANDBY')){
+        return $result.Rows[0][0]
+    } else {
+        # data is not in [System.Data.DataTable] format
         return $result
     }
 }

@@ -4411,7 +4411,7 @@ percentage of utilization</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
+            <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0 and {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^MOUNTED:STANDBY$&quot;,{$CONNECT_ATTAMPTS})}=0 and {Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^OPEN:STANDBY$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>The instance is not available (Reason: {ITEM.VALUE})</name>
