@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-11T01:39:39Z</date>
+    <date>2019-03-01T06:01:42Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -4374,13 +4374,13 @@ percentage of utilization</description>
             <expression>{Template App Oracle Database:zbxoracle[get_block_corruption_number,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].last()} - {Template App Oracle Database:zbxoracle[get_block_corruption_number,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].prev()}&gt;0</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
-            <name>Corrupted blocks detected</name>
+            <name>Corrupted blocks have been detected</name>
             <correlation_mode>0</correlation_mode>
             <correlation_tag/>
             <url/>
             <status>0</status>
             <priority>4</priority>
-            <description>Corrupted blocks detected, normally as part of backup by RMAN</description>
+            <description>Corrupted blocks have been detected, normally as part of backup by RMAN</description>
             <type>0</type>
             <manual_close>1</manual_close>
             <dependencies/>
@@ -4480,6 +4480,22 @@ percentage of utilization</description>
                     <value>Recoverability</value>
                 </tag>
             </tags>
+        </trigger>
+        <trigger>
+            <expression>{Template App Oracle Database:zbxoracle[get_database_role,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].diff()}=1</expression>
+            <recovery_mode>0</recovery_mode>
+            <recovery_expression/>
+            <name>Role of the instance has been changed (Current role: {ITEM.VALUE})</name>
+            <correlation_mode>0</correlation_mode>
+            <correlation_tag/>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description>Change of instance's role has been detected</description>
+            <type>0</type>
+            <manual_close>0</manual_close>
+            <dependencies/>
+            <tags/>
         </trigger>
         <trigger>
             <expression>{Template App Oracle Database:zbxoracle[get_instance_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}].regexp(&quot;^ONLINE$&quot;,{$CONNECT_ATTAMPTS})}=0</expression>
