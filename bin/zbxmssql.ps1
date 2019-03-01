@@ -526,8 +526,10 @@ function get_max_hours_since_log_backup() {
 
 <#
     Function to get data about users who have privilegies above normal (SYSADMIN)
+    TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data(){
+    # get users with elevated privilegies
     $result = (run_sql -Query "SELECT sp.name
                                     , 'SYSADMIN'
                                     , sp.is_disabled
