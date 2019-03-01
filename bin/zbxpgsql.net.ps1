@@ -16,8 +16,8 @@ Param (
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,        # Host name
     [Parameter(Mandatory=$true, Position=3)][int]$Port = 5432,        # Port number
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',   # User name
-    [Parameter(Mandatory=$false, Position=5)][string]$Password = ''   # Password, not required if .pgpass file populated
-    )
+    [Parameter(Mandatory=$true, Position=5)][string]$Password = ''    # Password, not required if .pgpass file populated
+)
 
 $RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
@@ -44,21 +44,22 @@ function run_sql() {
 
     # Load ADO.NET extention
     # System.Threading.Tasks.Extensions.dll is prerequisite for npgsql
+    Add-Type -Path $global:RootPath\dll\System.Runtime.CompilerServices.Unsafe.dll
+    Add-Type -Path $global:RootPath\dll\System.ValueTuple.dll
     Add-Type -Path $global:RootPath\dll\System.Threading.Tasks.Extensions.dll
     Add-Type -Path $global:RootPath\dll\Npgsql.dll
 
-    If ($Password) {
-        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
-    }
+    #if ($Password) {
+    #    $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    #}
 
     # Create connection string
-    $connectionString = "Server = $Hostname; Port = $Port; Database = postgres; User Id = $Username; Password = $DBPassword;"
+    #$connectionString = "Server = $Hostname; Port = $Port; Database = postgres; User Id = $Username; Password = $DBPassword;"
+    $connectionString = "Server = $Hostname; Port = $Port; Database = postgres; User Id = $Username; Password = $Password;"
 
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
-    $connectionString += "Timeout = $ConnectTimeout;"
-
-    $connectionString += "CommandTimeout = $CommandTimeout"
+    $connectionString += "Timeout = $ConnectTimeout; CommandTimeout = $CommandTimeout"
 
     # Create the connection object
     $connection = New-Object Npgsql.NpgsqlConnection("$connectionString")
@@ -86,7 +87,7 @@ function run_sql() {
         $result = "ERROR: QUERY FAILED: $error"
     } 
     finally {
-        [void]$oracleConnection.Close()
+        [void]$connection.Close()
     }
 
     # Comma in front is essential as without it return provides object's value, not object itselt
