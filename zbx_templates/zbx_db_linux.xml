@@ -66,7 +66,7 @@ Eugene Bobkov 10/2018</description>
                     <snmpv3_authpassphrase/>
                     <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
-                    <params>mpstat 1 5 | tail -1 | awk '{print &quot;{\&quot;used_pct\&quot;: &quot; 100-$12 &quot;}&quot;}'</params>
+                    <params>mpstat 1 5 | tail -7 | awk '/%idle/ {for (i=1;i&lt;=NF;i++){if ($i==&quot;%idle&quot;) col=i-1}} /^Average:/ {print &quot;{\&quot;used_pct\&quot;:&quot; 100-$col &quot;}&quot;}'</params>
                     <ipmi_sensor/>
                     <authtype>1</authtype>
                     <username>{$SSH_USERNAME}</username>
@@ -74,7 +74,8 @@ Eugene Bobkov 10/2018</description>
                     <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
                     <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
                     <port/>
-                    <description>CPU utilization, 5 seconds average utilization</description>
+                    <description>CPU utilization, 5 seconds average utilization&#13;
+Position of %idle column can be different in different implementations of mpstat</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
