@@ -10,14 +10,14 @@
     UserParameter provided as part of oracle.conf file which has to be places in zabbix_agentd.d directory
 
     Create new profile with unlimited expire_time (or modify default)
-    Create oracle user with the following privilegies
+    SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS;
+
+    Create oracle user and grant the following privilegies
  
-    SQL> create user svc_zabbix identified by '<password>' profile service_profie;
+    SQL> create user svc_zabbix identified by '<password>' profile monitoring_profie;
     SQL> grant create session, select any dictionary to svc_zabbix;
     (for PDB monitoring)
     SQL> alter user c##svc_zabbix set container_data=all container=current;
-
-    Change user's profile settings to ulimited life_time
 #>
 
 Param (
@@ -174,17 +174,37 @@ function get_instance_state() {
                                     , v`$database d")
 
     #TODO: any other statuses to check?
-    # The instance in primary and accessible
-    if ($result.GetType() -eq [System.Data.DataTable] -And $result.Rows[0][0] -eq 'OPEN') {
+    # The instance in primary and accessible or standby and accessible
+    if ($result.GetType() -eq [System.Data.DataTable] -And ($result.Rows[0][0] -eq 'OPEN' -Or $result.Rows[0][0] -eq 'MOUNTED:STANDBY' -Or $result.Rows[0][0] -eq 'OPEN:STANDBY')) {
         return 'ONLINE'
-    # The instance in standby mode primary and accessible
-    } elseif ($result.GetType() -eq [System.Data.DataTable] -And ($result.Rows[0][0] -eq 'MOUNTED:STANDBY' -Or $result.Rows[0][0] -eq 'OPEN:STANDBY')){
+    # The instance in unexpected mode
+    } elseif ($result.GetType() -eq [System.Data.DataTable]) {
         return $result.Rows[0][0]
     } else {
         # data is not in [System.Data.DataTable] format
         return $result
     }
 }
+
+<#
+    Function to check instance role, OPEN stands for primary, [MOUNT|OPEN]:[STANDBY MODE] stands for standby database (including Active standby mode)
+#>
+function get_instance_role() {
+    # get current status ans database role
+    $result = (run_sql -Query "SELECT i.status || ':' || d.database_role
+                                 FROM v`$instance i
+                                    , v`$database d")
+
+    #TODO: any other statuses to check?
+    # Check if expected object has been recieved
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{role = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+    }
+    # data is not in [System.Data.DataTable] format
+    else {
+        return $result
+    }
+}  
 
 <#
     Function to get software version
