@@ -220,7 +220,7 @@ function get_database_role() {
     #TODO: any other statuses to check?
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{role = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+        return (@{database_role = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     # data is not in [System.Data.DataTable] format
     else {
@@ -298,7 +298,7 @@ function get_instances_data() {
 function get_database_size() {
     # Check if database is standby
     if ((is_standby) -eq $true) {
-        return (@{database_size = -1})
+        return (@{database_size = -1} | ConvertTo-Json -Compress)
     }
 
     # get instance startup time
