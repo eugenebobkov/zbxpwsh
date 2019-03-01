@@ -162,6 +162,28 @@ function is_available_and_cdb() {
 }
 
 <#
+    Internal function to check if instance is open
+    This check is required for standby databases in MOUNT mode 
+#>
+function is_standby() {
+    # check database version, cdb was implemented starting from version 12
+    $result = (run_sql -Query 'SELECT controlfile_type 
+                                 FROM v$database')
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available 
+        return $null
+    } 
+    elseif ($result.Rows[0][0] -eq 'STANDBY') {
+        # return $true, if instance is open
+        return $true
+    }
+    else {
+        return $false
+    }
+}
+
+<#
     Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
@@ -189,7 +211,7 @@ function get_instance_state() {
 <#
     Function to check instance role, OPEN stands for primary, [MOUNT|OPEN]:[STANDBY MODE] stands for standby database (including Active standby mode)
 #>
-function get_instance_role() {
+function get_database_role() {
     # get current status ans database role
     $result = (run_sql -Query "SELECT i.status || ':' || d.database_role
                                  FROM v`$instance i
@@ -274,6 +296,11 @@ function get_instances_data() {
     Function to get overall database size
 #>
 function get_database_size() {
+    # Check if database is standby
+    if ((is_standby) -eq $true) {
+        return (@{database_size = -1})
+    }
+
     # get instance startup time
     $result = (run_sql -Query 'select sum(bytes) database_size
                                  from dba_segments')
@@ -315,6 +342,11 @@ function get_instances() {
     Function to list database tablespaces, used by discovery
 #>
 function list_tablespaces() {
+    # check if instance is in OPEN mode
+    if ((is_standby) -eq $true) {
+        return "{ `n`t`"data`": [`n`t]`n}"
+    } 
+
     # get list of tablespaces
     $result = (run_sql -Query "SELECT tablespace_name 
                                  FROM dba_tablespaces 
