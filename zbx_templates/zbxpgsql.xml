@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-11T01:39:06Z</date>
+    <date>2019-03-02T14:27:13Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -317,7 +317,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <type>18</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[get_connections_data,pct]</key>
+                    <key>zbxpgsql[get_connections_data,pct_used]</key>
                     <delay>0</delay>
                     <history>1w</history>
                     <trends>365d</trends>
@@ -355,7 +355,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.pct</params>
+                            <params>$.pct_used</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -770,7 +770,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxpgsql[list_databases,{$HOSTNAME},{$PORT},{$USERNAME}]</key>
+                    <key>zbxpgsql[list_databases,{$HOSTNAME},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -847,7 +847,7 @@ Hostname and port have to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$.{#DATABASE}.bytes</params>
+                                    <params>$['{#DATABASE}'].bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1018,7 +1018,7 @@ Hostname and port have to be updated in MACROS section</description>
             </tags>
         </trigger>
         <trigger>
-            <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct].last()}&gt;{$PROCESSES_HIGH}</expression>
+            <expression>{Template App PostgreSQL Database:zbxpgsql[get_connections_data,pct_used].last()}&gt;{$PROCESSES_HIGH}</expression>
             <recovery_mode>0</recovery_mode>
             <recovery_expression/>
             <name>The number of processes exceeded the threshold {$PROCESSES_HIGH} %</name>
