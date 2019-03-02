@@ -5,7 +5,7 @@
     Monitoring script for PostgreSQL RDBMS, intended to be executed by Zabbix Agent
 
 .DESCRIPTION
-    Connect to PostgreSQL using .NET dll files in $global:RootPath\dll folder
+    Connects to PostgreSQL using .NET dll files in $global:RootPath\dll folder
     UserParameter provided in pgsql.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
 .PARAMETER CheckType
@@ -18,7 +18,7 @@
     TCP/IP port, normally 5432
 
 .PARAMETER Username
-    PostgreSQL user/role used for 
+    PostgreSQL user/role used by Zabbix:
     psql> create user svc_zabbix with password '<password>';
     psql> alter role svc_zabbix with login;
     TODO: For somechecks SUPERUSER is required, for example list_standby_instances, but it's under construction
@@ -27,7 +27,7 @@
     $ pg_ctl reload
 
 .PARAMETER Password
-    Encrypted password for PostgreSQL user. Encrypted scring can be generated with $global:RootPath\bin\pwgen.ps1
+    Encrypted password for PostgreSQL user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
 
 .INPUTS
     None
@@ -45,7 +45,7 @@
         pg_stat_replication - function with security definer has to be created to view full information about replication
  
 .EXAMPLE
-    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxpgsql.ps1 -CheckType get_instance_state -Hostname PGSERVER -Port 5432 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxpgsql.ps1 -CheckType get_instance_state -Hostname pgsql_server -Port 5432 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
 Param (

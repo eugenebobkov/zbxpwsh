@@ -1,15 +1,45 @@
 ﻿#!/bin/pwsh
 
 <#
-    Created: 16/11/2018
+.SYNOPSIS
+    Monitoring script for IBM DB2 LUW RDBMS, intended to be executed by Zabbix Agent
 
-    Parameters to modify in zabbix agent configuration file:
-    # it will allow \ symbol to be used as part of InstanceName variable
-    UnsafeUserParameters=1 
-    
-    UserParameter provided as part of db2.conf file which has to be places in zabbix_agentd.d directory
+.DESCRIPTION
+    Connects to the database using .NET connector provided by DB2 LUW database client
+    UserParameter provided in db2.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
-    Create user for monitoring 
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required DB2 instance is running
+
+.PARAMETER Service
+    Database name
+
+.PARAMETER Port
+    TCP/IP port, normally 50000
+
+.PARAMETER Username
+    OS/Domain user, Integrated security is not supported by DB2 ADO.NET Connector
+    In case of restricted instance - additional grants are required
+
+.PARAMETER Password
+    Encrypted password for OS/Domain user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+
+.INPUTS
+    None
+
+.OUTPUTS
+    If there are any errors - log files can be found in $global:RootPath\log
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  16/11/2018
+
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxdb2.ps1 -CheckType get_instance_state -Hostname db2_server -Port 50000 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
 Param (

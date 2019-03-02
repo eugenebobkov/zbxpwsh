@@ -1,15 +1,45 @@
 #!/bsin/pwsh
 
 <#
-    Created: 02/03/2018
+.SYNOPSIS
+    Monitoring script for Microsoft SQL Server(MSSQL), intended to be executed by Zabbix Agent
 
-    Parameters to modify in zabbix agent configuration file:
-    # it will allow \ symbol to be used as part of InstanceName variable
-    UnsafeUserParameters=1 
-    
-    UserParameter provided as part of mssql.conf file which has to be places in zabbix_agentd.d directory
+.DESCRIPTION
+    Connects to MSSQL using build-in .NET libraries, no any additional installation required
+    UserParameter provided in mssql.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
-    Create MSSQL user/domain user which will be used for monitoring
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required MSSQL instance is running
+
+.PARAMETER Service
+    Instance name
+
+.PARAMETER Port
+    TCP/IP port, normally 1403
+
+.PARAMETER Username
+    This parameter is not mandatory and domain user should be used in conjunction with Integrated Security
+    MSSQL user is required when Integrated Security cannot be used
+
+.PARAMETER Password
+    Encrypted password for MSSQL user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+
+.INPUTS
+    None
+
+.OUTPUTS
+    If there are any errors - log files can be found in $global:RootPath\log
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  02/03/2018
+ 
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxmssql.ps1 -CheckType get_instance_state -Hostname mssql_server -Port 1403
 #>
 
 Param (
