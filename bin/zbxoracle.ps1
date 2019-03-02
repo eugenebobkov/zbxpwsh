@@ -29,7 +29,7 @@ Param (
     [Parameter(Mandatory=$true, Position=5)][string]$Password          # Password
 )
 
-$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
@@ -92,7 +92,7 @@ function run_sql() {
     # try to open connection
     try {
         [void]$connection.open()
-        } 
+    } 
     catch {
         # report error, sanitize it to remove IPs if there are any
         $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
