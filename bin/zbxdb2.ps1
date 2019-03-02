@@ -16,7 +16,7 @@ Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
     [Parameter(Mandatory=$true, Position=3)][string]$Service,          # Database name
-    [Parameter(Mandatory=$true, Position=4)][int]$Port = 50000,        # Port number, default is 50000
+    [Parameter(Mandatory=$true, Position=4)][int]$Port,                # Port number
     [Parameter(Mandatory=$true, Position=5)][string]$Username,         # User name
     [Parameter(Mandatory=$true, Position=6)][string]$Password          # Password
 )

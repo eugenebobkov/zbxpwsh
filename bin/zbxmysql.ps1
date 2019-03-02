@@ -11,7 +11,7 @@
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,       # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,        # Host name
-    [Parameter(Mandatory=$true, Position=3)][int]$Port = 3306,        # Port number
+    [Parameter(Mandatory=$true, Position=3)][int]$Port,               # Port number
     [Parameter(Mandatory=$true, Position=4)][string]$Username ,       # User name
     [Parameter(Mandatory=$true, Position=5)][string]$Password         # Password
     )
@@ -35,19 +35,15 @@ function run_sql() {
 
     # Add MySQL .NET connector
     # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
-    try {
-        Add-Type -Path "C:\Program Files (x86)\MySQL\MySQL Connector Net 8.0.15\Assemblies\v4.5.2\MySQL.Data.dll"
-    }
-    catch {
-        $_.Exception.Message
-    }
+    Add-Type -Path "$global:RootPath\dll\Google.Protobuf.dll"
+    Add-Type -Path "$global:RootPath\dll\MySQL.Data.dll"
 
-    #If ($Password) {
-    #    $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
-    #}
+    if ($Password) {
+        $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    }
 
     # Create connection string
-    $connectionString = "Server = $Hostname; Port = $Port; Database = mysql; User Id = $Username; Password = $DBPassword;"
+    $connectionString = "Server = $Hostname; Port = $Port; Database = mysql; User Id = $Username; Password = $dbPassword;"
 
     # How long scripts attempts to connect to instance
     # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
@@ -75,7 +71,7 @@ function run_sql() {
     $dataTable = New-Object System.Data.DataTable
 
     try {
-        [void]$oracleAdapter.Fill($dataTable)
+        [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
     catch {
