@@ -473,6 +473,7 @@ function get_last_log_backup() {
 
 <#
     Function to get data about users who have privilegies above normal (DBADM)
+    TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data(){
     # get users with dbadm priviligies
