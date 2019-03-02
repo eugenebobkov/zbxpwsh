@@ -195,9 +195,9 @@ function get_startup_time() {
 
 function list_databases() {
     # get list of databases
-    $result = @(run_sql -Query 'SELECT datname 
-                                  FROM pg_database 
-                                 WHERE datistemplate = false')
+    $result = (run_sql -Query 'SELECT datname 
+                                 FROM pg_database 
+                                WHERE datistemplate = false')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
         # instance is not available
@@ -219,10 +219,10 @@ function list_databases() {
 #>
 function get_databases_size() {
     # get size of all databases
-    $result = @(run_sql -Query "SELECT datname
-                                     , pg_database_size(datname) 
-                                  FROM pg_database 
-                                 WHERE datistemplate = false")
+    $result = (run_sql -Query 'SELECT datname
+                                    , pg_database_size(datname) 
+                                 FROM pg_database 
+                                WHERE datistemplate = false')
 
     # Check if expected object has been recieved
     if ($result.GetType() -ne [System.Data.DataTable]) {
@@ -253,7 +253,7 @@ function get_connections_data() {
         return $result
     }
 
-    return (@{max = $result[0]; current = $result[1]; pct = $result[2]} | ConvertTo-Json -Compress)
+    return (@{max = $result[0]; current = $result[1]; pct_used = $result[2]} | ConvertTo-Json -Compress)
 }
 
 <#
