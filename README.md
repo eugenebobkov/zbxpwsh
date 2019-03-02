@@ -18,12 +18,11 @@ Linux OS checks are running shell commands using SSH agent directly from Zabbix 
 
 *RDBMS monitoring:*
 
-- MS SQL Server (zbx_templates/zbxmssql.xml, module zbxmssql.ps1, ADO.NET)
-- Oracle Database (zbx_templates/zbxoracle.xml, module zbxoracle.ps1, ADO.NET)
-- IBM DB2 LUW Database (zbx_templates/zbxdb2.xml, module zbxdb2.ps1, ADO.NET)
-- PostgreSQL (zbx_templates/zbxpgsql.xml, module zbxpgsql.ps1, psql as connection agent
-  
-  TODO: Npgsql not implemented yet https://www.npgsql.org)
+- MS SQL Server (zbx_templates/zbxmssql.xml, module zbxmssql.ps1, Windows build-in ADO.NET drivers)
+- Oracle Database (zbx_templates/zbxoracle.xml, module zbxoracle.ps1, ADO.NET drivers from client installation)
+- IBM DB2 LUW Database (zbx_templates/zbxdb2.xml, module zbxdb2.ps1, ADO.NET drivers from client installation)
+- PostgreSQL (zbx_templates/zbxpgsql.xml, module zbxpgsql.ps1, ADO.NET https://www.npgsql.org, placed in dll folder)
+- MySQL/MariaDB (zbx_templates/zbxmysql.xml, module zbxmysql.ps1, ADO.NET drivers from MySQL Connector/NET installation)
 
 *OS Monitoring (mainly database related check, CPU/System load, memory consumption and filesystems' usage)*
 - Linux (zbx_templates/zbx_db_linux.xml, no modules required, Zabbix SSH Agent, each host expected to have user with public key populated.
