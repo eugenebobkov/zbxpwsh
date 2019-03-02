@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-11T01:39:06Z</date>
+    <date>2019-03-02T14:27:13Z</date>
     <groups>
         <group>
             <name>PostgreSQL Databases</name>
@@ -355,7 +355,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <preprocessing>
                         <step>
                             <type>12</type>
-                            <params>$.pct</params>
+                            <params>$.pct_used</params>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
