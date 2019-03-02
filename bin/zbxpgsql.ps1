@@ -82,7 +82,7 @@ function run_sql() {
 
 .EXAMPLE
     PS> $result = (run_sql -Query 'SELECT count(*) FROM pg_database')
-    PS> $result[0][0]
+    PS> $result.Rows[0][0]
     4
 #>
     param (
@@ -253,7 +253,7 @@ function get_connections_data() {
         return $result
     }
 
-    return (@{max = $result[0]; current = $result[1]; pct_used = $result[2]} | ConvertTo-Json -Compress)
+    return (@{max = $result.Rows[0][0]; current = $result.Rows[0][1]; pct_used = $result.Rows[0][2]} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -306,7 +306,7 @@ function get_last_db_backup() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{date = $result[0]; hours_since = $result[1]} | ConvertTo-Json -Compress)
+        return (@{date = $result.Rows[0][0]; hours_since = $result.Rows[0][1]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -326,7 +326,7 @@ function get_archiver_stat_data() {
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
-        return (@{date = $result[0]; hours_since = $result[1]; failed_count = $result[2]} | ConvertTo-Json -Compress)
+        return (@{date = $result.Rows[0][0]; hours_since = $result.Rows[0][1]; failed_count = $result.Rows[0][2]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
