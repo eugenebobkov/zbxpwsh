@@ -1,29 +1,90 @@
 #!/bin/pwsh
 
+<#
+.SYNOPSIS
+    Monitoring script for PostgreSQL RDBMS, intended to be executed by Zabbix Agent
+
+.DESCRIPTION
+    Connect to PostgreSQL using .NET dll files in $global:RootPath\dll folder
+    UserParameter provided in pgsql.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
+
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required PostgreSQL instance is running
+
+.PARAMETER Port
+    TCP/IP port, normally 5432
+
+.PARAMETER Username
+    PostgreSQL user/role used for 
+    psql> create user svc_zabbix with password '<password>';
+    psql> alter role svc_zabbix with login;
+    TODO: For somechecks SUPERUSER is required, for example list_standby_instances, but it's under construction
+    Update pg_hba.conf with user's details if required 
+    Reload PostgreSQL
+    $ pg_ctl reload
+
+.PARAMETER Password
+    Encrypted password for PostgreSQL user. Encrypted scring can be generated with $global:RootPath\bin\pwgen.ps1
+
+.INPUTS
+    None
+
+.OUTPUTS
+    If there are any errors - log files can be found in $global:RootPath\log
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  10/2018
+
+    Checkpoint interval
+        pg_stat_bgwriter
+        pg_stat_replication - function with security definer has to be created to view full information about replication
+ 
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxpgsql.ps1 -CheckType get_instance_state -Hostname PGSERVER -Port 5432 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
+#>
+
 Param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,       # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,        # Host name
-    [Parameter(Mandatory=$true, Position=3)][int]$Port = 5432,        # Port number
+    [Parameter(Mandatory=$true, Position=3)][int]$Port,               # Port number
     [Parameter(Mandatory=$true, Position=4)][string]$Username = '',   # User name
-    [Parameter(Mandatory=$false, Position=5)][string]$Password = ''   # Password, not required if .pgpass file populated
+    [Parameter(Mandatory=$true, Position=5)][string]$Password = ''    # Password
 )
 
-$RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+$global:RootPath = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Definition)
 $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
-<# Notes:
-    PSQL> create role svc_zabbix with password 'password';
-    PSQL> alter role svc_zabbix with login;
-
-    Checkpint interval
-      pg_stat_bgwriter
-      pg_stat_replication - function with security definer has to be created to view full information about replication
-#>
-
 function run_sql() {
+<#
+.SYNOPSIS
+    Internal function to run provided sql statement
+
+.DESCRIPTION
+    Typically it's expected to return query result as [System.Data.DataTable]. 
+    If query cannot be executed or return an error - the error will be returned as [System.String] and processed based on logic in parent function
+
+.PARAMETER Query
+    Text of SQL Statement which is required to be executed
+
+.PARAMETER ConnectTimeout
+    Maxtimum wait time for establishing connection with the instance. Default is 5 seconds
+
+.PARAMETER CommandTimeout
+    Maxtimum wait time for the query execution. Default is 10 seconds
+
+.EXAMPLE
+    PS> $result = (run_sql -Query 'SELECT count(*) FROM pg_database')
+    PS> $result[0][0]
+    4
+#>
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
@@ -33,70 +94,54 @@ function run_sql() {
     # DEBUG: Error in SQL execution will not terminate whole script and error output will be suppressed
     # $ErrorActionPreference = 'silentlycontinue'
 
-    <#
-        Sqlplus
-    #> 
+    # Load ADO.NET extentions required for creation of connection to PostgreSQL instance
+    Add-Type -Path $global:RootPath\dll\System.Runtime.CompilerServices.Unsafe.dll
+    Add-Type -Path $global:RootPath\dll\System.ValueTuple.dll
+    Add-Type -Path $global:RootPath\dll\System.Threading.Tasks.Extensions.dll
+    Add-Type -Path $global:RootPath\dll\Npgsql.dll
 
-    # TODO: Implement .NET DBProvider using Npgsql https://www.npgsql.org
-
-<#
- Add-Type -Path "C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Npgsql\v4.0_4.0.3.0__5d8b90d52f46fda7\Npgsql.dll"
-
- # PostgeSQL-style connection string
-                $connstring = "Server=localhost;Port=5432;User Id=zabbixmon;Password=zabbix;Database=postgres;"
-
-                # Making connection with Npgsql provider
-                $conn = New-Object Npgsql.NpgsqlConnection($connstring)
-                $conn.Open()
-                # quite complex sql statement
-                $sql = "SELECT * FROM simple_table";
-                # data adapter making request from our connection
-                $da = New-Object NpgsqlDataAdapter($sql, $conn)
-                # i always reset DataSet before i do
-                # something with it.... i don't know why :-)
-                $dt = New-Object System.Data.DataTable
-                $dt.Reset()
-                # filling DataSet with result from NpgsqlDataAdapter
-                $da.Fill($dt);
-                # since it C# DataSet can handle multiple tables, we will select first
-
-                # since we only showing the result we don't need connection anymore
-                $conn.Close();
-#>
-    #  
-    
-    if ([Environment]::OSVersion.Platform -eq 'Win32NT') {
-        $psql = "d:\PostgreSQL\11\bin\psql.exe"
+    if ($Password) {
+        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
     }
-    else {
-        $psql = "/usr/pgsql-10/bin/psql"
-    }  
 
-    # Set variable to PostgreSQL password file
-    Set-Item -Path env:PGPASSFILE -Value "$global:RootPath\etc\.pgpass"
+    # Create connection string
+    $connectionString = "Server = $Hostname; Port = $Port; Database = postgres; User Id = $Username; Password = $DBPassword;"
 
-    #Process {
-    #   try {
-             $output += '' 
-             # password should be provided in .pgpass file or cetrificate configured
-             $Query | &$psql -t -U $Username -h $Hostname --no-password postgres | Where {$_ -ne ""} | Set-Variable output
-             $rc = $LASTEXITCODE
-    #    } 
-    #    catch {
-    #        $output = $null
-    #    }     
-    #}
+    # How long scripts attempts to connect to instance and for how long query will be running
+    # default is 15 seconds and it will cause saturation issues for Zabbix agent (too many checks) 
+    $connectionString += "Timeout = $ConnectTimeout; CommandTimeout = $CommandTimeout"
 
-    # Execution was succesful
-    if ($rc -eq 0) {     
-        return $output
+    # Create the connection object
+    $connection = New-Object Npgsql.NpgsqlConnection("$connectionString")
+
+    # try to open connection
+    try {
+        [void]$connection.open()
     } 
-    # issues during execution
-    else {
-        $error = $output.Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+    catch {
+        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
         Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
         return "ERROR: CONNECTION REFUSED: $error"
     }
+
+    $adapter = New-Object Npgsql.NpgsqlDataAdapter($Query, $connection)
+    $dataTable = New-Object System.Data.DataTable
+
+    try {
+        [void]$adapter.Fill($dataTable)
+        $result = $dataTable
+    }
+    catch {
+        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
+        $result = "ERROR: QUERY FAILED: $error"
+    } 
+    finally {
+        [void]$connection.Close()
+    }
+
+    # Comma in front is essential as without it return provides object's value, not object itselt
+    return ,$result
 } 
 
 <#
@@ -104,12 +149,13 @@ function run_sql() {
 #>
 function get_instance_state() {
     $result = (run_sql -Query 'SELECT count(*) 
-                                 FROM pg_database').Trim()
+                                 FROM pg_database')
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
+    if ($result.GetType() -eq [System.Data.DataTable]) {
         return 'ONLINE'
     }
+    # data is not in [System.Data.DataTable] format
     else {
         return $result
     }
@@ -119,11 +165,12 @@ function get_instance_state() {
     Function to get software version
 #>
 function get_version() {
-    $result = (run_sql -Query 'SELECT version()').Trim()
+    # get software version
+    $result = (run_sql -Query 'SELECT version()')
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return (@{version = $result.Trim()} | ConvertTo-Json -Compress)
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{version = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -131,62 +178,61 @@ function get_version() {
 }
 
 <#
-    Function to get instance startup time
+    Function to get instance startup timestamp
 #>
 function get_startup_time() {
-    $result = (run_sql -Query "SELECT to_char(pg_postmaster_start_time(),'DD/MM/YYYY HH24:MI:SS')").Trim()
+    # get startup time
+    $result = (run_sql -Query "SELECT to_char(pg_postmaster_start_time(),'DD/MM/YYYY HH24:MI:SS')")
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return (@{startup_time = $result.Trim()} | ConvertTo-Json -Compress)
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{startup_time = $result.Rows[0][0]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
     }
 }
 
-<#
-    Provide list of databases
-#>
 function list_databases() {
-
+    # get list of databases
     $result = @(run_sql -Query 'SELECT datname 
                                   FROM pg_database 
-                                 WHERE datistemplate = false').Trim()
+                                 WHERE datistemplate = false')
 
-    if ($result -Match '^ERROR:') {
-        # Instance is not available
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # instance is not available
         return $result
     }
 
     $list = New-Object System.Collections.Generic.List[System.Object]
 
     foreach ($row in $result) {
-        $list.Add(@{'{#DATABASE}' = $row})
+        $list.Add(@{'{#DATABASE}' = $row[0]})
     }
 
     return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
+
 <#
-    Get information databases' size
+    Get size of all databases
 #>
 function get_databases_size() {
-
+    # get size of all databases
     $result = @(run_sql -Query "SELECT datname
                                      , pg_database_size(datname) 
                                   FROM pg_database 
-                                 WHERE datistemplate = false").Trim()
+                                 WHERE datistemplate = false")
 
     # Check if expected object has been recieved
-    if ($result -Match '^ERROR:') {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         return $result
     }
 
     $dict = @{}
 
     foreach ($row in $result) {
-        $dict.Add($row.Split('|')[0].Trim(), @{bytes = [int64]$row.Split('|')[1].Trim()})
+        $dict.Add($row[0], @{bytes = $row[1]})
     }
 
     return ($dict | ConvertTo-Json -Compress)
@@ -200,38 +246,43 @@ function get_connections_data() {
     $result = (run_sql -Query "SELECT current_setting('max_connections')::integer max_connections
                                     , count(pid)::float current_connections  
                                     , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) pct_used
-                                 FROM pg_stat_activity").Trim()
+                                 FROM pg_stat_activity")
 
     # Check if expected object has been recieved
-    if ($result -Match '^ERROR:') {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         return $result
     }
 
-    return ( @{
-                max = [int]$result.Split('|')[0].Trim()
-                current = [int]$result.Split('|')[1].Trim()
-                pct = [float]$result.Split('|')[2].Trim()
-             } | ConvertTo-Json -Compress)
+    return (@{max = $result[0]; current = $result[1]; pct = $result[2]} | ConvertTo-Json -Compress)
 }
 
 <#
-    Not implemented yet, JSON expected
+    Not implemented yet, under construction
+    finction to get list of remote replica instances
+    SUPERUSER privilege is required to get all information from pg_stat_replication 
+    Or function with security definer has to be created to view full information about replication
 #>
-function get_standby_instances() {
-    $result = (run_sql -Query "").Trim()
+function list_standby_instances() {
+    $result = (run_sql -Query 'select * from pg_stat_replication')
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         return $result
     }
-    else {
-        return $result
+
+    $list = New-Object System.Collections.Generic.List[System.Object]
+
+    foreach ($row in $result) {
+        $list.Add(@{'{#REPLICA}' = $row[0]})
     }
+
+    return (@{data = $list} | ConvertTo-Json -Compress)
 }
 
 <#
+    Not implemented yet, under construction
     Function to provide time of last successeful database backup
-    As PostgreSQL doesn't have build in mechanism to track backups - additional modifications for backup scripts has to be done
+    As PostgreSQL doesn't have build-in mechanism to track backups - additional modifications for backup scripts has to be done
     Script which running pg_basebackup after completion will update postgres.pg_basebackups table with result of completed (failed or success) backup
     postgres.pg_basebackups:
     CREATE TABLE pg_basebackups
@@ -251,15 +302,11 @@ function get_last_db_backup() {
                                     , trunc(((EXTRACT(EPOCH FROM now()::timestamp) - EXTRACT(EPOCH FROM max(end_time)::timestamp))/60/60)::numeric, 4) hours_since
 					             FROM postgres.pg_basebackups
 							    WHERE status like 'COMPLETED%'" `
-                       -CommandTimeout 30
-                )
+                       -CommandTimeout 30)
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return (@{
-                    date = $result.Split('|')[0].Trim()
-                    hours_since = [float]$result.Split('|')[1].Trim()
-                } | ConvertTo-Json -Compress)
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{date = $result[0]; hours_since = $result[1]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -278,12 +325,8 @@ function get_archiver_stat_data() {
 					             FROM pg_stat_archiver")
 
     # Check if expected object has been recieved
-    if ($result -NotMatch '^ERROR:') {
-        return (@{
-                    date = $result.Split('|')[0].Trim()
-                    hours_since = [float]$result.Split('|')[1].Trim()
-                    failed_count = [int64]$result.Split('|')[2].Trim()
-                } | ConvertTo-Json -Compress)
+    if ($result.GetType() -eq [System.Data.DataTable]) {
+        return (@{date = $result[0]; hours_since = $result[1]; failed_count = $result[2]} | ConvertTo-Json -Compress)
     }
     else {
         return $result
@@ -291,7 +334,8 @@ function get_archiver_stat_data() {
 }
 
 <#
-    Function to get data about roles who have privilegies above normal (SUPERUSER)
+    Function to get data about elevated roles who have privilegies above normal (SUPERUSER)
+    TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data(){
     $result = (run_sql -Query "SELECT rolname
@@ -300,7 +344,7 @@ function get_elevated_users_data(){
                                 WHERE rolsuper = 't'")
 
     # Check if expected object has been recieved
-    if ($result -Match '^ERROR:') {
+    if ($result.GetType() -ne [System.Data.DataTable]) {
         return $result
     }
 
@@ -309,7 +353,7 @@ function get_elevated_users_data(){
 
     # generate JSON
     foreach ($row in $result) {
-        $json += "`t`t{`"" + $row.Split('|')[0].Trim() + "`":{`"privilege`":`"" + $row.Split('|')[1].Trim() + "`"}}"
+        $json += "`t`t{`"" + $row[0] + "`":{`"privilege`":`"" + $row[1] + "`"}}"
         $idx++
 
         if ($idx -lt $result.Count) {
