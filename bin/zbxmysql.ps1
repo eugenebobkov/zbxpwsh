@@ -84,8 +84,11 @@ function run_sql() {
     Add-Type -Path "$global:RootPath\dll\Google.Protobuf.dll"
     Add-Type -Path "$global:RootPath\dll\MySQL.Data.dll"
 
-    if ($Password) {
+    # Decrypt password
+    if ($Password -ne '') {
         $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    } else {
+        $dbPassword = ''
     }
 
     # Create connection string
@@ -116,7 +119,9 @@ function run_sql() {
     $adapter = New-Object MySql.Data.MySqlClient.MySqlDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
+    # Run query
     try {
+        # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
@@ -135,9 +140,10 @@ function run_sql() {
 
 <#
 .SYNOPSIS
-    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+    Function to return instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
+    # get results
     $result = (run_sql -Query 'SHOW DATABASES')
 
     # Check if expected object has been recieved

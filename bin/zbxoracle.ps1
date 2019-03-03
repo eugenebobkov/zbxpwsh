@@ -101,6 +101,7 @@ function run_sql() {
                        (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = $Service))
                    )"
  
+    # Decrypt password
     if ($Password -ne '') {
         $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
     } else {
@@ -147,6 +148,7 @@ function run_sql() {
     $adapter = New-Object Oracle.DataAccess.Client.OracleDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
+    # Run query
     try {
         # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
@@ -228,7 +230,7 @@ function is_standby() {
 
 <#
 .SYNOPSIS
-    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+    Function to return instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     # get database response, fact of recieving data itself can be considered as good sign of the database availability

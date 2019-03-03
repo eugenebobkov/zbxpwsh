@@ -90,6 +90,7 @@ function run_sql() {
     if ($Username -eq '') {
         $connectionString = "Server = $serverInstance; Database = master; Integrated Security=true;"
     } else {
+        # Decrypt password
         if ($Password -ne '') {
             $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
         } else {
@@ -105,7 +106,7 @@ function run_sql() {
     # Create the connection object
     $connection = New-Object System.Data.SqlClient.SqlConnection $connectionString
 
-    # TODO: try to open connection here
+    # Try to open connection
     try {
         [void]$connection.Open()
     } 

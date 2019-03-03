@@ -95,8 +95,11 @@ function run_sql() {
     Add-Type -Path $global:RootPath\dll\System.Threading.Tasks.Extensions.dll
     Add-Type -Path $global:RootPath\dll\Npgsql.dll
 
-    if ($Password) {
-        $DBPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    # Decrypt password
+    if ($Password -ne '') {
+        $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    } else {
+        $dbPassword = ''
     }
 
     # Create connection string
@@ -122,7 +125,9 @@ function run_sql() {
     $adapter = New-Object Npgsql.NpgsqlDataAdapter($Query, $connection)
     $dataTable = New-Object System.Data.DataTable
 
+    # Run query
     try {
+        # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
@@ -141,7 +146,7 @@ function run_sql() {
 
 <#
 .SYNOPSIS
-    Function to return status of the instance, ONLINE stands for OK, any other results should be cons
+    Function to return status of the instance, ONLINE stands for OK, any other results should be considered as FAIL
 #>
 function get_instance_state() {
     $result = (run_sql -Query 'SELECT count(*) 

@@ -106,6 +106,7 @@ function run_sql() {
         return "ERROR: CONNECTION REFUSED: $error"
     }
 
+    # Build the SQL command
     $command = $factory.CreateCommand()
     $command.Connection = $connection
     $command.CommandText = $Query
@@ -116,7 +117,10 @@ function run_sql() {
     $da.SelectCommand = $command
 
     $dataTable = New-Object System.Data.DataTable
+
+    # Run query
     try {
+        # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$da.Fill($dataTable)
         $result = $dataTable
     }
