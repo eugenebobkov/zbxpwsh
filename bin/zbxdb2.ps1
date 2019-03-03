@@ -39,7 +39,7 @@
     Creation Date:  16/11/2018
 
 .EXAMPLE
-    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxdb2.ps1 -CheckType get_instance_state -Hostname db2_server -Port 50000 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxdb2.ps1 -CheckType get_instance_state -Hostname db2_server -Service TLMDB -Port 50000 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
 Param (

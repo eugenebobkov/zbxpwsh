@@ -1,14 +1,27 @@
 #!/bin/pwsh
 
 <#
-    Created: xx/10/2018
+.SYNOPSIS
+    Monitoring script for Oracle Database Server, intended to be executed by Zabbix Agent
 
-    Parameters to modify in zabbix agent configuration file:
-    # it will allow \ symbol to be used as part of InstanceName variable
-    UnsafeUserParameters=1 
-    
-    UserParameter provided as part of oracle.conf file which has to be places in zabbix_agentd.d directory
+.DESCRIPTION
+    Connects to the database using .NET connector provided by Oracle database client
+    UserParameter provided in oracle.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required Oracle instance is running
+
+.PARAMETER Service
+    Database name
+
+.PARAMETER Port
+    TCP/IP port, normally 1521
+
+.PARAMETER Username
+    Database user
     Create new profile with unlimited expire_time (or modify default)
     SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS;
 
@@ -18,6 +31,27 @@
     SQL> grant create session, select any dictionary to svc_zabbix;
     (for PDB monitoring)
     SQL> alter user c##svc_zabbix set container_data=all container=current;
+
+.PARAMETER Password
+    Encrypted password for OS/Domain user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+
+.INPUTS
+    None
+
+.OUTPUTS
+    If there are any errors - log files can be found in $global:RootPath\log
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  xx/10/2018
+
+   OS statistics:
+      v$ostat
+      V$SYSTEM_WAIT_CLASS
+
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxoracle.ps1 -CheckType get_instance_state -Hostname oracle_server -Service ORA_PRD -Port 1521 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
 Param (
@@ -34,12 +68,6 @@ $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
-
-<# Notes:
-   OS statistics:
-      v$ostat
-      V$SYSTEM_WAIT_CLASS
-#>
 
 <#
     Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
