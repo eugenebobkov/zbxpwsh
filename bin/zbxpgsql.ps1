@@ -32,7 +32,7 @@
 .NOTES
     Version:        1.0
     Author:         Eugene Bobkov
-    Creation Date:  10/2018
+    Creation Date:  xx/10/2018
 
     Checkpoint interval
         pg_stat_bgwriter
