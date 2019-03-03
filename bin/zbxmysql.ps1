@@ -15,7 +15,7 @@
     Hostname or IP adress of the server where required instance is running
 
 .PARAMETER Port
-    TCP/IP port, normally 3306
+    TCP port, normally 3306
 
 .PARAMETER Username
     Database user
@@ -28,12 +28,6 @@
 
 .PARAMETER Password
     Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
-
-.INPUTS
-    None
-
-.OUTPUTS
-    If there are any errors - log files can be found in $global:RootPath\log
 
 .NOTES
     Version:        1.0
@@ -58,11 +52,27 @@ $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
-<# Notes:
-#>
+<#
+.SYNOPSIS
+    Internal function to connect to a database instance and execute required sql statement 
 
+.PARAMETER Query
+    SQL statment to run
+
+.PARAMETER ConnectTimeout
+    How long to wait for instance to accept connection
+
+.PARAMETER CommandTimeout
+    How long sql statement will be running, if it runs longer - it will be terminated
+
+.OUTPUTS
+    [System.Data.DataTable] or [System.String]
+
+.NOTES
+    In normal circumstances the functions returns query result as [System.Data.DataTable]
+    If connection cannot be established or query returns error - returns error as [System.String]
+#>
 function run_sql() {
-    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
@@ -119,11 +129,12 @@ function run_sql() {
         [void]$connection.Close()
     }
 
-    # Comma in front is essential as without it return provides object's value, not object itselt
+    # Comma in front is essential as without it result is provided as object's value, not object itself
     return ,$result
 }
 
 <#
+.SYNOPSIS
     Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {

@@ -15,10 +15,10 @@
     Hostname or IP adress of the server where required MSSQL instance is running
 
 .PARAMETER Service
-    Instance name
+    Instance name (eg SQL001)
 
 .PARAMETER Port
-    TCP/IP port, normally 1403
+    TCP port, normally 1403
 
 .PARAMETER Username
     This parameter is not mandatory and domain user should be used in conjunction with Integrated Security
@@ -26,12 +26,6 @@
 
 .PARAMETER Password
     Encrypted password for MSSQL user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
-
-.INPUTS
-    None
-
-.OUTPUTS
-    If there are any errors - log files can be found in $global:RootPath\log
 
 .NOTES
     Version:        1.0
@@ -42,7 +36,7 @@
     powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxmssql.ps1 -CheckType get_instance_state -Hostname mssql_server -Port 1403
 #>
 
-Param (
+param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,      # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,       # Hostname
     [Parameter(Mandatory=$true, Position=3)][string]$Service,        # Service name like SQL001
@@ -58,11 +52,24 @@ Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <#
-    Notes
-#> 
+.SYNOPSIS
+    Internal function to connect to an instance and execute required sql statement 
 
-<#
-    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
+.PARAMETER Query
+    SQL statment to run
+
+.PARAMETER ConnectTimeout
+    How long to wait for instance to accept connection
+
+.PARAMETER CommandTimeout
+    How long sql statement will be running, if it runs longer - it will be terminated
+
+.OUTPUTS
+    [System.Data.DataTable] or [System.String]
+
+.NOTES
+    In normal circumstances the functions returns query result as [System.Data.DataTable]
+    If connection cannot be established or query returns error - returns error as [System.String]
 #>
 function run_sql() {
     param (
@@ -135,12 +142,13 @@ function run_sql() {
         [void]$connection.Close()
     }
 
-    # Comma in front is essential as without it return provides object's value, not object itselt
+    # Comma in front is essential as without it result is provided as object's value, not object itself
     return ,$result
 }
 
 <#
-    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+.SYNOPSIS
+    Function to return instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     $result = (run_sql -Query 'SELECT max(1) 
@@ -157,7 +165,11 @@ function get_instance_state() {
 }
 
 <#
-    Function to check Agent status, 1 stands for OK, 0 stands for FAIL
+.SYNOPSYS
+    Function to return status of Agent
+
+.NOTES
+    RUNNING or STOPPED
 #>
 function get_agent_state() {
     $result = (run_sql -Query "IF EXISTS (
@@ -184,7 +196,8 @@ function get_agent_state() {
 }
 
 <#
-    Function to get software version
+.SYNOPSYS
+    Function to return software version
 #>
 function get_version() {
     $result = (run_sql -Query "SELECT CONCAT(CONVERT(VARCHAR, SERVERPROPERTY('ProductVersion')), ' ', 
@@ -204,6 +217,7 @@ function get_version() {
 }
 
 <#
+.SYNOPSYS
     Function to provide time of instance startup
 #>
 function get_instance_data() {
@@ -223,6 +237,7 @@ function get_instance_data() {
 }
 
 <#
+.SYNOPSYS
     This function provides list of database in JSON format
 #>
 function list_databases() {
@@ -245,7 +260,8 @@ function list_databases() {
 }
 
 <#
-    Returns status for selected database
+.SYNOPSYS
+    Returns current status for all databases
 #>
 function get_databases_state() {
 <#
@@ -298,7 +314,8 @@ function get_databases_state() {
 }
 
 <#
-    Returns count of sessions for each database
+.SYNOPSYS
+    Returns number of sessions for each database
 #>
 function get_databases_connections() {
 
@@ -324,7 +341,10 @@ function get_databases_connections() {
 }
 
 <#
+.SYNOPSYS
     Returns size for all databases
+
+.NOTES
     STUB, not implemented yet, no template
 #>
 function get_databases_size() {
@@ -351,6 +371,7 @@ function get_databases_size() {
 }
 
 <#
+.SYNOPSYS
     Returns number of waits for each database
 #>
 function get_databases_waits() {
@@ -415,7 +436,8 @@ function get_databases_waits() {
 }
 
 <#
-    Returns date of last database backup and hours since it for each database
+.SYNOPSYS
+    Returns date of the last database backup and hours since for each database
 #>
 function get_databases_backup() {
    # if backup hasn't been ever done - it will return create date for the database
@@ -456,9 +478,12 @@ function get_databases_backup() {
 }
 
 <#
+.SYNOPSYS
     Returns hource since the least recent database backup
+
+.NOTES
     It will be used for one trigger per instance instead of multiple trigger per database
-    It will allow to avoid flood of incidents, if we have faulure of backup system
+    This approach allows to avoid flood of incidents, if we have faulure of backup system
 #>
 function get_max_hours_since_db_backup() {
    # if backup hasn't been ever done - it will return create date for the database
@@ -484,6 +509,7 @@ function get_max_hours_since_db_backup() {
 }
 
 <#
+.SYNOPSYS
     Returns date of last transaction log backup and hours since it for each database
 #>
 function get_databases_log_backup() {
@@ -525,9 +551,12 @@ function get_databases_log_backup() {
 }
 
 <#
-    Returns hource since the least recent log backup
+.SYNOPSYS
+    Returns hours since the least recent log backup
+
+.NOTES
     It will be used for one trigger per instance instead of multiple trigger per database
-    It will allow to avoid flood of incidents, if we have faulure of backup system
+    This approach allows to avoid flood of incidents, if we have faulure of backup system
 #>
 function get_max_hours_since_log_backup() {
    # if backup hasn't been ever done - it will return create date for the database
@@ -555,7 +584,10 @@ function get_max_hours_since_log_backup() {
 
 
 <#
+.SYNOPSYS
     Function to get data about users who have privilegies above normal (SYSADMIN)
+
+.NOTES
     TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data(){

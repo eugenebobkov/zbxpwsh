@@ -15,7 +15,7 @@
     Hostname or IP adress of the server where required PostgreSQL instance is running
 
 .PARAMETER Port
-    TCP/IP port, normally 5432
+    TCP port, normally 5432
 
 .PARAMETER Username
     PostgreSQL user/role used by Zabbix:
@@ -29,12 +29,6 @@
 .PARAMETER Password
     Encrypted password for PostgreSQL user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
 
-.INPUTS
-    None
-
-.OUTPUTS
-    If there are any errors - log files can be found in $global:RootPath\log
-
 .NOTES
     Version:        1.0
     Author:         Eugene Bobkov
@@ -43,12 +37,13 @@
     Checkpoint interval
         pg_stat_bgwriter
         pg_stat_replication - function with security definer has to be created to view full information about replication
+        pg_locks - locks in the cluster
  
 .EXAMPLE
     powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxpgsql.ps1 -CheckType get_instance_state -Hostname pgsql_server -Port 5432 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
-Param (
+param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,       # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,        # Host name
     [Parameter(Mandatory=$true, Position=3)][int]$Port,               # Port number
@@ -62,14 +57,9 @@ $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
-function run_sql() {
 <#
 .SYNOPSIS
-    Internal function to run provided sql statement
-
-.DESCRIPTION
-    Typically it's expected to return query result as [System.Data.DataTable]. 
-    If query cannot be executed or return an error - the error will be returned as [System.String] and processed based on logic in parent function
+    Internal function to connect to an instance and execute required sql statement
 
 .PARAMETER Query
     Text of SQL Statement which is required to be executed
@@ -80,11 +70,16 @@ function run_sql() {
 .PARAMETER CommandTimeout
     Maxtimum wait time for the query execution. Default is 10 seconds
 
+.NOTES
+    In normal circumstances the functions returns query result as [System.Data.DataTable] 
+    If query cannot be executed or return an error - the error will be returned as [System.String] and processed based on logic in parent function
+
 .EXAMPLE
     PS> $result = (run_sql -Query 'SELECT count(*) FROM pg_database')
     PS> $result.Rows[0][0]
     4
 #>
+function run_sql() {
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
@@ -140,12 +135,13 @@ function run_sql() {
         [void]$connection.Close()
     }
 
-    # Comma in front is essential as without it return provides object's value, not object itselt
+    # Comma in front is essential as without it result is provided as object's value, not object itself
     return ,$result
 } 
 
 <#
-    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+.SYNOPSIS
+    Function to return status of the instance, ONLINE stands for OK, any other results should be cons
 #>
 function get_instance_state() {
     $result = (run_sql -Query 'SELECT count(*) 
@@ -162,7 +158,8 @@ function get_instance_state() {
 }
 
 <#
-    Function to get software version
+.SYNOPSIS
+    Function to return software version
 #>
 function get_version() {
     # get software version
@@ -178,7 +175,8 @@ function get_version() {
 }
 
 <#
-    Function to get instance startup timestamp
+.SYNOPSIS
+    Function to return instance startup timestamp
 #>
 function get_startup_time() {
     # get startup time
@@ -193,6 +191,13 @@ function get_startup_time() {
     }
 }
 
+<#
+.SYNOPSIS
+    Function to return list of databases in the cluster
+
+.NOTES
+    Used by discovery
+#>
 function list_databases() {
     # get list of databases
     $result = (run_sql -Query 'SELECT datname 
@@ -215,7 +220,8 @@ function list_databases() {
 
 
 <#
-    Get size of all databases
+.SYNOPSYS
+    Function to return size for all databases
 #>
 function get_databases_size() {
     # get size of all databases
@@ -239,10 +245,11 @@ function get_databases_size() {
 }
 
 <#
-    Get information about connections and utilization
+.SYNOPSYS
+    Function to return information about connections and utilization
 #>
 function get_connections_data() {
-
+    # get data about current number of connections, value of max_connections parameter and percentage of utilization
     $result = (run_sql -Query "SELECT current_setting('max_connections')::integer max_connections
                                     , count(pid)::float current_connections  
                                     , trunc(count(pid)::float / current_setting('max_connections')::integer * 100) pct_used
@@ -257,8 +264,11 @@ function get_connections_data() {
 }
 
 <#
+.SYNOPSYS
+    Function to return list of remote replica instances
+
+.NOTES
     Not implemented yet, under construction
-    finction to get list of remote replica instances
     SUPERUSER privilege is required to get all information from pg_stat_replication 
     Or function with security definer has to be created to view full information about replication
 #>
@@ -280,8 +290,11 @@ function list_standby_instances() {
 }
 
 <#
+.SYNOPSYS
+    Function to return time of the last successeful database backup
+
+.NOTES
     Not implemented yet, under construction
-    Function to provide time of last successeful database backup
     As PostgreSQL doesn't have build-in mechanism to track backups - additional modifications for backup scripts has to be done
     Script which running pg_basebackup after completion will update postgres.pg_basebackups table with result of completed (failed or success) backup
     postgres.pg_basebackups:
@@ -314,8 +327,10 @@ function get_last_db_backup() {
 }
 
 <#
+.SYNOPSYS
     Function to provide time of last succeseful archived log backup
-    
+
+.NOTES
     pg_stat_archiver was introduced in 9.4 
 #>
 function get_archiver_stat_data() {
@@ -334,7 +349,10 @@ function get_archiver_stat_data() {
 }
 
 <#
+.SYNOPSYS
     Function to get data about elevated roles who have privilegies above normal (SUPERUSER)
+
+.NOTES
     TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data(){

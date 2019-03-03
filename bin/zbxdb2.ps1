@@ -18,7 +18,7 @@
     Database name
 
 .PARAMETER Port
-    TCP/IP port, normally 50000
+    TCP port, normally 50000
 
 .PARAMETER Username
     OS/Domain user, Integrated security is not supported by DB2 ADO.NET Connector
@@ -26,12 +26,6 @@
 
 .PARAMETER Password
     Encrypted password for OS/Domain user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
-
-.INPUTS
-    None
-
-.OUTPUTS
-    If there are any errors - log files can be found in $global:RootPath\log
 
 .NOTES
     Version:        1.0
@@ -42,7 +36,7 @@
     powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxdb2.ps1 -CheckType get_instance_state -Hostname db2_server -Service TLMDB -Port 50000 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
-Param (
+param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
     [Parameter(Mandatory=$true, Position=3)][string]$Service,          # Database name
@@ -58,12 +52,24 @@ Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
 <#
-   OS statistics:
-      v$ostat
-#>
+.SYNOPSIS
+    Internal function to connect to the database and execute required sql statement 
 
-<#
-    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
+.PARAMETER Query
+    SQL statment to run
+
+.PARAMETER ConnectTimeout
+    How long to wait for instance to accept connection
+
+.PARAMETER CommandTimeout
+    How long sql statement will be running, if it runs longer - it will be terminated
+
+.OUTPUTS
+    [System.Data.DataTable] or [System.String]
+
+.NOTES
+    In normal circumstances the functions returns query result as [System.Data.DataTable]
+    If connection cannot be established or query returns error - returns error as [System.String]
 #>
 function run_sql() {
     param (
@@ -124,12 +130,13 @@ function run_sql() {
         [void]$connection.Close()
     }
 
-    # Comma in front is essential as without it return provides object's value, not object itselt
+    # Comma in front is essential as without it result is provided as object's value, not object itself
     return ,$result
 }
 
 <#
-    Function to check database availability
+.SYNOPSIS
+    Function to return database availability status
 #>
 function get_database_state() {
     # get database response, fact of recieving data itself can be considered as good sign of the database availability
@@ -146,15 +153,13 @@ function get_database_state() {
 }
 
 <#
-    Function to get software version
+.SYNOPSYS
+    Function to return software version
 #>
 function get_version() {
     # get software version
     $result = (run_sql -Query 'SELECT service_level version 
                                  FROM table(sysproc.env_get_inst_info())')
-
-    # SELECT service_level FROM table(sysproc.env_get_prod_info()
-    # SELECT service_level FROM table(sysproc.env_get_sys_info()
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
@@ -166,7 +171,8 @@ function get_version() {
 }
 
 <#
-    Function to get overall database size
+.SYNOPSYS
+    Function to return overall database size as sum of sized for all database's objects
 #>
 function get_database_size() {
     # get software version
@@ -183,6 +189,7 @@ function get_database_size() {
 }
 
 <#
+.SYNOPSYS
     Function to provide list of all DMS tablespaces, used by discovery
 #>
 function list_tablespaces() {
@@ -210,7 +217,10 @@ function list_tablespaces() {
 }
 
 <#
+.SYNOPSYS
     Function to provide state for tablespaces (DMS only)
+
+.NOTES
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_state(){
@@ -239,6 +249,7 @@ function get_tbs_state(){
 }
 
 <#
+.SYNOPSYS
     Function to provide all HADR destinations
 #>
 function list_hadr_hosts() {
@@ -265,6 +276,7 @@ function list_hadr_hosts() {
 }
 
 <#
+.SYNOPSYS
     Function to provide status and state of HADR destinations
 #>
 function get_hadr_data(){
@@ -293,6 +305,7 @@ function get_hadr_data(){
 }
 
 <#
+.SYNOPSYS
     Function to provide information about tablespaces' utilization
 #>
 function get_tbs_used_space() {
@@ -359,8 +372,8 @@ function get_tbs_used_space() {
     return ($dict | ConvertTo-Json -Compress)
 }
 
-
 <#
+.SYNOPSYS
     Function to get instance startup timestamp
 #>
 function get_instance_data() {
@@ -379,8 +392,8 @@ function get_instance_data() {
     } 
 }
 
-
 <#
+.SYNOPSYS
     Function to provide percentage of utilized applications
 #>
 function get_appls_data() {
@@ -408,6 +421,7 @@ function get_appls_data() {
 }
 
 <#
+.SYNOPSYS
     Function to provide percentage of utilized logs
 #>
 function get_logs_utilization_data() {
@@ -434,7 +448,8 @@ function get_logs_utilization_data() {
 }
 
 <#
-    Function to provide time of last successeful database backup
+.SYNOPSYS
+    Function to provide time of the last successeful database backup
 #>
 function get_last_db_backup() {
     # get date and hours since the last successfull backup
@@ -460,6 +475,7 @@ function get_last_db_backup() {
 }
 
 <#
+.SYNOPSYS
     Function to provide time of last succeseful archived log backup
 #>
 function get_last_log_backup() {
@@ -502,7 +518,10 @@ function get_last_log_backup() {
 }
 
 <#
+.SYNOPSYS
     Function to get data about users who have privilegies above normal (DBADM)
+
+.NOTES
     TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data(){
