@@ -1,14 +1,27 @@
 #!/bin/pwsh
 
 <#
-    Created: xx/10/2018
+.SYNOPSIS
+    Monitoring script for Oracle Database Server, intended to be executed by Zabbix Agent
 
-    Parameters to modify in zabbix agent configuration file:
-    # it will allow \ symbol to be used as part of InstanceName variable
-    UnsafeUserParameters=1 
-    
-    UserParameter provided as part of oracle.conf file which has to be places in zabbix_agentd.d directory
+.DESCRIPTION
+    Connects to the database using .NET connector provided by Oracle database client
+    UserParameter provided in oracle.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required Oracle instance is running
+
+.PARAMETER Service
+    Database name
+
+.PARAMETER Port
+    TCP port, normally 1521
+
+.PARAMETER Username
+    Database user
     Create new profile with unlimited expire_time (or modify default)
     SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS;
 
@@ -18,9 +31,24 @@
     SQL> grant create session, select any dictionary to svc_zabbix;
     (for PDB monitoring)
     SQL> alter user c##svc_zabbix set container_data=all container=current;
+
+.PARAMETER Password
+    Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  xx/10/2018
+
+   OS statistics:
+       V$OSSTAT
+       V$SYSTEM_WAIT_CLASS
+
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxoracle.ps1 -CheckType get_instance_state -Hostname oracle_server -Service ORA_PRD -Port 1521 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
-Param (
+param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,        # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname,         # Host name
     [Parameter(Mandatory=$true, Position=6)][string]$Service ,         # Service name
@@ -35,14 +63,25 @@ $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
-<# Notes:
-   OS statistics:
-      v$ostat
-      V$SYSTEM_WAIT_CLASS
-#>
-
 <#
-    Internal function to run provided sql statement. If for some reason it cannot be executed - it returns error as [System.String]
+.SYNOPSIS
+    Internal function to connect to a database instance and execute required sql statement 
+
+.PARAMETER Query
+    SQL statment to run
+
+.PARAMETER ConnectTimeout
+    How long to wait for instance to accept connection
+
+.PARAMETER CommandTimeout
+    How long sql statement will be running, if it runs longer - it will be terminated
+
+.OUTPUTS
+    [System.Data.DataTable] or [System.String]
+
+.NOTES
+    In normal circumstances the functions returns query result as [System.Data.DataTable]
+    If connection cannot be established or query returns error - returns error as [System.String]
 #>
 function run_sql() {
     param (
@@ -53,7 +92,7 @@ function run_sql() {
     )
 
     # Add Oracle ODP.NET extention
-    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>
+    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>?
     # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
     Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\bin\4\Oracle.DataAccess.dll
 
@@ -62,6 +101,7 @@ function run_sql() {
                        (CONNECT_DATA = (SERVER = DEDICATED)(SERVICE_NAME = $Service))
                    )"
  
+    # Decrypt password
     if ($Password -ne '') {
         $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
     } else {
@@ -108,6 +148,7 @@ function run_sql() {
     $adapter = New-Object Oracle.DataAccess.Client.OracleDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
+    # Run query
     try {
         # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
@@ -123,11 +164,12 @@ function run_sql() {
         [void]$connection.Close()
     }
 
-    # Comma in front is essential as without it return provides object's value, not object itselt
+    # Comma in front is essential as without it result is provided as object's value, not object itself
     return ,$result
 } 
 
 <#
+.SYNOPSIS
     Internal function to check if instance is available and has container datababase functionality
 #>
 function is_available_and_cdb() {
@@ -162,7 +204,10 @@ function is_available_and_cdb() {
 }
 
 <#
+.SYNOPSIS
     Internal function to check if instance is open
+
+.NOTES
     This check is required for standby databases in MOUNT mode 
 #>
 function is_standby() {
@@ -184,7 +229,8 @@ function is_standby() {
 }
 
 <#
-    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+.SYNOPSIS
+    Function to return instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
     # get database response, fact of recieving data itself can be considered as good sign of the database availability
@@ -209,6 +255,7 @@ function get_instance_state() {
 }
 
 <#
+.SYNOPSIS
     Function to check instance role, OPEN stands for primary, [MOUNT|OPEN]:[STANDBY MODE] stands for standby database (including Active standby mode)
 #>
 function get_database_role() {
@@ -229,6 +276,7 @@ function get_database_role() {
 }  
 
 <#
+.SYNOPSIS
     Function to get software version
 #>
 function get_version() {
@@ -247,6 +295,7 @@ function get_version() {
 }
 
 <#
+.SYNOPSIS
     Function to get instances for the database. More than one instance is relevant for RAC configuration
 #>
 function list_instances() {
@@ -269,6 +318,7 @@ function list_instances() {
 }
 
 <#
+.SYNOPSIS
     Function to get instance(s) data
 #>
 function get_instances_data() {
@@ -293,6 +343,7 @@ function get_instances_data() {
 }
 
 <#
+.SYNOPSIS
     Function to get overall database size
 #>
 function get_database_size() {
@@ -315,6 +366,7 @@ function get_database_size() {
 }
 
 <#
+.SYNOPSIS
     Function to get current number and names of instances
 #>
 function get_instances() {
@@ -339,6 +391,7 @@ function get_instances() {
 }
 
 <#
+.SYNOPSIS
     Function to list database tablespaces, used by discovery
 #>
 function list_tablespaces() {
@@ -367,6 +420,7 @@ function list_tablespaces() {
 } 
 
 <#
+.SYNOPSIS
     Function to list ASM diskgroups, used by discovery
 #>
 function list_asm_diskgroups() {
@@ -393,6 +447,7 @@ function list_asm_diskgroups() {
 }
 
 <#
+.SYNOPSIS
     Function to list guarantee restore points, used by discovery
 #>
 function list_guarantee_restore_points() {
@@ -420,6 +475,7 @@ function list_guarantee_restore_points() {
 }
 
 <#
+.SYNOPSIS
     Function to get data for guarantee restore points
 #>
 function get_guarantee_restore_points_data() {
@@ -449,6 +505,7 @@ function get_guarantee_restore_points_data() {
 }
 
 <#
+.SYNOPSIS
     Function to get state of ASM diskgroups in the database
 #>
 function get_asm_diskgroups_state() {
@@ -476,6 +533,7 @@ function get_asm_diskgroups_state() {
 }
 
 <#
+.SYNOPSIS
     Function to get data for asm diskgroups (used_pct, used_bytes, max etc.)
 #>
 function get_asm_diskgroups_data() {
@@ -505,6 +563,7 @@ function get_asm_diskgroups_data() {
 }
 
 <#
+.SYNOPSIS
     Function to list pluggable databases
 #>
 function list_pdbs() {
@@ -536,6 +595,7 @@ function list_pdbs() {
 }
 
 <#
+.SYNOPSIS
     Function to list standby destinations, used by discovery
 #>
 function list_standby_databases() {
@@ -563,6 +623,7 @@ function list_standby_databases() {
 }
 
 <#
+.SYNOPSIS
     Function to get data about standby destinations
 #>
 function get_standby_data() {
@@ -592,6 +653,7 @@ function get_standby_data() {
 }
 
 <#
+.SYNOPSIS
     Function to get instance status, OPEN stands for OK, any other results are equalent to FAIL
 #>
 function get_pdb_state() {
@@ -621,6 +683,7 @@ function get_pdb_state() {
 }
 
 <#
+.SYNOPSIS
     Function to provide list of tablespaces in pluggable databases
 #>
 function list_pdbs_tablespaces() {
@@ -657,7 +720,10 @@ function list_pdbs_tablespaces() {
 }
 
 <#
+.SYNOPSIS
     Function to provide used space for tablespaces (excluding tablespaces of pluggable databases)
+
+.NOTES
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_tbs_space_data() {
@@ -712,7 +778,10 @@ function get_tbs_space_data() {
 }
 
 <#
+.SYNOPSIS
     Function to provide used space for tablespaces of pluggable databases, excluding tablespaces in root container
+
+.NOTES
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_used_space() {
@@ -755,12 +824,15 @@ function get_pdbs_tbs_used_space() {
     $pdb = ''
 
     foreach ($row in $result) {
-        
+    
+        # Check if new element has to be added to PDB dictionary
         if ($pdb -ne $row[0]) {
             $pdb = $row[0]
+            # Add next element to PDB dictionary   
             $dict.Add($pdb, @{})
         }
 
+        # Add tablespace
         $dict.$pdb.Add($row[1], @{used_pct = $row[2]; used_bytes = $row[3]; max_bytes = $row[4]})
     }
 
@@ -768,9 +840,12 @@ function get_pdbs_tbs_used_space() {
 }
 
 <#
+.SYNOPSIS
     Function to provide state for tablespaces (excluding tablespaces of pluggable databases)
+
+.NOTES
     Checks/Triggers for individual tablespaces are done by dependant items
-    Time in backup mode in hours
+    Time in backup mode is in hours
 #>
 function get_tbs_state() {
     # get current state for all tablespaces
@@ -811,7 +886,10 @@ function get_tbs_state() {
 }
 
 <#
+.SYNOPSIS
     Function to provide state for tablespaces of pluggable databases, excluding tablespaces in root container
+
+.NOTES
     Checks/Triggers for individual tablespaces are done by dependant items
 #>
 function get_pdbs_tbs_state() {
@@ -875,7 +953,11 @@ function get_pdbs_tbs_state() {
 } 
 
 <#
-    Function to provide percentage of current processes to maximum available
+.SYNOPSIS
+    Function to return information about processes
+
+.NOTES
+    Returns urrent number of processes, maximum possible number of processes and percentage of current processes to maximum available
 #>
 function get_processes_data() {
     # get current utilization of database processes
@@ -897,7 +979,11 @@ function get_processes_data() {
 }
 
 <#
-    Function to provide used FRA space
+.SYNOPSIS
+    Function to return information about FRA
+
+.NOTES
+    Returns percentage of used space, used space in bytes and total FRA size in bytes
 #>
 function get_fra_data() {
     # get FRA utlilization
@@ -916,8 +1002,10 @@ function get_fra_data() {
 }
 
 <#
+.SYNOPSIS
     Function to provide time of last successeful database backup
-    
+
+.NOTES    
     For 11g, if it's timed out - following actions can be done:
     Option 1: SQL> exec dbms_stats.gather_fixed_objects_stats;
     Option 2: QUERIES ON V$RMAN_STATUS are very slow even after GATHER_FIXED_OBJECTS_STATS is run (Doc ID 1525917.1)
@@ -945,8 +1033,10 @@ function get_last_db_backup() {
 }
 
 <#
+.SYNOPSIS
     Function to provide time of last succeseful archived log backup
 
+.NOTES
     For 11g, if it's timed out - following actions can be done:
     Option 1: SQL> exec dbms_stats.gather_fixed_objects_stats;
     Option 2: QUERIES ON V$RMAN_STATUS are very slow even after GATHER_FIXED_OBJECTS_STATS is run (Doc ID 1525917.1)
@@ -976,7 +1066,10 @@ function get_last_log_backup() {
 }
 
 <#
-    Function to get data about users who have privilegies above normal (DBA, SYSDBA)
+.SYNOPSIS
+    Function to get data about users who have elevated roles (DBA, SYSDBA)
+
+.NOTES
     TODO: Rewrite with CovertTo-Json
 #>
 function get_elevated_users_data() {
@@ -1029,7 +1122,10 @@ function get_elevated_users_data() {
 }
 
 <#
+.SYNOPSIS
     Function to provide number of detected corrupted blocks
+
+.NOTES
     Corrupted block detected automaticaly by RMAN, so this function should work in conjunction with backup policy
 #>
 function get_block_corruption_number() {

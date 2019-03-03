@@ -1,11 +1,41 @@
 ﻿#!/bin/pwsh
 
 <#
-    Created: 04/12/2018
+.SYNOPSIS
+    Monitoring script for MySQL/MariaDB RDBMS, intended to be executed by Zabbix Agent
 
-    UserParameter provided as part of mysql.conf file which has to be places in zabbix_agentd.d directory
+.DESCRIPTION
+    Connects to the database using .NET connector embedded
+    UserParameter provided in oracle.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
-    Create MYSQL user which will be used for monitoring
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required instance is running
+
+.PARAMETER Port
+    TCP port, normally 3306
+
+.PARAMETER Username
+    Database user
+
+    Create the user and grant the following privilegies
+ 
+    SQL> create user svc_zabbix identified by '<password>';
+    # TODO: review privileges
+    SQL> grant all on mysql.* to svc_zabbix;
+
+.PARAMETER Password
+    Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  04/12/2018
+
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxmysql.ps1 -CheckType get_instance_state -Hostname db_server -Port 3306 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
 Param (
@@ -22,11 +52,27 @@ $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 Import-Module -Name "$global:RootPath\lib\Library-StringCrypto.psm1"
 
-<# Notes:
-#>
+<#
+.SYNOPSIS
+    Internal function to connect to a database instance and execute required sql statement 
 
+.PARAMETER Query
+    SQL statment to run
+
+.PARAMETER ConnectTimeout
+    How long to wait for instance to accept connection
+
+.PARAMETER CommandTimeout
+    How long sql statement will be running, if it runs longer - it will be terminated
+
+.OUTPUTS
+    [System.Data.DataTable] or [System.String]
+
+.NOTES
+    In normal circumstances the functions returns query result as [System.Data.DataTable]
+    If connection cannot be established or query returns error - returns error as [System.String]
+#>
 function run_sql() {
-    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][string]$Query,
         [Parameter(Mandatory=$false)][int32]$ConnectTimeout = 5,      # Connect timeout, how long to wait for instance to accept connection
@@ -38,8 +84,11 @@ function run_sql() {
     Add-Type -Path "$global:RootPath\dll\Google.Protobuf.dll"
     Add-Type -Path "$global:RootPath\dll\MySQL.Data.dll"
 
-    if ($Password) {
+    # Decrypt password
+    if ($Password -ne '') {
         $dbPassword = Read-EncryptedString -InputString $Password -Password (Get-Content "$global:RootPath\etc\.pwkey")
+    } else {
+        $dbPassword = ''
     }
 
     # Create connection string
@@ -70,7 +119,9 @@ function run_sql() {
     $adapter = New-Object MySql.Data.MySqlClient.MySqlDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
+    # Run query
     try {
+        # [void] similair to | Out-Null, prevents posting output of Fill function (number of rows returned), which will be picked up as function output
         [void]$adapter.Fill($dataTable)
         $result = $dataTable
     }
@@ -83,15 +134,17 @@ function run_sql() {
         [void]$connection.Close()
     }
 
-    # Comma in front is essential as without it return provides object's value, not object itselt
+    # Comma in front is essential as without it result is provided as object's value, not object itself
     return ,$result
 }
 
 <#
-    Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
+.SYNOPSIS
+    Function to return instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'SHOW DATABASES;')
+    # get results
+    $result = (run_sql -Query 'SHOW DATABASES')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
