@@ -33,7 +33,7 @@
     SQL> alter user c##svc_zabbix set container_data=all container=current;
 
 .PARAMETER Password
-    Encrypted password for OS/Domain user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+    Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
 
 .INPUTS
     None

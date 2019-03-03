@@ -1,11 +1,47 @@
 ﻿#!/bin/pwsh
 
 <#
-    Created: 04/12/2018
+.SYNOPSIS
+    Monitoring script for MySQL/MariaDB RDBMS, intended to be executed by Zabbix Agent
 
-    UserParameter provided as part of mysql.conf file which has to be places in zabbix_agentd.d directory
+.DESCRIPTION
+    Connects to the database using .NET connector embedded
+    UserParameter provided in oracle.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
-    Create MYSQL user which will be used for monitoring
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server where required instance is running
+
+.PARAMETER Port
+    TCP/IP port, normally 3306
+
+.PARAMETER Username
+    Database user
+
+    Create the user and grant the following privilegies
+ 
+    SQL> create user svc_zabbix identified by '<password>';
+    # TODO: review privileges
+    SQL> grant all on mysql.* to svc_zabbix;
+
+.PARAMETER Password
+    Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
+
+.INPUTS
+    None
+
+.OUTPUTS
+    If there are any errors - log files can be found in $global:RootPath\log
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  04/12/2018
+
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxmysql.ps1 -CheckType get_instance_state -Hostname db_server -Port 3306 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>
 
 Param (
@@ -91,7 +127,7 @@ function run_sql() {
     Function to check instance status, ONLINE stands for OK, any other results is equalent to FAIL
 #>
 function get_instance_state() {
-    $result = (run_sql -Query 'SHOW DATABASES;')
+    $result = (run_sql -Query 'SHOW DATABASES')
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
