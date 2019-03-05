@@ -7,7 +7,7 @@
 
 #>
 
-Param (
+param (
     [Parameter(Mandatory=$true, Position=1)][string]$CheckType,      # Name of check function
     [Parameter(Mandatory=$true, Position=2)][string]$Hostname        # Hostname, where to connect
 )
