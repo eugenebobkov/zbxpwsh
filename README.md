@@ -1,4 +1,4 @@
-###Zabbix templates and PowerShell scripts for database monitoring 
+**Zabbix templates and PowerShell scripts for database monitoring**
 
 **Purpose:**
 
