@@ -27,10 +27,13 @@
 
     Create oracle user and grant the following privilegies
  
-    SQL> create user svc_zabbix identified by '<password>' profile monitoring_profie;
-    SQL> grant create session, select any dictionary to svc_zabbix;
-    (for PDB monitoring)
-    SQL> alter user c##svc_zabbix set container_data=all container=current;
+    For non-CDB database:
+    SQL> CREATE svc_zabbix identified by '<password>' PROFILE monitoring_profie;
+    SQL> GRANT CREATE session, select any dictionary TO svc_zabbix;
+    
+    for CDB enabled database:
+    SQL> ALTER USER c##svc_zabbix SET container_data=all container=current;
+    SQL> GRANT CREATE session, select any dictionary TO c##svc_zabbix;
 
 .PARAMETER Password
     Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
@@ -92,9 +95,14 @@ function run_sql() {
     )
 
     # Add Oracle ODP.NET extention
-    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...>?
+    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...> or package it?
     # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
-    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\bin\4\Oracle.DataAccess.dll
+
+    # TODO: Review dll in future (05/03/2019) and package it in zbxpwsh
+    # Current version of ManagedDataAccess dll has a bug, which prevents creating session to Standby database using 'user as sysdba' syntax
+    # Current version of Unmanaged DataAccess dll has intermittent issues of corrupting memory during Finalize() function, which generated UnhandledException at the end of script running
+    # 2.x\Oracle.DataAccess.dll verion is seemed to be working
+    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\bin\2.x\Oracle.DataAccess.dll
 
     $dataSource = "(DESCRIPTION =
                        (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
@@ -135,9 +143,9 @@ function run_sql() {
     } 
     catch {
         # report error, sanitize it to remove IPs if there are any
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        return "ERROR: CONNECTION REFUSED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        return "ERROR: CONNECTION REFUSED: $e"
     }
 
     # Create command to run using connection
@@ -156,9 +164,9 @@ function run_sql() {
     }
     catch {
         # report error, sanitize it to remove IPs if there are any
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        $result = "ERROR: QUERY FAILED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        $result = "ERROR: QUERY FAILED: $e"
     } 
     finally {
         [void]$connection.Close()
@@ -208,19 +216,19 @@ function is_available_and_cdb() {
     Internal function to check if instance is open
 
 .NOTES
-    This check is required for standby databases in MOUNT mode 
+    This check is required for physical standby databases in MOUNT mode 
 #>
 function is_standby() {
-    # check database version, cdb was implemented starting from version 12
+    # check if controlfiles are STANDBY
     $result = (run_sql -Query 'SELECT controlfile_type 
                                  FROM v$database')
 
     if ($result.GetType() -ne [System.Data.DataTable]) {
-        # Instance is not available 
+        # Instance is not available
         return $null
     } 
     elseif ($result.Rows[0][0] -eq 'STANDBY') {
-        # return $true, if instance is open
+        # return $true, if instance is available and physical standby
         return $true
     }
     else {
@@ -242,7 +250,7 @@ function get_instance_state() {
                                     , v`$database d")
 
     #TODO: any other statuses to check?
-    # The instance in primary and accessible or standby and accessible
+    # The instance in primary and accessible or physical standby and accessible
     if ($result.GetType() -eq [System.Data.DataTable] -And ($result.Rows[0][0] -eq 'OPEN' -Or $result.Rows[0][0] -eq 'MOUNTED:STANDBY' -Or $result.Rows[0][0] -eq 'OPEN:STANDBY')) {
         return 'ONLINE'
     # The instance in unexpected mode

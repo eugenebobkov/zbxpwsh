@@ -17,7 +17,7 @@
     $RootPath\etc\.pwkey has to be populated and readable
 
 .EXAMPLE
-    PS> powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\pwgen.ps1 -CheckType kdjfUEns#ed
+    PS> powershell -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\pwgen.ps1 -InputString kdjfUEns#ed
     sfrifjdserefewo4iw4lfwk2o3in2re=
 #>
 

@@ -22,9 +22,9 @@
 
     Create the user and grant the following privilegies
  
-    SQL> create user svc_zabbix identified by '<password>';
+    SQL> CREATE USER svc_zabbix IDENTIFIED BY '<password>';
     # TODO: review privileges
-    SQL> grant all on mysql.* to svc_zabbix;
+    SQL> GRANT ALL ON mysql.* TO svc_zabbix;
 
 .PARAMETER Password
     Encrypted password for the database user. Encrypted string can be generated with $global:RootPath\bin\pwgen.ps1
@@ -106,9 +106,9 @@ function run_sql() {
         [void]$connection.open()
     } 
     catch {
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        return "ERROR: CONNECTION REFUSED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        return "ERROR: CONNECTION REFUSED: $e"
     }
 
     # Create command to run using connection
@@ -126,9 +126,9 @@ function run_sql() {
         $result = $dataTable
     }
     catch {
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        $result = "ERROR: QUERY FAILED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        $result = "ERROR: QUERY FAILED: $e"
     } 
     finally {
         [void]$connection.Close()
