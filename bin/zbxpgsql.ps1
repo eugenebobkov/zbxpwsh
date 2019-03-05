@@ -19,8 +19,8 @@
 
 .PARAMETER Username
     PostgreSQL user/role used by Zabbix:
-    psql> create user svc_zabbix with password '<password>';
-    psql> alter role svc_zabbix with login;
+    psql> CREATE USER svc_zabbix WITH PASSWORD '<password>';
+    psql> ALTER ROLE svc_zabbix WITH LOGIN;
     TODO: For somechecks SUPERUSER is required, for example list_standby_instances, but it's under construction
     Update pg_hba.conf with user's details if required 
     Reload PostgreSQL
@@ -117,9 +117,9 @@ function run_sql() {
         [void]$connection.open()
     } 
     catch {
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        return "ERROR: CONNECTION REFUSED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        return "ERROR: CONNECTION REFUSED: $e"
     }
 
     $adapter = New-Object Npgsql.NpgsqlDataAdapter($Query, $connection)
@@ -132,9 +132,9 @@ function run_sql() {
         $result = $dataTable
     }
     catch {
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        $result = "ERROR: QUERY FAILED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        $result = "ERROR: QUERY FAILED: $e"
     } 
     finally {
         [void]$connection.Close()

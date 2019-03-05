@@ -101,9 +101,9 @@ function run_sql() {
     } 
     catch {
         # report error, sanitize it to remove IPs if there are any
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        return "ERROR: CONNECTION REFUSED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        return "ERROR: CONNECTION REFUSED: $e"
     }
 
     # Build the SQL command
@@ -126,9 +126,9 @@ function run_sql() {
     }
     catch {
         # report error, sanitize it to remove IPs if there are any
-        $error = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
-        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $error)
-        $result = "ERROR: QUERY FAILED: $error"
+        $e = $_.Exception.Message.Split(':',2)[1].Trim() -Replace ("(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})", "xxx.xxx.xxx.xxx")
+        Write-Log -Message ('[' + $Hostname + ':' + $CheckType + '] ' + $e)
+        $result = "ERROR: QUERY FAILED: $e"
     } 
     finally {
         [void]$connection.Close()
