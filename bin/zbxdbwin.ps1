@@ -1,10 +1,27 @@
 #!/bsin/pwsh
 
 <#
-    Created: 20/12/2018
+.SYNOPSIS
+    Monitoring script for Microsoft Windows, intended to be executed by Zabbix Agent
 
-    Database related OS monitoring
+.DESCRIPTION
+    Connects to the host using WMI and permissions of domain user running Zabbix agent service
+    To get information domain user have to have Local Administrator permissions
+    UserParameter provided in dbwin.conf file which can be found in $global:RootPath\zabbix_agentd.d directory
 
+.PARAMETER CheckType
+    This parameter provides name of function which is required to be executed
+
+.PARAMETER Hostname
+    Hostname or IP adress of the server
+
+.NOTES
+    Version:        1.0
+    Author:         Eugene Bobkov
+    Creation Date:  20/112/2018
+
+.EXAMPLE
+    powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\dbwin.ps1 -CheckType get_fs_data -Hostname windows_server
 #>
 
 param (
@@ -18,11 +35,8 @@ $global:ScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
 Import-Module -Name "$global:RootPath\lib\Library-Common.psm1"
 
 <#
-    Notes
-#> 
-
-<#
-    Function to provide list of filesystems
+.SYNOPSIS
+    Function to provide list of filesystems on the server
 #>
 function list_filesystems() {
 
@@ -36,7 +50,8 @@ function list_filesystems() {
 }
 
 <#
-    Function to provide data for filesystems
+.SYNOPSIS
+    Function to provide information about filesystems
 #>
 function get_fs_data() {
 
@@ -58,7 +73,8 @@ function get_fs_data() {
 }
 
 <#
-    Function to provide data for CPU load
+.SYNOPSIS
+    Function to provide information about CPU load
 #>
 function get_cpu_data() {
 
@@ -67,7 +83,8 @@ function get_cpu_data() {
 }
 
 <#
-    Function to provide data for memory utilization
+.SYNOPSIS
+    Function to provide information about memory utilization
 #>
 function get_memory_data() {
   
