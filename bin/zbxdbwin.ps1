@@ -77,9 +77,17 @@ function get_fs_data() {
     Function to provide information about CPU load
 #>
 function get_cpu_data() {
-
+    # return JSON with required information
     return (@{used_pct = (Get-WmiObject win32_processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average} | ConvertTo-Json -Compress)
+}
 
+<#
+.SYNOPSIS
+    Function to provide information about CPUs count
+#>
+function get_cpu_count() {
+    # return JSON with required information
+    return (@{cpu_count = (Get-WmiObject win32_processor -ComputerName $Hostname).NumberOfLogicalProcessors} | ConvertTo-Json -Compress)
 }
 
 <#
