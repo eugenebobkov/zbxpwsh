@@ -47,7 +47,7 @@ Eugene Bobkov 10/2018</description>
             </applications>
             <items>
                 <item>
-                    <name>CPU count (json)</name>
+                    <name>CPU count</name>
                     <type>13</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -56,7 +56,7 @@ Eugene Bobkov 10/2018</description>
                     <history>1w</history>
                     <trends>365d</trends>
                     <status>0</status>
-                    <value_type>0</value_type>
+                    <value_type>3</value_type>
                     <allowed_hosts/>
                     <units/>
                     <snmpv3_contextname/>
@@ -74,7 +74,7 @@ Eugene Bobkov 10/2018</description>
                     <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
                     <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
                     <port/>
-                    <description>CPU count, number of virtual CPUs</description>
+                    <description>CPU count, number of virtual/logical CPUs</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
@@ -114,7 +114,7 @@ Eugene Bobkov 10/2018</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>CPU load (json)</name>
+                    <name>CPU usage (%)</name>
                     <type>13</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -447,7 +447,7 @@ Eugene Bobkov 10/2018</description>
                     </master_item>
                 </item>
                 <item>
-                    <name>Free memory (%)</name>
+                    <name>Memory usage (%)</name>
                     <type>13</type>
                     <snmp_community/>
                     <snmp_oid/>
@@ -466,7 +466,7 @@ Eugene Bobkov 10/2018</description>
                     <snmpv3_authpassphrase/>
                     <snmpv3_privprotocol>0</snmpv3_privprotocol>
                     <snmpv3_privpassphrase/>
-                    <params>awk '{if($1~/^MemTotal:$/){t=$2};if($1~/^MemAvailable:$/){a=$2};}END{print &quot;{\&quot;free_pct\&quot;: &quot; a/t*100&quot;}&quot;}' /proc/meminfo</params>
+                    <params>awk '{if($1~/^MemTotal:$/){t=$2};if($1~/^MemAvailable:$/){a=$2};}END{print &quot;{\&quot;free_pct\&quot;: &quot; (t-a)/t*100&quot;}&quot;}' /proc/meminfo</params>
                     <ipmi_sensor/>
                     <authtype>1</authtype>
                     <username>{$SSH_USERNAME}</username>
@@ -474,7 +474,7 @@ Eugene Bobkov 10/2018</description>
                     <publickey>/home/zabbix/.ssh/id_rsa.pub</publickey>
                     <privatekey>/home/zabbix/.ssh/id_rsa</privatekey>
                     <port/>
-                    <description>Amount of free memory on the host</description>
+                    <description>Percentage of used memory on the host</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
