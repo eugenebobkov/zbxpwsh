@@ -92,22 +92,13 @@ function get_cpu_count() {
 
 <#
 .SYNOPSIS
-    Function to provide information about RAM size
-#>
-function get_ram_size() {
-    # return JSON with required information
-    return (@{total_ram = (Get-WmiObject Win32_ComputerSystem -ComputerName $Hostname).TotalPhysicalMemory} | ConvertTo-Json -Compress)
-}
-
-<#
-.SYNOPSIS
     Function to provide information about OS
 #>
-function get_os_info() {
+function get_os_data() {
     # get OS information
     $os = Get-WmiObject Win32_OperatingSystem -ComputerName $Hostname    
     # return JSON with required information
-    return (@{boot_time = $os.ConvertToDateTime($os.LastBootUpTime); os_version = $os.Caption; os_service_pack = $os.ServicePackMajorVersion} | ConvertTo-Json -Compress)
+    return (@{boot_time = $os.ConvertToDateTime($os.LastBootUpTime).DateTime; os_version = $os.Caption; service_pack_version = $os.ServicePackMajorVersion} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -116,11 +107,12 @@ function get_os_info() {
 #>
 function get_memory_data() {
     # get information about system configuration
-    $cs = Get-WmiObject Win32_ComputerSystem -ComputerName $Hostname
+    $os = Get-WmiObject win32_operatingsystem -ComputerName $Hostname
     # return JSON with required information
     return (@{ 
-                 memory_used_pct = [math]::round(($cs.TotalVisibleMemorySize - $cs.FreePhysicalMemory) * 100 / $cs.TotalVisibleMemorySize, 4)
-                 swap_used_pct = [math]::round(($cs.TotalVirtualMemorySize - $cs.FreeVirtualMemory) * 100 / $cs.TotalVirtualMemorySize, 4)
+                 memory_total = $cs.TotalVisibleMemorySize * 1024
+                 memory_used_pct = [math]::round(($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) * 100 / $os.TotalVisibleMemorySize, 4)
+                 swap_used_pct = [math]::round(($os.TotalVirtualMemorySize - $os.FreeVirtualMemory) * 100 / $os.TotalVirtualMemorySize, 4)
              } | ConvertTo-Json -Compress)
 }
 

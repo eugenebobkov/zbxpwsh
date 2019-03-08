@@ -900,7 +900,7 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Software version</name>
+                    <name>Microsoft SQL version</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>

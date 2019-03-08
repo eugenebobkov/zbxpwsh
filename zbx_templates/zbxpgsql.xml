@@ -598,7 +598,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <publickey/>
                     <privatekey/>
                     <port/>
-                    <description/>
+                    <description>Check availability status for the instance</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
@@ -697,7 +697,7 @@ Hostname and port have to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Software version</name>
+                    <name>PostgreSQL version</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
