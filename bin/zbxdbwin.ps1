@@ -87,7 +87,7 @@ function get_cpu_data() {
 #>
 function get_cpu_count() {
     # return JSON with required information
-    return (@{cpu_count = (Get-WmiObject win32_processor -ComputerName $Hostname).NumberOfLogicalProcessors} | ConvertTo-Json -Compress)
+    return (@{cpu_count = (Get-WmiObject win32_processor -ComputerName $Hostname).NumberOfLogicalProcessors.Count} | ConvertTo-Json -Compress)
 }
 
 <#
