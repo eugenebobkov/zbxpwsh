@@ -110,7 +110,7 @@ function get_memory_data() {
     $os = Get-WmiObject win32_operatingsystem -ComputerName $Hostname
     # return JSON with required information
     return (@{ 
-                 memory_total_bytes = ($cs.TotalVisibleMemorySize * 1024)
+                 memory_total_bytes = ($os.TotalVisibleMemorySize * 1024)
                  memory_used_pct = [math]::round(($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) * 100 / $os.TotalVisibleMemorySize, 4)
                  swap_used_pct = [math]::round(($os.TotalVirtualMemorySize - $os.FreeVirtualMemory) * 100 / $os.TotalVirtualMemorySize, 4)
              } | ConvertTo-Json -Compress)
