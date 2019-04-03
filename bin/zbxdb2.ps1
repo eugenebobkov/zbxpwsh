@@ -32,6 +32,24 @@
     Author:         Eugene Bobkov
     Creation Date:  16/11/2018
 
+    The followin permissions has to be granted to monitoring user
+    db2 GRANT USAGE ON WORKLOAD SYSDEFAULTUSERWORKLOAD TO USER svc_zabbix
+    db2 GRANT SELECT ON SYSCAT.SCHEMATA TO USER svc_zabbix
+    db2 GRANT SELECT ON  SYSIBMADM.DB_HISTORY  TO USER svc_zabbix
+    db2 " GRANT SELECT ON   SYSIBMADM.TBSP_UTILIZATION  TO USER svc_zabbix"
+    db2 " GRANT SELECT ON    SYSCAT.DBAUTH TO USER svc_zabbix"
+    db2 " GRANT SELECT ON    SYSIBMADM.APPLICATIONS TO USER svc_zabbix"
+    db2 " GRANT SELECT ON   SYSIBMADM.SNAPHADR TO USER svc_zabbix"
+    db2 " GRANT SELECT ON    SYSIBMADM.ENV_SYS_INFO svc_zabbix"
+    db2 " GRANT SELECT ON    SYSIBMADM.LOG_UTILIZATION svc_zabbix"
+    db2 " GRANT SELECT ON    sysibm.sysdummy1 svc_zabbix"
+
+    select 'db2 grant EXECUTE on package NULLID.'||substr(pkgname,1,10)||' to user svc_zabbix'
+      from syscat.packageauth where pkgschema='NULLID' and pkgname LIKE 'SQLC%'
+
+    select 'db2 grant EXECUTE on package NULLID.'||substr(pkgname,1,10)||' to user svc_zabbix'
+      from syscat.packageauth where pkgschema='NULLID' and pkgname LIKE 'SYSSH%'
+
 .EXAMPLE
     powershell -NoLogo -NoProfile -NonInteractive -executionPolicy Bypass -File D:\DBA\zbxpwsh\bin\zbxdb2.ps1 -CheckType get_instance_state -Hostname db2_server -Service TLMDB -Port 50000 -Username svc_zabbix -Password sefrwe7soianfknewker79s=
 #>

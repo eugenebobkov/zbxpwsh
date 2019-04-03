@@ -270,6 +270,25 @@ function get_connections_data() {
 
 <#
 .SYNOPSYS
+    Function to return max frozen xid in the cluster
+
+.NOTES
+    This information can be useful to check if automatic vacuum process is functioning properly and XID wraparound won't happen
+#>
+function get_max_frozenxid() {
+    $result = (run_sql -Query 'SELECT max(age(datfrozenxid)) 
+                                 FROM pg_database')
+
+    # Check if expected object has been recieved
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        return $result
+    }
+
+    return (@{frozenxid = $result.Rows[0][0]} | ConvertTo-Json -Compress)
+}
+
+<#
+.SYNOPSYS
     Function to return list of remote replica instances
 
 .NOTES
