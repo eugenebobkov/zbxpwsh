@@ -224,7 +224,7 @@ function get_version() {
 function get_instance_data() {
     # applicable for 2008 and higher
     $result = (run_sql -Query 'SELECT CONVERT(CHAR(19), sqlserver_start_time, 120) startup_time
-                                    , HOST_NAME()
+                                    , @@SERVERNAME
                                  FROM sys.dm_os_sys_info')
 
     # TODO: add check for versions below 2008 if required for some reason
