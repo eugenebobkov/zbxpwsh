@@ -78,7 +78,7 @@ function get_fs_data() {
 #>
 function get_cpu_data() {
     # return JSON with required information
-    return (@{used_pct = (Get-WmiObject Win32_Processor -ComputerName $Hostname | Measure-Object -property LoadPercentage -Average).Average} | ConvertTo-Json -Compress)
+    return (@{used_pct = Get-WmiObject Win32_PerfFormattedData_PerfOS_Processor -ComputerName $Hostname | ? {$_.Name -eq '_Total'} | Select -ExpandProperty PercentProcessorTime} | ConvertTo-Json -Compress)
 }
 
 <#
@@ -87,9 +87,9 @@ function get_cpu_data() {
 #>
 function get_cpu_count() {
     # return JSON with required information
-    return (@{cpu_count = (Get-WmiObject Win32_Processor -ComputerName $Hostname).NumberOfLogicalProcessors.Count} | ConvertTo-Json -Compress)
+    return (@{cpu_count = (Get-WmiObject Win32_PerfFormattedData_PerfOS_Processor -ComputerName $Hostname | ? {$_.Name -ne '_Total'}).Count} | ConvertTo-Json -Compress)
 }
-
+ 
 <#
 .SYNOPSIS
     Function to provide information about OS
