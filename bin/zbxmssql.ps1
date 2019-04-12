@@ -373,6 +373,182 @@ function get_databases_size() {
 
 <#
 .SYNOPSYS
+    This function provides list of files in the database
+#>
+function list_datafiles() {
+
+    $result = (run_sql -Query "SELECT physical_name
+                                 FROM sys.master_files
+                                WHERE DB_NAME(database_id) <> 'tempdb'")
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    $list = New-Object System.Collections.Generic.List[System.Object]
+
+    foreach ($row in $result) {
+        $list.Add(@{'{#DBFILE}' = $row[0]})
+    }
+
+    return (@{data = $list} | ConvertTo-Json -Compress)
+}
+
+<#
+.SYNOPSYS
+    This function returns data for space allocation in database files
+#>
+function get_datafiles_data() {
+
+    $result = (run_sql -Query "CREATE TABLE #spaceInfo (
+                                    fileName varchar(512)
+                                  , current_size bigint
+                                  , used_space bigint
+                               )
+
+                               DECLARE @sql varchar(1000)
+
+                               set @sql = 'Use [?];
+                                            INSERT #spaceInfo (fileName, current_size, used_space) 
+                                            SELECT fileName
+                                                 , CAST(size AS bigint)
+                                                 , CAST(fileproperty(name, ''SpaceUsed'') AS bigint)
+                                              FROM dbo.sysfiles;'
+
+                               EXEC sp_MSforeachdb @sql
+
+                               SELECT fileName
+                                    , cast(si.current_size as bigint) * 8192 current_bytes
+                                    , si.used_space * 8192 as used_bytes
+                                    , CASE 
+                                          WHEN mf.max_size = -1 THEN CASE  
+                                                                         WHEN mf.type = 1 THEN 2199023255552 -- Maximum size for a log file is 2T as per documentation
+                                                                         ELSE 17592186044416 -- Maximum size for a datafile is 16T as per documentation
+                                                                     END
+                                          ELSE cast(mf.max_size as bigint) * 8192
+                                      END as max_bytes
+                                    , ROUND(cast(used_space * 8192 as float)/cast(CASE 
+                                                                                      WHEN mf.max_size = -1 THEN CASE  
+                                                                                                                     WHEN mf.type = 1 THEN 2199023255552 -- Maximum size for a log file is 2T as per documentation
+                                                                                                                     ELSE 17592186044416 -- Maximum size for a datafile is 16T as per documentation
+                                                                                                                 END
+                                                                                      ELSE cast(mf.max_size as float) * 8192
+                                                                                  END as float
+                                                                                 ) * 100, 4)
+                                    , mf.state_desc
+                                 FROM #spaceInfo si
+                                      LEFT OUTER JOIN sys.master_files AS mf 
+                                      ON mf.physical_name = si.fileName
+                                WHERE DB_NAME(database_id) <> 'tempdb'
+
+                                DROP TABLE #spaceInfo
+                              ")
+    
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    $dict = @{}
+
+    foreach ($row in $result) {
+        $dict.Add($row[0], @{current_bytes = $row[1]; used_bytes = $row[2]; max_bytes = $row[3]; used_percent = $row[4]; state = $row[5]})
+    }
+
+    return ($dict | ConvertTo-Json -Compress)
+}
+
+<#
+.SYNOPSYS
+    This function provides list of files in tempdb database
+#>
+function list_tempfiles() {
+
+    $result = (run_sql -Query "SELECT physical_name
+                                 FROM sys.master_files
+                                WHERE DB_NAME(database_id) = 'tempdb'
+                              ")
+
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    $list = New-Object System.Collections.Generic.List[System.Object]
+
+    foreach ($row in $result) {
+        $list.Add(@{'{#TEMPFILE}' = $row[0]})
+    }
+
+    return (@{data = $list} | ConvertTo-Json -Compress)
+}
+
+<#
+.SYNOPSYS
+    This function returns data for space allocation in tempdb files
+#>
+function get_tempfiles_data() {
+
+    $result = (run_sql -Query "CREATE TABLE #spaceInfo (
+                                    fileName varchar(512)
+                                  , current_size bigint
+                                  , used_space bigint
+                               )
+
+                               DECLARE @sql varchar(1000)
+
+                               set @sql = 'Use [?];
+                                            INSERT #spaceInfo (fileName, current_size, used_space) 
+                                            SELECT fileName
+                                                 , CAST(size AS bigint)
+                                                 , CAST(fileproperty(name, ''SpaceUsed'') AS bigint)
+                                              FROM dbo.sysfiles;'
+
+                               EXEC sp_MSforeachdb @sql
+
+                               SELECT fileName
+                                    , cast(current_size as bigint) * 8192 current_bytes
+                                    , used_space * 8192 as used_bytes
+                                    , CASE 
+                                          WHEN mf.max_size = -1 THEN CASE  
+                                                                         WHEN mf.type = 0 THEN 2199023255552 -- Maximum size for a log file is 2T as per documentation
+                                                                         ELSE 17592186044416 -- Maximum size for a log file is 16T as per documentation
+                                                                     END
+                                          ELSE cast(max_size as bigint) * 8192
+                                      END as max_bytes
+                                    , ROUND(cast(used_space * 8192 as float)/cast(CASE 
+                                                                                      WHEN mf.max_size = -1 THEN CASE  
+                                                                                                                     WHEN mf.type = 1 THEN 2199023255552 -- Maximum size for a log file is 2T as per documentation
+                                                                                                                     ELSE 17592186044416 -- Maximum size for a datafile is 16T as per documentation
+                                                                                                                 END
+                                                                                      ELSE cast(mf.max_size as float) * 8192
+                                                                                  END as float
+                                                                                 ) * 100, 4)
+                                 FROM #spaceInfo si
+                                      LEFT OUTER JOIN sys.master_files AS mf 
+                                      ON mf.physical_name = si.fileName
+                                WHERE DB_NAME(database_id) = 'tempdb'
+
+                                DROP TABLE #spaceInfo
+                              ")
+    
+    if ($result.GetType() -ne [System.Data.DataTable]) {
+        # Instance is not available
+        return $result
+    }
+
+    $dict = @{}
+
+    foreach ($row in $result) {
+        $dict.Add($row[0], @{current_bytes = $row[1]; used_bytes = $row[2]; max_bytes = $row[3]; used_percent = $row[4]})
+    }
+
+    return ($dict | ConvertTo-Json -Compress)
+}
+
+<#
+.SYNOPSYS
     Returns number of waits for each database
 #>
 function get_databases_waits() {
