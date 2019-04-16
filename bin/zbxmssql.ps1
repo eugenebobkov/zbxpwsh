@@ -434,13 +434,12 @@ function get_filegroups_data() {
 
                                set @sql = 'Use [?];
                                             INSERT #spaceInfo (fileName, current_size, used_space, fileGroupName) 
-                                            SELECT fileName
-                                                 , CAST(size AS bigint)
-                                                 , CAST(fileproperty(name, ''SpaceUsed'') AS bigint)
-                                                 , f.name
-                                              FROM dbo.sysfiles
-                                             WHERE dbo.sysfiles s
-                                               AND sys.filegroups f
+                                            SELECT s.fileName
+                                                 , CAST(size AS bigint) as current_size
+                                                 , CAST(fileproperty(s.name, ''SpaceUsed'') AS bigint) as used_space
+                                                 , f.name as fileGroupName
+                                              FROM dbo.sysfiles s
+                                                 , sys.filegroups f
                                              WHERE s.groupid = f.data_space_id;'
 
                                EXEC sp_MSforeachdb @sql
@@ -465,7 +464,10 @@ function get_filegroups_data() {
                                       ON mf.physical_name = si.fileName
                                 GROUP BY 
                                       DB_NAME(database_id)
-                                    , si.fileGroupName;
+                                    , si.fileGroupName
+                                ORDER BY 
+                                      DB_NAME(database_id); -- order by  is required to avoid problem with duplicate keys when adding elements to the dictionary
+                                                            -- current logic expects ordered sequence od databases to check equallity with previous element
 
                                 DROP TABLE #spaceInfo;
                               ")
@@ -538,7 +540,7 @@ function get_transaction_logs_data() {
                                                  , CAST(size AS bigint)
                                                  , CAST(fileproperty(name, ''SpaceUsed'') AS bigint)
                                               FROM dbo.sysfiles
-                                             WHERE s.groupid = 0;'
+                                             WHERE groupid = 0;'
 
                                EXEC sp_MSforeachdb @sql
 
@@ -561,7 +563,8 @@ function get_transaction_logs_data() {
                                       ON mf.physical_name = si.fileName
                                 GROUP BY 
                                       DB_NAME(database_id)
-                                    , si.fileGroupName;
+                                ORDER BY
+                                      DB_NAME(database_id);
 
                                 DROP TABLE #spaceInfo;
                               ")
