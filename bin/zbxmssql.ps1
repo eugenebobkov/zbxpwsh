@@ -405,7 +405,7 @@ function list_filegroups() {
                                               -- it is not required to discover tempdb and it does not need triggers
                                               AND DB_NAME() <> ''tempdb'';' 
 
-                               EXEC sp_MSforEachDB @sql
+                               EXEC sp_MSforeachdb @sql
 
                                SELECT databaseName
                                     , fileGroupName
@@ -469,15 +469,15 @@ function get_filegroups_data() {
                                                                                            )
                                                                                       ) * 100
                                            , 4) as used_pct
-                                 FROM #spaceInfo si
-                                      LEFT OUTER JOIN sys.master_files AS mf 
-                                      ON mf.physical_name = si.fileName
+                                 FROM #spaceInfo AS si
+                                    , sys.master_files AS mf  
+                                WHERE mf.physical_name = si.fileName
                                 GROUP BY 
                                       DB_NAME(database_id)
                                     , si.fileGroupName
                                 ORDER BY 
                                       DB_NAME(database_id); -- order by  is required to avoid problem with duplicate keys when adding elements to the dictionary
-                                                            -- current logic expects ordered sequence od databases to check equallity with previous element
+                                                            -- current logic expects ordered sequence of databases to check equallity with previous element
 
                                 DROP TABLE #spaceInfo;
                               ")
