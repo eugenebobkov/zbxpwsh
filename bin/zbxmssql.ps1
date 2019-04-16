@@ -276,9 +276,19 @@ function get_databases_state() {
  7 - Database Does Not Exist on Server
 #>
 
-    $result = (run_sql -Query 'SELECT name
-                                    , state 
-                                 FROM sys.databases')
+    $result = (run_sql -Query "SELECT name
+                                    , CASE state
+                                          WHEN 0 THEN 'ONLINE'
+                                          WHEN 1 THEN 'RESTORING'
+                                          WHEN 2 THEN 'RECOVERING'
+                                          WHEN 3 THEN 'RECOVERY PENDING'
+                                          WHEN 4 THEN 'SUSPECT'
+                                          WHEN 5 THEN 'EMERGENCY'
+                                          WHEN 6 THEN 'OFFLINE'
+                                          WHEN 7 THEN 'DOES NOT EXIST'
+                                      ELSE 'UNKNOWN'
+                                      END 
+                                 FROM sys.databases")
 
     ### TODO: AOAG check
     # if ($output -ne 'ONLINE') {
