@@ -1796,7 +1796,7 @@ Instance name has to be updated in MACROS section</description>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Transaction log for {#DB_NAME} database max size (bytes)</name>
+                            <name>Transaction log for {#DATABASE} database max size (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
@@ -2138,7 +2138,7 @@ datafile/tempfile 16T</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent].last()}&gt;{$TRANSACTION_LOG_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$TRANSACTION_LOG_HIGH} % for transaction log of {#DB_NAME} database</name>
+                            <name>Space usage exceeded {$TRANSACTION_LOG_HIGH} % for transaction log of {#DATABASE} database</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2159,7 +2159,7 @@ datafile/tempfile 16T</description>
                             <expression>{Template App Microsoft SQL Server:zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent].last()}&gt;{$TRANSACTION_LOG_WARNING}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>Space usage exceeded {$TRANSACTION_LOG_WARNING} % for transaction log of {#DB_NAME} database</name>
+                            <name>Space usage exceeded {$TRANSACTION_LOG_WARNING} % for transaction log of {#DATABASE} database</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -2170,7 +2170,7 @@ datafile/tempfile 16T</description>
                             <manual_close>1</manual_close>
                             <dependencies>
                                 <dependency>
-                                    <name>Space usage exceeded {$TRANSACTION_LOG_HIGH} % for transaction log of {#DB_NAME} database</name>
+                                    <name>Space usage exceeded {$TRANSACTION_LOG_HIGH} % for transaction log of {#DATABASE} database</name>
                                     <expression>{Template App Microsoft SQL Server:zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent].last()}&gt;{$TRANSACTION_LOG_HIGH}</expression>
                                     <recovery_expression/>
                                 </dependency>
