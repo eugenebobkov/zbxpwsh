@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.0</version>
-    <date>2019-02-11T01:38:55Z</date>
+    <date>2019-04-17T02:31:27Z</date>
     <groups>
         <group>
             <name>Microsoft SQL Server</name>
@@ -30,7 +30,7 @@ Instance name has to be updated in MACROS section</description>
                     <name>Configuration</name>
                 </application>
                 <application>
-                    <name>Datafile</name>
+                    <name>Filegroup</name>
                 </application>
                 <application>
                     <name>JSON</name>
@@ -51,7 +51,10 @@ Instance name has to be updated in MACROS section</description>
                     <name>Security</name>
                 </application>
                 <application>
-                    <name>Tempfile</name>
+                    <name>Tempdb</name>
+                </application>
+                <application>
+                    <name>Transaction log</name>
                 </application>
             </applications>
             <items>
@@ -445,74 +448,6 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Datafiles data (json)</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>zbxmssql[get_datafiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
-                    <history>1d</history>
-                    <trends>0</trends>
-                    <status>0</status>
-                    <value_type>4</value_type>
-                    <allowed_hosts/>
-                    <units/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <description>Information about space utilisation</description>
-                    <inventory_link>0</inventory_link>
-                    <applications>
-                        <application>
-                            <name>Availability</name>
-                        </application>
-                        <application>
-                            <name>Capacity</name>
-                        </application>
-                        <application>
-                            <name>JSON</name>
-                        </application>
-                        <application>
-                            <name>Microsoft SQL Server Database</name>
-                        </application>
-                    </applications>
-                    <valuemap/>
-                    <logtimefmt/>
-                    <preprocessing/>
-                    <jmx_endpoint/>
-                    <timeout>3s</timeout>
-                    <url/>
-                    <query_fields/>
-                    <posts/>
-                    <status_codes>200</status_codes>
-                    <follow_redirects>1</follow_redirects>
-                    <post_type>0</post_type>
-                    <http_proxy/>
-                    <headers/>
-                    <retrieve_mode>0</retrieve_mode>
-                    <request_method>0</request_method>
-                    <output_format>0</output_format>
-                    <allow_traps>0</allow_traps>
-                    <ssl_cert_file/>
-                    <ssl_key_file/>
-                    <ssl_key_password/>
-                    <verify_peer>0</verify_peer>
-                    <verify_host>0</verify_host>
-                    <master_item/>
-                </item>
-                <item>
                     <name>Accounts with elevated privileges (json)</name>
                     <type>0</type>
                     <snmp_community/>
@@ -548,6 +483,374 @@ Instance name has to be updated in MACROS section</description>
                         </application>
                         <application>
                             <name>Security</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing/>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item/>
+                </item>
+                <item>
+                    <name>Tempdb database currently allocated space (bytes)</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxmssql[get_filegroups_data,TEMPDB,PRIMARY,current_bytes]</key>
+                    <delay>0</delay>
+                    <history>90d</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units>B</units>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Currently allocated space for PRIMARY filegroup of tempdb database</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Filegroup</name>
+                        </application>
+                        <application>
+                            <name>Microsoft SQL Server Database</name>
+                        </application>
+                        <application>
+                            <name>Tempdb</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.tempdb.PRIMARY.current_bytes</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Tempdb database max size (bytes)</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxmssql[get_filegroups_data,TEMPDB,PRIMARY,max_bytes]</key>
+                    <delay>0</delay>
+                    <history>90d</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units>B</units>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Max size for PRIMARY filegroup of tempdb database</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Filegroup</name>
+                        </application>
+                        <application>
+                            <name>Microsoft SQL Server Database</name>
+                        </application>
+                        <application>
+                            <name>Tempdb</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.tempdb.PRIMARY.max_bytes</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Tempdb database used space (bytes)</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxmssql[get_filegroups_data,TEMPDB,PRIMARY,used_bytes]</key>
+                    <delay>0</delay>
+                    <history>90d</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units>B</units>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Used space in bytes for PRIMARY filegroup of tempdb database</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Filegroup</name>
+                        </application>
+                        <application>
+                            <name>Microsoft SQL Server Database</name>
+                        </application>
+                        <application>
+                            <name>Tempdb</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.tempdb.PRIMARY.used_bytes</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Tempdb database used space (%)</name>
+                    <type>18</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxmssql[get_filegroups_data,TEMPDB,PRIMARY,used_percent]</key>
+                    <delay>0</delay>
+                    <history>90d</history>
+                    <trends>365d</trends>
+                    <status>0</status>
+                    <value_type>0</value_type>
+                    <allowed_hosts/>
+                    <units>%</units>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Used space in percents for PRIMARY filegroup of tempdb database</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>Filegroup</name>
+                        </application>
+                        <application>
+                            <name>Microsoft SQL Server Database</name>
+                        </application>
+                        <application>
+                            <name>Tempdb</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                    <preprocessing>
+                        <step>
+                            <type>12</type>
+                            <params>$.tempdb.PRIMARY.used_percent</params>
+                        </step>
+                    </preprocessing>
+                    <jmx_endpoint/>
+                    <timeout>3s</timeout>
+                    <url/>
+                    <query_fields/>
+                    <posts/>
+                    <status_codes>200</status_codes>
+                    <follow_redirects>1</follow_redirects>
+                    <post_type>0</post_type>
+                    <http_proxy/>
+                    <headers/>
+                    <retrieve_mode>0</retrieve_mode>
+                    <request_method>0</request_method>
+                    <output_format>0</output_format>
+                    <allow_traps>0</allow_traps>
+                    <ssl_cert_file/>
+                    <ssl_key_file/>
+                    <ssl_key_password/>
+                    <verify_peer>0</verify_peer>
+                    <verify_host>0</verify_host>
+                    <master_item>
+                        <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Filegroups data (json)</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <snmp_oid/>
+                    <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <status>0</status>
+                    <value_type>4</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description>Information about space utilisation in the filegroups</description>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Availability</name>
+                        </application>
+                        <application>
+                            <name>Capacity</name>
+                        </application>
+                        <application>
+                            <name>JSON</name>
+                        </application>
+                        <application>
+                            <name>Microsoft SQL Server Database</name>
                         </application>
                     </applications>
                     <valuemap/>
@@ -974,11 +1277,11 @@ Instance name has to be updated in MACROS section</description>
                     <master_item/>
                 </item>
                 <item>
-                    <name>Tempdb files data (json)</name>
+                    <name>Transaction logs data (json)</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[get_tempfiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[get_transaction_logs_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>0;5m/{$CHECK_TIMEFRAME}</delay>
                     <history>1d</history>
                     <trends>0</trends>
@@ -1001,7 +1304,7 @@ Instance name has to be updated in MACROS section</description>
                     <publickey/>
                     <privatekey/>
                     <port/>
-                    <description>Information about space utilisation in tempdb</description>
+                    <description>Information about space utilisation in transaction logs</description>
                     <inventory_link>0</inventory_link>
                     <applications>
                         <application>
@@ -1213,76 +1516,6 @@ Instance name has to be updated in MACROS section</description>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>State of {#DATABASE} database</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>zbxmssql[get_databases_state,{#DATABASE}]</key>
-                            <delay>0</delay>
-                            <history>7d</history>
-                            <trends>0</trends>
-                            <status>0</status>
-                            <value_type>1</value_type>
-                            <allowed_hosts/>
-                            <units/>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Availability</name>
-                                </application>
-                                <application>
-                                    <name>Microsoft SQL Server Database</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$.{#DATABASE}.state</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
-                            <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>1</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes/>
-                            <master_item>
-                                <key>zbxmssql[get_databases_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                            </master_item>
-                        </item_prototype>
-                        <item_prototype>
                             <name>Waits in {#DATABASE} database</name>
                             <type>18</type>
                             <snmp_community/>
@@ -1350,6 +1583,76 @@ Instance name has to be updated in MACROS section</description>
                             <application_prototypes/>
                             <master_item>
                                 <key>zbxmssql[get_databases_waits,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>State of {#DATABASE} database</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxmssql[get_database_state,{#DATABASE}]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>0</trends>
+                            <status>0</status>
+                            <value_type>1</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>Database state</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Availability</name>
+                                </application>
+                                <application>
+                                    <name>Microsoft SQL Server Database</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#DATABASE}'].state</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxmssql[get_databases_state,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
@@ -1492,6 +1795,301 @@ Instance name has to be updated in MACROS section</description>
                                 <key>zbxmssql[get_databases_log_backup,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
+                        <item_prototype>
+                            <name>Transaction log for {#DB_NAME} database max size (bytes)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxmssql[get_transacion_logs_data,{#DATABASE},max_bytes]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>B</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>Max space on filesystem for transaction log&#13;
+As per documentation, maximum possible size for &#13;
+logfile 2T&#13;
+datafile/tempfile 16T</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Microsoft SQL Server Database</name>
+                                </application>
+                                <application>
+                                    <name>Transaction log</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#DATABASE}'].max_bytes</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxmssql[get_transaction_logs_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Transaction log for {#DATABASE} database currently allocated space (bytes)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxmssql[get_transaction_logs_data,{#DATABASE},current_bytes]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>B</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>Allocated space on filesystem for the transaction log</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Microsoft SQL Server Database</name>
+                                </application>
+                                <application>
+                                    <name>Transaction log</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#DATABASE}'].current_bytes</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxmssql[get_transaction_logs_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Transaction log for {#DATABASE} database used space (bytes)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxmssql[get_transaction_logs_data,{#DATABASE},used_bytes]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>B</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>Used space in the transaction log, bytes</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Microsoft SQL Server Database</name>
+                                </application>
+                                <application>
+                                    <name>Transaction log</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#DATABASE}'].used_bytes</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxmssql[get_transaction_logs_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Transaction log for {#DATABASE} database used space (%)</name>
+                            <type>18</type>
+                            <snmp_community/>
+                            <snmp_oid/>
+                            <key>zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent]</key>
+                            <delay>0</delay>
+                            <history>90d</history>
+                            <trends>365d</trends>
+                            <status>0</status>
+                            <value_type>0</value_type>
+                            <allowed_hosts/>
+                            <units>%</units>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description>Used space in the transaction log (%)</description>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Capacity</name>
+                                </application>
+                                <application>
+                                    <name>Microsoft SQL Server Database</name>
+                                </application>
+                                <application>
+                                    <name>Transaction log</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <preprocessing>
+                                <step>
+                                    <type>12</type>
+                                    <params>$['{#DATABASE}'].used_percent</params>
+                                </step>
+                            </preprocessing>
+                            <jmx_endpoint/>
+                            <timeout>3s</timeout>
+                            <url/>
+                            <query_fields/>
+                            <posts/>
+                            <status_codes>200</status_codes>
+                            <follow_redirects>1</follow_redirects>
+                            <post_type>0</post_type>
+                            <http_proxy/>
+                            <headers/>
+                            <retrieve_mode>0</retrieve_mode>
+                            <request_method>0</request_method>
+                            <output_format>0</output_format>
+                            <allow_traps>0</allow_traps>
+                            <ssl_cert_file/>
+                            <ssl_key_file/>
+                            <ssl_key_password/>
+                            <verify_peer>0</verify_peer>
+                            <verify_host>0</verify_host>
+                            <application_prototypes/>
+                            <master_item>
+                                <key>zbxmssql[get_transaction_logs_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                            </master_item>
+                        </item_prototype>
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
@@ -1537,10 +2135,10 @@ Instance name has to be updated in MACROS section</description>
                             </tags>
                         </trigger_prototype>
                         <trigger_prototype>
-                            <expression>{Template App Microsoft SQL Server:zbxmssql[get_databases_state,{#DATABASE}].last()}&gt;0</expression>
+                            <expression>{Template App Microsoft SQL Server:zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent].last()}&gt;{$TRANSACTION_LOG_HIGH}</expression>
                             <recovery_mode>0</recovery_mode>
                             <recovery_expression/>
-                            <name>The database {#DATABASE} is in an invalid state {ITEM.VALUE}</name>
+                            <name>Space usage exceeded {$TRANSACTION_LOG_HIGH} % for transaction log of {#DB_NAME} database</name>
                             <correlation_mode>0</correlation_mode>
                             <correlation_tag/>
                             <url/>
@@ -1550,7 +2148,60 @@ Instance name has to be updated in MACROS section</description>
                             <type>0</type>
                             <manual_close>1</manual_close>
                             <dependencies/>
-                            <tags/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Microsoft SQL Server:zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent].last()}&gt;{$TRANSACTION_LOG_WARNING}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Space usage exceeded {$TRANSACTION_LOG_WARNING} % for transaction log of {#DB_NAME} database</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>1</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Space usage exceeded {$TRANSACTION_LOG_HIGH} % for transaction log of {#DB_NAME} database</name>
+                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_transaction_logs_data,{#DATABASE},used_percent].last()}&gt;{$TRANSACTION_LOG_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Microsoft SQL Server:zbxmssql[get_database_state,{#DATABASE}].str(ONLINE)}=0</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>The database {#DATABASE} is in an invalid state {ITEM.VALUE}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
+                            <url/>
+                            <status>0</status>
+                            <priority>4</priority>
+                            <description>Database is not in ONLINE state</description>
+                            <type>0</type>
+                            <manual_close>1</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Availability</value>
+                                </tag>
+                            </tags>
                         </trigger_prototype>
                     </trigger_prototypes>
                     <graph_prototypes/>
@@ -1575,11 +2226,11 @@ Instance name has to be updated in MACROS section</description>
                     <verify_host>0</verify_host>
                 </discovery_rule>
                 <discovery_rule>
-                    <name>Datafiles</name>
+                    <name>Filegroups</name>
                     <type>0</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>zbxmssql[list_datafiles,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                    <key>zbxmssql[list_filegroups,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                     <delay>1h</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -1601,17 +2252,24 @@ Instance name has to be updated in MACROS section</description>
                     <filter>
                         <evaltype>0</evaltype>
                         <formula/>
-                        <conditions/>
+                        <conditions>
+                            <condition>
+                                <macro>{#DB_NAME}</macro>
+                                <value>tempdb</value>
+                                <operator>9</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
                     </filter>
                     <lifetime>7d</lifetime>
-                    <description/>
+                    <description>Discovery for filegroups in each database</description>
                     <item_prototypes>
                         <item_prototype>
-                            <name>Datafile {#DBFILE} currently allocates space (bytes)</name>
+                            <name>Filegroup {#FG_NAME} for {#DB_NAME} database currently allocated space (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>zbxmssql[get_datafiles_data,{#DBFILE},current_bytes]</key>
+                            <key>zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},current_bytes]</key>
                             <delay>0</delay>
                             <history>90d</history>
                             <trends>365d</trends>
@@ -1634,14 +2292,14 @@ Instance name has to be updated in MACROS section</description>
                             <publickey/>
                             <privatekey/>
                             <port/>
-                            <description>Allocated space on filesystem for datafile</description>
+                            <description>Allocated space on filesystem for the filegroup</description>
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
                                     <name>Capacity</name>
                                 </application>
                                 <application>
-                                    <name>Datafile</name>
+                                    <name>Filegroup</name>
                                 </application>
                                 <application>
                                     <name>Microsoft SQL Server Database</name>
@@ -1652,7 +2310,7 @@ Instance name has to be updated in MACROS section</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#DBFILE}'].current_bytes</params>
+                                    <params>$.{#DB_NAME}.{#FG_NAME}.current_bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1676,15 +2334,15 @@ Instance name has to be updated in MACROS section</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_datafiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Datafile {#DBFILE} max size (bytes)</name>
+                            <name>Filegroup {#FG_NAME} for {#DB_NAME} database max size (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>zbxmssql[get_datafiles_data,{#DBFILE},max_bytes]</key>
+                            <key>zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},max_bytes]</key>
                             <delay>0</delay>
                             <history>90d</history>
                             <trends>365d</trends>
@@ -1707,17 +2365,17 @@ Instance name has to be updated in MACROS section</description>
                             <publickey/>
                             <privatekey/>
                             <port/>
-                            <description>Max size for the datafile&#13;
+                            <description>Max size for the filegroups&#13;
 As per documentation, maximum possible size for &#13;
 logfile 2T&#13;
-datafile/tempfile 2T</description>
+datafile/tempfile 16T</description>
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
                                     <name>Capacity</name>
                                 </application>
                                 <application>
-                                    <name>Datafile</name>
+                                    <name>Filegroup</name>
                                 </application>
                                 <application>
                                     <name>Microsoft SQL Server Database</name>
@@ -1728,7 +2386,7 @@ datafile/tempfile 2T</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#DBFILE}'].max_bytes</params>
+                                    <params>$.{#DB_NAME}.{#FG_NAME}.max_bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1752,88 +2410,15 @@ datafile/tempfile 2T</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_datafiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Datafile {#DBFILE} state</name>
+                            <name>Filegroup {#FG_NAME} for {#DB_NAME} database used space (bytes)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>zbxmssql[get_datafiles_data,{#DBFILE},state]</key>
-                            <delay>0</delay>
-                            <history>90d</history>
-                            <trends>0</trends>
-                            <status>0</status>
-                            <value_type>1</value_type>
-                            <allowed_hosts/>
-                            <units/>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description>Datafile state</description>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Capacity</name>
-                                </application>
-                                <application>
-                                    <name>Datafile</name>
-                                </application>
-                                <application>
-                                    <name>Microsoft SQL Server Database</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$['{#DBFILE}'].state</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
-                            <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>0</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes/>
-                            <master_item>
-                                <key>zbxmssql[get_datafiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                            </master_item>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Datafile {#DBFILE} used space (bytes)</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>zbxmssql[get_datafiles_data,{#DBFILE},used_bytes]</key>
+                            <key>zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},used_bytes]</key>
                             <delay>0</delay>
                             <history>90d</history>
                             <trends>365d</trends>
@@ -1856,14 +2441,14 @@ datafile/tempfile 2T</description>
                             <publickey/>
                             <privatekey/>
                             <port/>
-                            <description>Used space in the datafile</description>
+                            <description>Used space in the filegroup</description>
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
                                     <name>Capacity</name>
                                 </application>
                                 <application>
-                                    <name>Datafile</name>
+                                    <name>Filegroup</name>
                                 </application>
                                 <application>
                                     <name>Microsoft SQL Server Database</name>
@@ -1874,7 +2459,7 @@ datafile/tempfile 2T</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#DBFILE}'].used_bytes</params>
+                                    <params>$.{#DB_NAME}.{#FG_NAME}.used_bytes</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1898,15 +2483,15 @@ datafile/tempfile 2T</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_datafiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                         <item_prototype>
-                            <name>Datafile {#DBFILE} used space (%)</name>
+                            <name>Filegroup {#FG_NAME} for {#DB_NAME} database used space (%)</name>
                             <type>18</type>
                             <snmp_community/>
                             <snmp_oid/>
-                            <key>zbxmssql[get_datafiles_data,{#DBFILE},used_percent]</key>
+                            <key>zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},used_percent]</key>
                             <delay>0</delay>
                             <history>90d</history>
                             <trends>365d</trends>
@@ -1929,14 +2514,14 @@ datafile/tempfile 2T</description>
                             <publickey/>
                             <privatekey/>
                             <port/>
-                            <description>Used space in the datafile (%)</description>
+                            <description>Used space in the filegroup (%)</description>
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
                                     <name>Capacity</name>
                                 </application>
                                 <application>
-                                    <name>Datafile</name>
+                                    <name>Filegroup</name>
                                 </application>
                                 <application>
                                     <name>Microsoft SQL Server Database</name>
@@ -1947,7 +2532,7 @@ datafile/tempfile 2T</description>
                             <preprocessing>
                                 <step>
                                     <type>12</type>
-                                    <params>$['{#DBFILE}'].used_percent</params>
+                                    <params>$.{#DB_NAME}.{#FG_NAME}.used_percent</params>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1971,361 +2556,60 @@ datafile/tempfile 2T</description>
                             <verify_host>0</verify_host>
                             <application_prototypes/>
                             <master_item>
-                                <key>zbxmssql[get_datafiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
+                                <key>zbxmssql[get_filegroups_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
                             </master_item>
                         </item_prototype>
                     </item_prototypes>
-                    <trigger_prototypes/>
-                    <graph_prototypes/>
-                    <host_prototypes/>
-                    <jmx_endpoint/>
-                    <timeout>3s</timeout>
-                    <url/>
-                    <query_fields/>
-                    <posts/>
-                    <status_codes>200</status_codes>
-                    <follow_redirects>1</follow_redirects>
-                    <post_type>0</post_type>
-                    <http_proxy/>
-                    <headers/>
-                    <retrieve_mode>0</retrieve_mode>
-                    <request_method>0</request_method>
-                    <allow_traps>0</allow_traps>
-                    <ssl_cert_file/>
-                    <ssl_key_file/>
-                    <ssl_key_password/>
-                    <verify_peer>0</verify_peer>
-                    <verify_host>0</verify_host>
-                </discovery_rule>
-                <discovery_rule>
-                    <name>Tempdb files</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>zbxmssql[list_tempfiles,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                    <delay>1h</delay>
-                    <status>0</status>
-                    <allowed_hosts/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <filter>
-                        <evaltype>0</evaltype>
-                        <formula/>
-                        <conditions/>
-                    </filter>
-                    <lifetime>7d</lifetime>
-                    <description>Discovery for all files in tempdb</description>
-                    <item_prototypes>
-                        <item_prototype>
-                            <name>Tempdb file {#TEMPFILE} currently allocates space (bytes)</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>zbxmssql[get_tempfiles_data,{#TEMPFILE},current_bytes]</key>
-                            <delay>0</delay>
-                            <history>90d</history>
-                            <trends>365d</trends>
-                            <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units>B</units>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description>Allocated space on filesystem for datafile</description>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Capacity</name>
-                                </application>
-                                <application>
-                                    <name>Microsoft SQL Server Database</name>
-                                </application>
-                                <application>
-                                    <name>Tempfile</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$['{#TEMPFILE}'].current_bytes</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template App Microsoft SQL Server:zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},used_percent].last()}&gt;{$FG_HIGH}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Space usage exceeded {$FG_HIGH} % for filegroup {#FG_NAME}, database {#DB_NAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
                             <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>0</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes/>
-                            <master_item>
-                                <key>zbxmssql[get_tempfiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                            </master_item>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Tempdb file {#TEMPFILE} max size (bytes)</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>zbxmssql[get_tempfiles_data,{#TEMPFILE},max_bytes]</key>
-                            <delay>0</delay>
-                            <history>90d</history>
-                            <trends>365d</trends>
                             <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units>B</units>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description>Max space on filesystem for tempfile in tempdb&#13;
-As per documentation, maximum possible size for &#13;
-logfile 2T&#13;
-datafile/tempfile 2T</description>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Capacity</name>
-                                </application>
-                                <application>
-                                    <name>Microsoft SQL Server Database</name>
-                                </application>
-                                <application>
-                                    <name>Tempfile</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$['{#TEMPFILE}'].max_bytes</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
+                            <priority>4</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>1</manual_close>
+                            <dependencies/>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template App Microsoft SQL Server:zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},used_percent].last()}&gt;{$FG_WARNING}</expression>
+                            <recovery_mode>0</recovery_mode>
+                            <recovery_expression/>
+                            <name>Space usage exceeded {$FG_WARNING} % for filegroup {#FG_NAME}, database {#DB_NAME}</name>
+                            <correlation_mode>0</correlation_mode>
+                            <correlation_tag/>
                             <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>0</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes/>
-                            <master_item>
-                                <key>zbxmssql[get_tempfiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                            </master_item>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Tempdb file {#TEMPFILE} used space (bytes)</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>zbxmssql[get_tempfiles_data,{#TEMPFILE},used_bytes]</key>
-                            <delay>0</delay>
-                            <history>90d</history>
-                            <trends>365d</trends>
                             <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units>B</units>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description>Used space in the tempfile</description>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Capacity</name>
-                                </application>
-                                <application>
-                                    <name>Microsoft SQL Server Database</name>
-                                </application>
-                                <application>
-                                    <name>Tempfile</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$['{#TEMPFILE}'].used_bytes</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
-                            <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>0</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes/>
-                            <master_item>
-                                <key>zbxmssql[get_tempfiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                            </master_item>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Tempdb file {#TEMPFILE} used space (%)</name>
-                            <type>18</type>
-                            <snmp_community/>
-                            <snmp_oid/>
-                            <key>zbxmssql[get_tempfiles_data,{#TEMPFILE},used_percent]</key>
-                            <delay>0</delay>
-                            <history>90d</history>
-                            <trends>365d</trends>
-                            <status>0</status>
-                            <value_type>0</value_type>
-                            <allowed_hosts/>
-                            <units>%</units>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description>Used space in the tempfile (%)</description>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Capacity</name>
-                                </application>
-                                <application>
-                                    <name>Microsoft SQL Server Database</name>
-                                </application>
-                                <application>
-                                    <name>Tempfile</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <preprocessing>
-                                <step>
-                                    <type>12</type>
-                                    <params>$['{#TEMPFILE}'].used_percent</params>
-                                </step>
-                            </preprocessing>
-                            <jmx_endpoint/>
-                            <timeout>3s</timeout>
-                            <url/>
-                            <query_fields/>
-                            <posts/>
-                            <status_codes>200</status_codes>
-                            <follow_redirects>1</follow_redirects>
-                            <post_type>0</post_type>
-                            <http_proxy/>
-                            <headers/>
-                            <retrieve_mode>0</retrieve_mode>
-                            <request_method>0</request_method>
-                            <output_format>0</output_format>
-                            <allow_traps>0</allow_traps>
-                            <ssl_cert_file/>
-                            <ssl_key_file/>
-                            <ssl_key_password/>
-                            <verify_peer>0</verify_peer>
-                            <verify_host>0</verify_host>
-                            <application_prototypes/>
-                            <master_item>
-                                <key>zbxmssql[get_tempfiles_data,{$HOSTNAME},{$SERVICE},{$PORT},{$USERNAME},{$PASSWORD}]</key>
-                            </master_item>
-                        </item_prototype>
-                    </item_prototypes>
-                    <trigger_prototypes/>
+                            <priority>2</priority>
+                            <description/>
+                            <type>0</type>
+                            <manual_close>1</manual_close>
+                            <dependencies>
+                                <dependency>
+                                    <name>Space usage exceeded {$FG_HIGH} % for filegroup {#FG_NAME}, database {#DB_NAME}</name>
+                                    <expression>{Template App Microsoft SQL Server:zbxmssql[get_filegroups_data,{#DB_NAME},{#FG_NAME},used_percent].last()}&gt;{$FG_HIGH}</expression>
+                                    <recovery_expression/>
+                                </dependency>
+                            </dependencies>
+                            <tags>
+                                <tag>
+                                    <tag>Scope</tag>
+                                    <value>Capacity</value>
+                                </tag>
+                            </tags>
+                        </trigger_prototype>
+                    </trigger_prototypes>
                     <graph_prototypes/>
                     <host_prototypes/>
                     <jmx_endpoint/>
@@ -2363,6 +2647,14 @@ datafile/tempfile 2T</description>
                     <value>300</value>
                 </macro>
                 <macro>
+                    <macro>{$FG_HIGH}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$FG_WARNING}</macro>
+                    <value>80</value>
+                </macro>
+                <macro>
                     <macro>{$HOSTNAME}</macro>
                     <value>localhost</value>
                 </macro>
@@ -2385,6 +2677,14 @@ datafile/tempfile 2T</description>
                 <macro>
                     <macro>{$SERVICE}</macro>
                     <value>SQL001</value>
+                </macro>
+                <macro>
+                    <macro>{$TRANSACTION_LOG_HIGH}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$TRANSACTION_LOG_WARNING}</macro>
+                    <value>80</value>
                 </macro>
                 <macro>
                     <macro>{$USERNAME}</macro>

@@ -383,7 +383,7 @@ function get_databases_size() {
 
 <#
 .SYNOPSYS
-    This function provides list of filegroups in the database, exempt tempdb
+    This function provides list of filegroups in the database, excluding tempdb
 #>
 function list_filegroups() {
 
@@ -434,47 +434,50 @@ function list_filegroups() {
 function get_filegroups_data() {
 
     $result = (run_sql -Query "CREATE TABLE #spaceInfo (
-                                    fileName varchar(512)
+                                    db_name varchar(512)
+                                  , file_id bigint
                                   , current_size bigint
                                   , used_space bigint
-                                  , fileGroupName varchar(512)
+                                  , fg_name varchar(512)
                                )
 
                                DECLARE @sql varchar(1000)
 
                                set @sql = 'Use [?];
-                                            INSERT #spaceInfo (fileName, current_size, used_space, fileGroupName) 
-                                            SELECT s.fileName
-                                                 , CAST(size AS bigint) as current_size
-                                                 , CAST(fileproperty(s.name, ''SpaceUsed'') AS bigint) as used_space
-                                                 , f.name as fileGroupName
+                                            INSERT #spaceInfo (db_name, file_id, current_size, used_space, fg_name) 
+                                            SELECT DB_NAME() AS db_name
+                                                 , s.fileid AS file_id
+                                                 , CAST(size AS bigint) AS current_size
+                                                 , CAST(fileproperty(s.name, ''SpaceUsed'') AS bigint) AS used_space
+                                                 , f.name AS fg_name
                                               FROM dbo.sysfiles s
                                                  , sys.filegroups f
                                              WHERE s.groupid = f.data_space_id;'
 
                                EXEC sp_MSforeachdb @sql
 
-                               SELECT DB_NAME(database_id)
-                                    , si.fileGroupName
-                                    , sum(cast(si.current_size as bigint) * 8192) current_bytes
-                                    , sum(si.used_space * 8192) as used_bytes
+                               SELECT DB_NAME(database_id)AS db_name
+                                    , si.fg_name
+                                    , sum(cast(si.current_size AS bigint) * 8192) AS current_bytes
+                                    , sum(si.used_space * 8192) AS used_bytes
                                     , sum(CASE 
                                               WHEN mf.max_size = -1 THEN 17592186044416 -- Maximum size for a datafile is 16T as per documentation
-                                              ELSE cast(mf.max_size as bigint) * 8192
-                                          END) as max_bytes
-                                    , ROUND( sum(cast(used_space * 8192 as float))/sum(cast(CASE 
+                                              ELSE cast(mf.max_size AS bigint) * 8192
+                                          END) AS max_bytes
+                                    , ROUND( sum(cast(used_space * 8192 AS float))/sum(cast(CASE 
                                                                                                 WHEN mf.max_size = -1 THEN 17592186044416 -- Maximum size for a datafile is 16T as per documentation
-                                                                                                ELSE cast(mf.max_size as float) * 8192
-                                                                                            END as float
+                                                                                                ELSE cast(mf.max_size AS float) * 8192
+                                                                                            END AS float
                                                                                            )
                                                                                       ) * 100
                                            , 4) as used_pct
                                  FROM #spaceInfo AS si
                                     , sys.master_files AS mf  
-                                WHERE mf.physical_name = si.fileName
+                                WHERE DB_NAME(mf.database_id) = si.db_name
+                                  AND mf.file_id = si.file_id
                                 GROUP BY 
                                       DB_NAME(database_id)
-                                    , si.fileGroupName
+                                    , si.fg_name
                                 ORDER BY 
                                       DB_NAME(database_id); -- order by  is required to avoid problem with duplicate keys when adding elements to the dictionary
                                                             -- current logic expects ordered sequence of databases to check equallity with previous element
@@ -507,37 +510,13 @@ function get_filegroups_data() {
 
 <#
 .SYNOPSYS
-    This function provides list of transaction files in the databases, excluding tempdb
-#>
-function list_transaction_logs() {
-    # get list of databases in the instance, except tempdb
-    $result = (run_sql -Query "SELECT name 
-                                 FROM sys.databases
-                                WHERE name <> 'tempdb'
-                               ")
-
-    if ($result.GetType() -ne [System.Data.DataTable]) {
-        # Instance is not available
-        return $result
-    }
-
-    $list = New-Object System.Collections.Generic.List[System.Object]
-
-    foreach ($row in $result) {
-        $list.Add(@{'{#DB_NAME}' = $row[0]})
-    }
-
-    return (@{data = $list} | ConvertTo-Json -Compress)
-}
-
-<#
-.SYNOPSYS
-    This function returns data for space allocation in filegroups
+    This function returns data for space allocation of transaction logs
 #>
 function get_transaction_logs_data() {
 
     $result = (run_sql -Query "CREATE TABLE #spaceInfo (
-                                    fileName varchar(512)
+                                    db_name varchar(512)
+                                  , file_id bigint
                                   , current_size bigint
                                   , used_space bigint
                                )
@@ -545,8 +524,9 @@ function get_transaction_logs_data() {
                                DECLARE @sql varchar(1000)
 
                                set @sql = 'Use [?];
-                                            INSERT #spaceInfo (fileName, current_size, used_space) 
-                                            SELECT fileName
+                                            INSERT #spaceInfo (db_name, file_id, current_size, used_space) 
+                                            SELECT DB_NAME() AS db_name
+                                                 , fileid AS file_id
                                                  , CAST(size AS bigint)
                                                  , CAST(fileproperty(name, ''SpaceUsed'') AS bigint)
                                               FROM dbo.sysfiles
@@ -554,23 +534,24 @@ function get_transaction_logs_data() {
 
                                EXEC sp_MSforeachdb @sql
 
-                               SELECT DB_NAME(database_id)
-                                    , sum(cast(si.current_size as bigint) * 8192) current_bytes
-                                    , sum(si.used_space * 8192) as used_bytes
+                               SELECT DB_NAME(database_id) AS db_name
+                                    , sum(cast(si.current_size AS bigint) * 8192) AS current_bytes
+                                    , sum(si.used_space * 8192) AS used_bytes
                                     , sum(CASE 
                                               WHEN mf.max_size = -1 THEN 2199023255552 -- Maximum size for a log file is 2T as per documentation
-                                              ELSE cast(mf.max_size as bigint) * 8192
+                                              ELSE cast(mf.max_size AS bigint) * 8192
                                           END) as max_bytes
-                                    , ROUND( sum(cast(used_space * 8192 as float))/sum(cast(CASE 
+                                    , ROUND( sum(cast(used_space * 8192 AS float))/sum(cast(CASE 
                                                                                                 WHEN mf.max_size = -1 THEN 2199023255552 -- Maximum size for a log file is 2T as per documentation
-                                                                                                ELSE cast(mf.max_size as float) * 8192
-                                                                                            END as float
+                                                                                                ELSE cast(mf.max_size AS float) * 8192
+                                                                                            END AS float
                                                                                            )
                                                                                       ) * 100
-                                           , 4) as used_pct
-                                 FROM #spaceInfo si
-                                      LEFT OUTER JOIN sys.master_files AS mf 
-                                      ON mf.physical_name = si.fileName
+                                           , 4) AS used_pct
+                                 FROM #spaceInfo AS si
+                                    , sys.master_files AS mf 
+                                WHERE DB_NAME(mf.database_id) = si.db_name
+                                  AND mf.file_id = si.file_id
                                 GROUP BY 
                                       DB_NAME(database_id)
                                 ORDER BY
