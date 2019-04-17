@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>4.0</version>
-    <date>2019-02-11T01:42:14Z</date>
+    <version>4.2</version>
+    <date>2019-04-17T05:34:39Z</date>
     <groups>
+        <group>
+            <name>IBM DB2 LUW Databases</name>
+        </group>
+        <group>
+            <name>MySQL/MariaDB Databases</name>
+        </group>
+        <group>
+            <name>Oracle Databases</name>
+        </group>
+        <group>
+            <name>PostgreSQL Databases</name>
+        </group>
         <group>
             <name>Templates</name>
         </group>
@@ -15,6 +27,18 @@
 &#13;
 Eugene Bobkov 10/2018</description>
             <groups>
+                <group>
+                    <name>IBM DB2 LUW Databases</name>
+                </group>
+                <group>
+                    <name>MySQL/MariaDB Databases</name>
+                </group>
+                <group>
+                    <name>Oracle Databases</name>
+                </group>
+                <group>
+                    <name>PostgreSQL Databases</name>
+                </group>
                 <group>
                     <name>Templates</name>
                 </group>
@@ -87,6 +111,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.boot_time</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -156,6 +182,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.cpu_count</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -223,6 +251,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -355,6 +385,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.load1m</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -421,6 +453,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.load5m</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -487,6 +521,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.load15m</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -556,6 +592,8 @@ Eugene Bobkov 10/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.free_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -687,6 +725,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/'].free_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -759,6 +799,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/var'].free_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -831,6 +873,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/'].total</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -903,6 +947,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/var'].total</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -975,6 +1021,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/'].used_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1047,6 +1095,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/var'].used_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1119,6 +1169,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/'].used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1191,6 +1243,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$['/var'].used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1257,6 +1311,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$.os_version</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1326,6 +1382,8 @@ OS version</description>
                         <step>
                             <type>12</type>
                             <params>$.used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1498,6 +1556,8 @@ END {print &quot;]\n}&quot;}'</params>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].free_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1568,6 +1628,8 @@ END {print &quot;]\n}&quot;}'</params>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].total</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1638,6 +1700,8 @@ END {print &quot;]\n}&quot;}'</params>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].used_pct</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1708,6 +1772,8 @@ END {print &quot;]\n}&quot;}'</params>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].used_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1805,6 +1871,9 @@ END {print &quot;]\n}&quot;}'</params>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
             </discovery_rules>
             <httptests/>
@@ -1856,6 +1925,7 @@ END {print &quot;]\n}&quot;}'</params>
             </macros>
             <templates/>
             <screens/>
+            <tags/>
         </template>
     </templates>
     <triggers>

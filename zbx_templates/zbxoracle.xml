@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>4.0</version>
-    <date>2019-03-01T06:01:42Z</date>
+    <version>4.2</version>
+    <date>2019-04-17T05:34:03Z</date>
     <groups>
         <group>
             <name>Oracle Databases</name>
@@ -229,6 +229,8 @@ Instance name has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.number</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -300,6 +302,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.database_role</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -367,6 +371,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.database_size</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -496,6 +502,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.fra_size</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -565,6 +573,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.used_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -634,6 +644,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -827,6 +839,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.names</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -893,6 +907,8 @@ etc</description>
                         <step>
                             <type>12</type>
                             <params>$.number</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1146,6 +1162,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.date</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1212,6 +1230,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.hours_since</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1340,6 +1360,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.date</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1406,6 +1428,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.hours_since</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1729,6 +1753,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.current</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1798,6 +1824,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.max</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1867,6 +1895,8 @@ host name</description>
                         <step>
                             <type>12</type>
                             <params>$.pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -2190,6 +2220,8 @@ percentage of utilization</description>
                         <step>
                             <type>12</type>
                             <params>$.version</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -2298,6 +2330,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#ASM_DISKGROUP_NAME}.total</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2368,6 +2402,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#ASM_DISKGROUP_NAME}.used_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2438,6 +2474,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#ASM_DISKGROUP_NAME}.used_pct</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2508,6 +2546,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#ASM_DISKGROUP_NAME}.state</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2616,6 +2656,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>Guarantee restore points</name>
@@ -2697,6 +2740,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#RESTORE_POINT_NAME}.date</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2762,6 +2807,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>Instances</name>
@@ -2843,6 +2891,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#INSTANCE_NAME}.host_name</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2910,6 +2960,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#INSTANCE_NAME}.startup_time</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2991,6 +3043,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>PDBs</name>
@@ -3075,6 +3130,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#PDB_NAME}.state</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3145,6 +3202,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>PDBs tablespaces</name>
@@ -3222,6 +3282,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#PDB_NAME}.{#TABLESPACE_NAME}.backup_mode_hours_since</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3292,6 +3354,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#PDB_NAME}.{#TABLESPACE_NAME}.state</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3362,6 +3426,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#PDB_NAME}.{#TABLESPACE_NAME}.max_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3432,6 +3498,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#PDB_NAME}.{#TABLESPACE_NAME}.used_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3505,6 +3573,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#PDB_NAME}.{#TABLESPACE_NAME}.used_pct</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3639,6 +3709,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>Standby databases</name>
@@ -3720,6 +3793,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#STANDBY_DEST}.status</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3790,6 +3865,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>Tablespaces</name>
@@ -3874,6 +3952,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.max_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -3944,6 +4024,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.backup_mode_hours_since</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -4014,6 +4096,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.state</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -4084,6 +4168,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.used_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -4154,6 +4240,8 @@ percentage of utilization</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.used_pct</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -4288,6 +4376,9 @@ percentage of utilization</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
             </discovery_rules>
             <httptests/>
@@ -4367,6 +4458,7 @@ percentage of utilization</description>
             </macros>
             <templates/>
             <screens/>
+            <tags/>
         </template>
     </templates>
     <triggers>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>4.0</version>
-    <date>2019-02-11T01:39:26Z</date>
+    <version>4.2</version>
+    <date>2019-04-17T05:34:18Z</date>
     <groups>
         <group>
             <name>IBM DB2 LUW Databases</name>
@@ -90,6 +90,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.current</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -159,6 +161,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.max</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -228,6 +232,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -362,6 +368,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.database_size</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -609,6 +617,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.host_name</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -675,6 +685,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.startup_time</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -803,6 +815,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.date</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -869,6 +883,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.hours_since</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -997,6 +1013,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.date</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1063,6 +1081,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.hours_since</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1194,6 +1214,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.total</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1263,6 +1285,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.used_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1332,6 +1356,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1593,6 +1619,8 @@ Instance details has to be updated in MACROS section</description>
                         <step>
                             <type>12</type>
                             <params>$.version</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1698,6 +1726,8 @@ Instance details has to be updated in MACROS section</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#HADR_HOST}.connect_status</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1765,6 +1795,8 @@ Instance details has to be updated in MACROS section</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#HADR_HOST}.state</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1856,6 +1888,9 @@ Instance details has to be updated in MACROS section</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
                 <discovery_rule>
                     <name>Tablespaces</name>
@@ -1940,6 +1975,8 @@ Instance details has to be updated in MACROS section</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.max_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2010,6 +2047,8 @@ Instance details has to be updated in MACROS section</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.state</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2080,6 +2119,8 @@ Instance details has to be updated in MACROS section</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.used_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2150,6 +2191,8 @@ Instance details has to be updated in MACROS section</description>
                                 <step>
                                     <type>12</type>
                                     <params>$.{#TABLESPACE_NAME}.used_pct</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -2268,6 +2311,9 @@ Instance details has to be updated in MACROS section</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
             </discovery_rules>
             <httptests/>
@@ -2331,6 +2377,7 @@ Instance details has to be updated in MACROS section</description>
             </macros>
             <templates/>
             <screens/>
+            <tags/>
         </template>
     </templates>
     <triggers>
