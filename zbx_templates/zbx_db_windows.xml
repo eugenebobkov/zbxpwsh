@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>4.0</version>
-    <date>2019-02-11T01:42:02Z</date>
+    <version>4.2</version>
+    <date>2019-04-17T05:34:49Z</date>
     <groups>
+        <group>
+            <name>IBM DB2 LUW Databases</name>
+        </group>
+        <group>
+            <name>Microsoft SQL Server</name>
+        </group>
+        <group>
+            <name>Oracle Databases</name>
+        </group>
+        <group>
+            <name>PostgreSQL Databases</name>
+        </group>
         <group>
             <name>Templates</name>
         </group>
@@ -15,6 +27,18 @@
 &#13;
 Eugene Bobkov 12/2018</description>
             <groups>
+                <group>
+                    <name>IBM DB2 LUW Databases</name>
+                </group>
+                <group>
+                    <name>Microsoft SQL Server</name>
+                </group>
+                <group>
+                    <name>Oracle Databases</name>
+                </group>
+                <group>
+                    <name>PostgreSQL Databases</name>
+                </group>
                 <group>
                     <name>Templates</name>
                 </group>
@@ -90,6 +114,8 @@ Eugene Bobkov 12/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.cpu_count</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -157,6 +183,8 @@ Eugene Bobkov 12/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -345,6 +373,8 @@ Eugene Bobkov 12/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.boot_time</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -411,6 +441,8 @@ Eugene Bobkov 12/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.os_version</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -477,6 +509,8 @@ Eugene Bobkov 12/2018</description>
                         <step>
                             <type>12</type>
                             <params>$.service_pack_version</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -572,7 +606,7 @@ OS Service Pack version</description>
                     <key>zbxdbwin[memory_total,{$HOSTNAME}]</key>
                     <delay>0</delay>
                     <history>1w</history>
-                    <trends>90d</trends>
+                    <trends>365d</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -608,6 +642,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$.memory_total_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -677,6 +713,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$.memory_used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -749,6 +787,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$['C:\'].free_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -821,6 +861,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$['C:\'].total</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -893,6 +935,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$['C:\'].used_bytes</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -965,6 +1009,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$['C:\'].used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1034,6 +1080,8 @@ OS Service Pack version</description>
                         <step>
                             <type>12</type>
                             <params>$.swap_used_pct</params>
+                            <error_handler>0</error_handler>
+                            <error_handler_params/>
                         </step>
                     </preprocessing>
                     <jmx_endpoint/>
@@ -1144,6 +1192,8 @@ OS Service Pack version</description>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].free_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1214,6 +1264,8 @@ OS Service Pack version</description>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].total</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1284,6 +1336,8 @@ OS Service Pack version</description>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].used_bytes</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1354,6 +1408,8 @@ OS Service Pack version</description>
                                 <step>
                                     <type>12</type>
                                     <params>$['{#FSNAME}'].used_pct</params>
+                                    <error_handler>0</error_handler>
+                                    <error_handler_params/>
                                 </step>
                             </preprocessing>
                             <jmx_endpoint/>
@@ -1451,6 +1507,9 @@ OS Service Pack version</description>
                     <ssl_key_password/>
                     <verify_peer>0</verify_peer>
                     <verify_host>0</verify_host>
+                    <lld_macro_paths/>
+                    <preprocessing/>
+                    <master_item/>
                 </discovery_rule>
             </discovery_rules>
             <httptests/>
@@ -1486,6 +1545,7 @@ OS Service Pack version</description>
             </macros>
             <templates/>
             <screens/>
+            <tags/>
         </template>
     </templates>
     <triggers>
