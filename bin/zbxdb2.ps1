@@ -32,17 +32,17 @@
     Author:         Eugene Bobkov
     Creation Date:  16/11/2018
 
-    The followin permissions has to be granted to monitoring user
+    The following permissions has to be granted to monitoring user
     db2 GRANT USAGE ON WORKLOAD SYSDEFAULTUSERWORKLOAD TO USER svc_zabbix
     db2 GRANT SELECT ON SYSCAT.SCHEMATA TO USER svc_zabbix
-    db2 GRANT SELECT ON  SYSIBMADM.DB_HISTORY  TO USER svc_zabbix
-    db2 " GRANT SELECT ON   SYSIBMADM.TBSP_UTILIZATION  TO USER svc_zabbix"
-    db2 " GRANT SELECT ON    SYSCAT.DBAUTH TO USER svc_zabbix"
-    db2 " GRANT SELECT ON    SYSIBMADM.APPLICATIONS TO USER svc_zabbix"
-    db2 " GRANT SELECT ON   SYSIBMADM.SNAPHADR TO USER svc_zabbix"
-    db2 " GRANT SELECT ON    SYSIBMADM.ENV_SYS_INFO svc_zabbix"
-    db2 " GRANT SELECT ON    SYSIBMADM.LOG_UTILIZATION svc_zabbix"
-    db2 " GRANT SELECT ON    sysibm.sysdummy1 svc_zabbix"
+    db2 GRANT SELECT ON SYSIBMADM.DB_HISTORY  TO USER svc_zabbix
+    db2 GRANT SELECT ON SYSIBMADM.TBSP_UTILIZATION TO USER svc_zabbix
+    db2 GRANT SELECT ON SYSCAT.DBAUTH TO USER svc_zabbix
+    db2 GRANT SELECT ON SYSIBMADM.APPLICATIONS TO USER svc_zabbix
+    db2 GRANT SELECT ON SYSIBMADM.SNAPHADR TO USER svc_zabbix
+    db2 GRANT SELECT ON SYSIBMADM.ENV_SYS_INFO svc_zabbix
+    db2 GRANT SELECT ON SYSIBMADM.LOG_UTILIZATION svc_zabbix
+    db2 GRANT SELECT ON sysibm.sysdummy1 svc_zabbix
 
     select 'db2 grant EXECUTE on package NULLID.'||substr(pkgname,1,10)||' to user svc_zabbix'
       from syscat.packageauth where pkgschema='NULLID' and pkgname LIKE 'SQLC%'
@@ -402,8 +402,8 @@ function get_instance_data() {
     # get startup time
     $result = (run_sql -Query "SELECT s.startup_time 
                                     , e.host_name
-                                 FROM (select to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time from sysibmadm.snapdbm) s
-                                    , (select host_name from sysibmadm.env_sys_info) e")
+                                 FROM (select to_char(db2start_time,'dd/mm/yyyy hh24:mi:ss') startup_time FROM sysibmadm.snapdbm) s
+                                    , (select host_name FROM sysibmadm.env_sys_info) e")
 
     # Check if expected object has been recieved
     if ($result.GetType() -eq [System.Data.DataTable]) {
@@ -449,8 +449,8 @@ function get_appls_data() {
 function get_logs_utilization_data() {
     # get data about current log utilization
     $result = (run_sql -Query ('SELECT log_utilization_percent used_pct
-                                      , total_log_used_kb * 1024 used_bytes
-                                      , total_log_available_kb * 1024 total
+                                     , total_log_used_kb * 1024 used_bytes
+                                     , total_log_available_kb * 1024 total
                                   FROM sysibmadm.log_utilization'
                               )
               )
