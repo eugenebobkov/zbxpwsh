@@ -2034,7 +2034,7 @@ END {print &quot;]\n}&quot;}'</params>
             <correlation_tag/>
             <url/>
             <status>0</status>
-            <priority>3</priority>
+            <priority>4</priority>
             <description/>
             <type>0</type>
             <manual_close>1</manual_close>
