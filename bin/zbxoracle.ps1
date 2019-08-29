@@ -23,12 +23,12 @@
 .PARAMETER Username
     Database user
     Create new profile with unlimited expire_time (or modify default)
-    SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS;
+    SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS unlimited;
 
     Create oracle user and grant the following privilegies
  
     For non-CDB database:
-    SQL> CREATE svc_zabbix identified by '<password>' PROFILE monitoring_profie;
+    SQL> CREATE USER svc_zabbix identified by <password> PROFILE monitoring_profile;
     SQL> GRANT CREATE session, select any dictionary TO svc_zabbix;
     
     for CDB enabled database:
@@ -102,7 +102,8 @@ function run_sql() {
     # Current version of ManagedDataAccess dll has a bug, which prevents creating session to Standby database using 'user as sysdba' syntax
     # Current version of Unmanaged DataAccess dll has intermittent issues of corrupting memory during Finalize() function, which generated UnhandledException at the end of script running
     # 2.x\Oracle.DataAccess.dll verion is seemed to be working
-    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\bin\2.x\Oracle.DataAccess.dll
+    
+    Add-Type -Path $global:RootPath\dll\Oracle.DataAccess.dll
 
     $dataSource = "(DESCRIPTION =
                        (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
