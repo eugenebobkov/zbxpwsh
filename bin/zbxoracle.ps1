@@ -103,7 +103,7 @@ function run_sql() {
     # Current version of Unmanaged DataAccess dll has intermittent issues of corrupting memory during Finalize() function, which generated UnhandledException at the end of script running
     # 2.x\Oracle.DataAccess.dll verion is seemed to be working
     
-    Add-Type -Path $global:RootPath\dll\Oracle.DataAccess.dll
+    Add-Type -Path $global:RootPath\dll\Oracle.ManagedDataAccess.dll
 
     $dataSource = "(DESCRIPTION =
                        (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
@@ -136,7 +136,7 @@ function run_sql() {
     $connectionString += "Connect Timeout = $ConnectTimeout;"
 
     # Create the connection object
-    $connection = New-Object Oracle.DataAccess.Client.OracleConnection("$connectionString")
+    $connection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$connectionString")
 
     # try to open connection
     try {
@@ -150,11 +150,11 @@ function run_sql() {
     }
 
     # Create command to run using connection
-    $command = New-Object Oracle.DataAccess.Client.OracleCommand($Query)
+    $command = New-Object Oracle.ManagedDataAccess.Client.OracleCommand($Query)
     $command.Connection = $connection
     $command.CommandTimeout = $CommandTimeout
 
-    $adapter = New-Object Oracle.DataAccess.Client.OracleDataAdapter($command)
+    $adapter = New-Object Oracle.ManagedDataAccess.Client.OracleDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
     # Run query
