@@ -23,12 +23,12 @@
 .PARAMETER Username
     Database user
     Create new profile with unlimited expire_time (or modify default)
-    SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS;
+    SQL> CREATE PROFILE monitoring_profile LIMIT PASSWORD_LIFE_TIME unlimited FAILED_LOGIN_ATTEMPTS unlimited;
 
     Create oracle user and grant the following privilegies
  
     For non-CDB database:
-    SQL> CREATE svc_zabbix identified by '<password>' PROFILE monitoring_profie;
+    SQL> CREATE USER svc_zabbix identified by <password> PROFILE monitoring_profile;
     SQL> GRANT CREATE session, select any dictionary TO svc_zabbix;
     
     for CDB enabled database:
@@ -94,15 +94,14 @@ function run_sql() {
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
 
-    # Add Oracle ODP.NET extention
-    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...> or package it?
-    # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
+    # Add Oracle ODP.NET extention (Linux and Windows)
 
-    # TODO: Review dll in future (05/03/2019) and package it in zbxpwsh
     # Current version of ManagedDataAccess dll has a bug, which prevents creating session to Standby database using 'user as sysdba' syntax
     # Current version of Unmanaged DataAccess dll has intermittent issues of corrupting memory during Finalize() function, which generated UnhandledException at the end of script running
-    # 2.x\Oracle.DataAccess.dll verion is seemed to be working
-    Add-Type -Path D:\oracle\product\18.0.0\client_1\odp.net\bin\2.x\Oracle.DataAccess.dll
+    # 2.x\Oracle.DataAccess.dll verion is seemed to be working on Windows, but some issues when loading on Linux.
+    # Oracle recommends to use ManagedDataAccess
+    
+    Add-Type -Path $global:RootPath\dll\Oracle.ManagedDataAccess.dll
 
     $dataSource = "(DESCRIPTION =
                        (ADDRESS = (PROTOCOL = TCP)(HOST = $Hostname)(PORT = $Port))
@@ -135,7 +134,7 @@ function run_sql() {
     $connectionString += "Connect Timeout = $ConnectTimeout;"
 
     # Create the connection object
-    $connection = New-Object Oracle.DataAccess.Client.OracleConnection("$connectionString")
+    $connection = New-Object Oracle.ManagedDataAccess.Client.OracleConnection("$connectionString")
 
     # try to open connection
     try {
@@ -149,11 +148,11 @@ function run_sql() {
     }
 
     # Create command to run using connection
-    $command = New-Object Oracle.DataAccess.Client.OracleCommand($Query)
+    $command = New-Object Oracle.ManagedDataAccess.Client.OracleCommand($Query)
     $command.Connection = $connection
     $command.CommandTimeout = $CommandTimeout
 
-    $adapter = New-Object Oracle.DataAccess.Client.OracleDataAdapter($command)
+    $adapter = New-Object Oracle.ManagedDataAccess.Client.OracleDataAdapter($command)
     $dataTable = New-Object System.Data.DataTable
 
     # Run query
