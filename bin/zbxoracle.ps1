@@ -94,14 +94,12 @@ function run_sql() {
         [Parameter(Mandatory=$false)][int32]$CommandTimeout = 10      # Command timeout, how long sql statement will be running, if it runs longer - it will be terminated
     )
 
-    # Add Oracle ODP.NET extention
-    # TODO: Get rid of hardcoded locations and move it to a config file $RootDir/etc/<...env.conf...> or package it?
-    # TODO: Unix implementation, [Environment]::OSVersion.Platform -eq Unix|Win32NT
+    # Add Oracle ODP.NET extention (Linux and Windows)
 
-    # TODO: Review dll in future (05/03/2019) and package it in zbxpwsh
     # Current version of ManagedDataAccess dll has a bug, which prevents creating session to Standby database using 'user as sysdba' syntax
     # Current version of Unmanaged DataAccess dll has intermittent issues of corrupting memory during Finalize() function, which generated UnhandledException at the end of script running
-    # 2.x\Oracle.DataAccess.dll verion is seemed to be working
+    # 2.x\Oracle.DataAccess.dll verion is seemed to be working on Windows, but some issues when loading on Linux.
+    # Oracle recommends to use ManagedDataAccess
     
     Add-Type -Path $global:RootPath\dll\Oracle.ManagedDataAccess.dll
 
